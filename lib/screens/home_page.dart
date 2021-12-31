@@ -294,7 +294,7 @@ class _ChangePageState extends State<HomePage> {
                   ),
                 ),
               ),
-             /* SizedBox(
+              /* SizedBox(
                 width: 5.0,
               ),
               Align(
@@ -466,8 +466,7 @@ class _ChangePageState extends State<HomePage> {
               Color(0xffffd700),
               Color(0xfffff8dd)),
         );
-      }
-      else {
+      } else {
         return Container();
       }
     } else if (total_test == "1") {
@@ -498,10 +497,7 @@ class _ChangePageState extends State<HomePage> {
         return Container();
       }
     } else {
-
-        return Container();
-
-
+      return Container();
     }
   }
 
@@ -725,116 +721,113 @@ class _ChangePageState extends State<HomePage> {
     );
   }
 
-
-  Widget show_btm(){
-    if(institute_id!="0"){
-      if(payment=="0") {
-        return Column(children: [
-          Container(
-            padding: EdgeInsets.only(
-              left: 20,
-              right: 20,
-              bottom: 5,
-            ),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-
+  Widget show_btm() {
+    if (institute_id != "0") {
+      if (payment == "0") {
+        return Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                bottom: 5,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
                         Navigator.pushNamed(
                           context,
                           '/model-dash',
                         );
-
-                    },
-                    child: _buildWikiCategory(
-                        "assets/images/tp.png",
-                        "Model Test Paper",
-                        "Released Every Saturday",
-                        Color(0xff0488FD),
-                        Color(0xffE0F1FF)),
+                      },
+                      child: _buildWikiCategory(
+                          "assets/images/tp.png",
+                          "Model Test Paper",
+                          "Released Every Saturday",
+                          Color(0xff0488FD),
+                          Color(0xffE0F1FF)),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      // Navigator.pop(context);
-                      Navigator.pushNamed(
-                        context,
-                        '/project',
-                      );
-                    },
-                    child: _buildWikiCategory(
-                        "assets/images/project.png",
-                        "Project",
-                        "Project",
-                        Color(0xffFFB110),
-                        Color(0xffFFFBEC)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          Container(
-            padding: EdgeInsets.only(
-              left: 20,
-              right: 20,
-              bottom: 5,
-            ),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      if (payment != "0") {
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        // Navigator.pop(context);
                         Navigator.pushNamed(
                           context,
-                          '/institute-test-list',
+                          '/project',
                         );
-                      }
-
-                    },
-                    child: _buildWikiCategory(
-                        "assets/images/mcq.png",
-                        "Institute Test List",
-                        "Institute Test List",
-                        Color(0xffF45656),
-                        Color(0xffFEEEEE)),
+                      },
+                      child: _buildWikiCategory(
+                          "assets/images/project.png",
+                          "Project",
+                          "Project",
+                          Color(0xffFFB110),
+                          Color(0xffFFFBEC)),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      //  Navigator.pop(context);
-                      Navigator.pushNamed(
-                        context,
-                        '/plan',
-                        arguments: <String, String>{
-                          'order_id': order_id.toString(),
-                          'signupid': user_id.toString(),
-                          'mobile': _mobile,
-                          'email': email_id,
-                          'out': 'in'
-                        },
-                      );
-                    },
-                    child: _buildWikiCategory(
-                        "assets/images/upgrade.png",
-                        "Upgrade To Premium",
-                        "Upgrade",
-                        Color(0xffffd700),
-                        Color(0xfffff8dd)),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+            const SizedBox(height: 16.0),
+            Container(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                bottom: 5,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        if (payment != "0") {
+                          Navigator.pushNamed(
+                            context,
+                            '/institute-test-list',
+                          );
+                        }
+                      },
+                      child: _buildWikiCategory(
+                          "assets/images/mcq.png",
+                          "Institute Test List",
+                          "Institute Test List",
+                          Color(0xffF45656),
+                          Color(0xffFEEEEE)),
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        //  Navigator.pop(context);
+                        Navigator.pushNamed(
+                          context,
+                          '/plan',
+                          arguments: <String, String>{
+                            'order_id': order_id.toString(),
+                            'signupid': user_id.toString(),
+                            'mobile': _mobile,
+                            'email': email_id,
+                            'out': 'in'
+                          },
+                        );
+                      },
+                      child: _buildWikiCategory(
+                          "assets/images/upgrade.png",
+                          "Upgrade To Premium",
+                          "Upgrade",
+                          Color(0xffffd700),
+                          Color(0xfffff8dd)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
-          /*const SizedBox(height: 16.0),
+            /*const SizedBox(height: 16.0),
           Container(
             padding: EdgeInsets.only(
               left: 20,
@@ -869,10 +862,94 @@ class _ChangePageState extends State<HomePage> {
               ],
             ),
           )*/
-        ],);
+          ],
+        );
+      } else {
+        return Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                bottom: 5,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/model-dash',
+                        );
+                      },
+                      child: _buildWikiCategory(
+                          "assets/images/tp.png",
+                          "Model Test Paper",
+                          "Released Every Saturday",
+                          Color(0xff0488FD),
+                          Color(0xffE0F1FF)),
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        // Navigator.pop(context);
+                        Navigator.pushNamed(
+                          context,
+                          '/project',
+                        );
+                      },
+                      child: _buildWikiCategory(
+                          "assets/images/project.png",
+                          "Project",
+                          "Project",
+                          Color(0xffFFB110),
+                          Color(0xffFFFBEC)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            Container(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                bottom: 5,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/institute-test-list',
+                        );
+                      },
+                      child: _buildWikiCategory(
+                          "assets/images/mcq.png",
+                          "Institute Test List",
+                          "Institute Test List",
+                          Color(0xffF45656),
+                          Color(0xffFEEEEE)),
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: Container(),
+                  ),
+                ],
+              ),
+            )
+          ],
+        );
       }
-      else{
-        return Column(children: [
+    } else {
+      return Column(
+        children: [
           Container(
             padding: EdgeInsets.only(
               left: 20,
@@ -884,12 +961,10 @@ class _ChangePageState extends State<HomePage> {
                 Expanded(
                   child: InkWell(
                     onTap: () {
-
-                        Navigator.pushNamed(
-                          context,
-                          '/model-dash',
-                        );
-
+                      Navigator.pushNamed(
+                        context,
+                        '/model-dash',
+                      );
                     },
                     child: _buildWikiCategory(
                         "assets/images/tp.png",
@@ -917,10 +992,8 @@ class _ChangePageState extends State<HomePage> {
                         Color(0xffFFFBEC)),
                   ),
                 ),
-
               ],
             ),
-
           ),
           const SizedBox(height: 16.0),
           Container(
@@ -932,102 +1005,16 @@ class _ChangePageState extends State<HomePage> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/institute-test-list',
-                      );
-                    },
-                    child: _buildWikiCategory(
-                        "assets/images/mcq.png",
-                        "Institute Test List",
-                        "Institute Test List",
-                        Color(0xffF45656),
-                        Color(0xffFEEEEE)),
-                  ),
+                  child: upgradeDash(),
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
-                  child:Container(),
+                  child: Container(),
                 ),
               ],
             ),
           )
-
-
-        ],);
-      }
-    }
-    else{
-      return Column(children: [
-        Container(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            bottom: 5,
-          ),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-
-                      Navigator.pushNamed(
-                        context,
-                        '/model-dash',
-                      );
-
-                  },
-                  child: _buildWikiCategory(
-                      "assets/images/tp.png",
-                      "Model Test Paper",
-                      "Released Every Saturday",
-                      Color(0xff0488FD),
-                      Color(0xffE0F1FF)),
-                ),
-              ),
-              const SizedBox(width: 16.0),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    // Navigator.pop(context);
-                    Navigator.pushNamed(
-                      context,
-                      '/project',
-                    );
-                  },
-                  child: _buildWikiCategory(
-                      "assets/images/project.png",
-                      "Project",
-                      "Project",
-                      Color(0xffFFB110),
-                      Color(0xffFFFBEC)),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16.0),
-      Container(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            bottom: 5,
-          ),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: upgradeDash(),
-              ),
-              const SizedBox(width: 16.0),
-              Expanded(
-                child: Container(),
-              ),
-            ],
-          ),
-        )
-      /*  Container(
+          /*  Container(
           padding: EdgeInsets.only(
             left: 20,
             right: 20,
@@ -1061,9 +1048,9 @@ class _ChangePageState extends State<HomePage> {
             ],
           ),
         )*/
-      ],);
+        ],
+      );
     }
-
   }
 
   Widget build(BuildContext context) {
@@ -1087,632 +1074,625 @@ class _ChangePageState extends State<HomePage> {
         body: isInternetOn
             ? SingleChildScrollView(
                 child: Column(children: <Widget>[
-
-                  institute_id!="0"?
-                  Column( children: <Widget>[
-                announce( deviceSize),
-            SizedBox(
-              height: 10.0,
-            ),
-                    Container(
-                      decoration: new BoxDecoration(
-                          color: Color(0xffF9F9FB),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0.0, 1.0), //(x,y)
-                              blurRadius: 3.0,
-                            ),
-                          ],
-                          borderRadius: new BorderRadius.only(
-                              topLeft:
-                              const Radius.circular(15.0),
-                              bottomLeft:
-                              const Radius.circular(15.0),
-                              bottomRight:
-                              const Radius.circular(15.0),
-                              topRight:
-                              const Radius.circular(15.0))),
-                      margin:
-                      EdgeInsets.symmetric(horizontal: 20.0),
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Column(
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10.0,
-                                ),
-                                child: Text("My Progress",
-                                    style: normalText9),
-                              ),
-                            ),
-                            Container(
-                              child: new Stack(
-                                children: <Widget>[
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      child:
-                                      new CircularPercentIndicator(
-                                        //  radius: 45.0,
-                                        animation: true,
-                                        animationDuration: 1200,
-                                        radius: 120.0,
-                                        lineWidth: 5.0,
-                                        arcType: ArcType.HALF,
-                                        percent: average / 100,
-                                        backgroundColor:
-                                        Color(0xffF2F2F2),
-
-                                        center: Padding(
-                                          padding:
-                                          const EdgeInsets
-                                              .only(
-                                              left: 5,
-                                              right: 5,
-                                              top: 30),
-                                          child: Column(
-                                              children: <Widget>[
-                                                Text(
-                                                    average.toString() +
-                                                        "%",
-                                                    style:
-                                                    normalText10),
-                                                Center(
-                                                  child: Text(
-                                                      "Overall progress",
-                                                      style:
-                                                      normalText8),
-                                                ),
-                                              ]),
-                                        ),
-                                        linearGradient:
-                                        LinearGradient(
-                                          colors: [
-                                            Color(0xff017EFF),
-                                            Color(0xff017EFF),
-                                          ],
-                                          begin: FractionalOffset
-                                              .topCenter,
-                                          end: FractionalOffset
-                                              .bottomCenter,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      padding: EdgeInsets.only(
-                                          top: 80),
-                                      child: Column(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .center,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment
-                                              .center,
-                                          children: <Widget>[
-                                            Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .center,
-                                                crossAxisAlignment:
-                                                CrossAxisAlignment
-                                                    .center,
-                                                children: <
-                                                    Widget>[
-                                                  Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .center,
-                                                      children: <
-                                                          Widget>[
-                                                        Text(
-                                                            total_right_question,
-                                                            style:
-                                                            normalText11),
-                                                        Text(
-                                                            "Correct Answers",
-                                                            style:
-                                                            normalText12),
-                                                      ]),
-                                                  SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .center,
-                                                      children: <
-                                                          Widget>[
-                                                        Text(
-                                                            total_wrong_question,
-                                                            style:
-                                                            normalText11),
-                                                        Text(
-                                                            "Incorrect Answers",
-                                                            style:
-                                                            normalText12),
-                                                      ]),
-                                                ]),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
-                                            Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .center,
-                                                crossAxisAlignment:
-                                                CrossAxisAlignment
-                                                    .center,
-                                                children: <
-                                                    Widget>[
-                                                  Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .center,
-                                                      children: <
-                                                          Widget>[
-                                                        Text(
-                                                            total_skip_question,
-                                                            style:
-                                                            normalText11),
-                                                        Text(
-                                                            "Questions Skipped",
-                                                            style:
-                                                            normalText12),
-                                                      ]),
-                                                  SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .center,
-                                                      children: <
-                                                          Widget>[
-                                                        Text(
-                                                            total_test,
-                                                            style:
-                                                            normalText11),
-                                                        Text(
-                                                            "Tests Attempted",
-                                                            style:
-                                                            normalText12),
-                                                      ]),
-                                                ]),
-                                          ]),
-                                    ),
+                  institute_id != "0"
+                      ? Column(children: <Widget>[
+                          announce(deviceSize),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          Container(
+                            decoration: new BoxDecoration(
+                                color: Color(0xffF9F9FB),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    offset: Offset(0.0, 1.0), //(x,y)
+                                    blurRadius: 3.0,
                                   ),
                                 ],
-                              ),
-                            )
-                          ]),
-                    ),
-
-            ]):
-                  Container(
-                    child: Stack(
-                      children: <Widget>[
-                        new Container(
-                          height: MediaQuery.of(context).size.height * .42,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: new BoxDecoration(
-                              color: Color(0xff2E2A4A),
-                              borderRadius: new BorderRadius.only(
-                                bottomLeft: const Radius.circular(20.0),
-                                bottomRight: const Radius.circular(20.0),
-                              )),
-                        ),
-                        new Container(
-                          alignment: Alignment.topCenter,
-                          padding: new EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height * .01,
-                              right: 5.0,
-                              left: 10.0),
-                          child: Container(
+                                borderRadius: new BorderRadius.only(
+                                    topLeft: const Radius.circular(15.0),
+                                    bottomLeft: const Radius.circular(15.0),
+                                    bottomRight: const Radius.circular(15.0),
+                                    topRight: const Radius.circular(15.0))),
+                            margin: EdgeInsets.symmetric(horizontal: 20.0),
+                            padding: EdgeInsets.symmetric(vertical: 20),
                             child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(top: 40, left: 5),
-                                    child: InkWell(
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            IconButton(
-                                              icon: Image(
-                                                image: AssetImage(
-                                                    "assets/images/list_icon.png"),
-                                                height: 25.0,
-                                                width: 25.0,
-                                                color: Colors.white,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10.0,
+                                      ),
+                                      child: Text("My Progress",
+                                          style: normalText9),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: new Stack(
+                                      children: <Widget>[
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            child: new CircularPercentIndicator(
+                                              //  radius: 45.0,
+                                              animation: true,
+                                              animationDuration: 1200,
+                                              radius: 120.0,
+                                              lineWidth: 5.0,
+                                              arcType: ArcType.HALF,
+                                              percent: average / 100,
+                                              backgroundColor:
+                                                  Color(0xffF2F2F2),
+
+                                              center: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 5, right: 5, top: 30),
+                                                child:
+                                                    Column(children: <Widget>[
+                                                  Text(average.toString() + "%",
+                                                      style: normalText10),
+                                                  Center(
+                                                    child: Text(
+                                                        "Overall progress",
+                                                        style: normalText8),
+                                                  ),
+                                                ]),
                                               ),
-                                              onPressed: () {
-                                                _scaffoldKey.currentState
-                                                    .openDrawer();
-                                              },
+                                              linearGradient: LinearGradient(
+                                                colors: [
+                                                  Color(0xff017EFF),
+                                                  Color(0xff017EFF),
+                                                ],
+                                                begin:
+                                                    FractionalOffset.topCenter,
+                                                end: FractionalOffset
+                                                    .bottomCenter,
+                                              ),
                                             ),
-                                            total_notification != 0
-                                                ? InkWell(
-                                                    onTap: () {
-                                                      Navigator.pushNamed(
-                                                          context,
-                                                          '/notifications');
-                                                    },
-                                                    child: Badge(
-                                                        padding:
-                                                            EdgeInsets.all(5),
-                                                        badgeColor:
-                                                            Color(0xff017EFF),
-                                                        position: BadgePosition
-                                                            .topEnd(
-                                                                top: 1, end: 8),
-                                                        animationDuration:
-                                                            Duration(
-                                                                milliseconds:
-                                                                    300),
-                                                        animationType:
-                                                            BadgeAnimationType
-                                                                .fade,
-                                                        badgeContent: Text(
-                                                          total_notification
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 13),
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            padding: EdgeInsets.only(top: 80),
+                                            child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                  total_right_question,
+                                                                  style:
+                                                                      normalText11),
+                                                              Text(
+                                                                  "Correct Answers",
+                                                                  style:
+                                                                      normalText12),
+                                                            ]),
+                                                        SizedBox(
+                                                          width: 20,
                                                         ),
-                                                        child: IconButton(
+                                                        Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                  total_wrong_question,
+                                                                  style:
+                                                                      normalText11),
+                                                              Text(
+                                                                  "Incorrect Answers",
+                                                                  style:
+                                                                      normalText12),
+                                                            ]),
+                                                      ]),
+                                                  SizedBox(
+                                                    height: 12,
+                                                  ),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                  total_skip_question,
+                                                                  style:
+                                                                      normalText11),
+                                                              Text(
+                                                                  "Questions Skipped",
+                                                                  style:
+                                                                      normalText12),
+                                                            ]),
+                                                        SizedBox(
+                                                          width: 20,
+                                                        ),
+                                                        Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: <Widget>[
+                                                              Text(total_test,
+                                                                  style:
+                                                                      normalText11),
+                                                              Text(
+                                                                  "Tests Attempted",
+                                                                  style:
+                                                                      normalText12),
+                                                            ]),
+                                                      ]),
+                                                ]),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ]),
+                          ),
+                        ])
+                      : Container(
+                          child: Stack(
+                            children: <Widget>[
+                              new Container(
+                                height:
+                                    MediaQuery.of(context).size.height * .42,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: new BoxDecoration(
+                                    color: Color(0xff2E2A4A),
+                                    borderRadius: new BorderRadius.only(
+                                      bottomLeft: const Radius.circular(20.0),
+                                      bottomRight: const Radius.circular(20.0),
+                                    )),
+                              ),
+                              new Container(
+                                alignment: Alignment.topCenter,
+                                padding: new EdgeInsets.only(
+                                    top: MediaQuery.of(context).size.height *
+                                        .01,
+                                    right: 5.0,
+                                    left: 10.0),
+                                child: Container(
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 40, left: 5),
+                                          child: InkWell(
+                                            child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: <Widget>[
+                                                  IconButton(
+                                                    icon: Image(
+                                                      image: AssetImage(
+                                                          "assets/images/list_icon.png"),
+                                                      height: 25.0,
+                                                      width: 25.0,
+                                                      color: Colors.white,
+                                                    ),
+                                                    onPressed: () {
+                                                      _scaffoldKey.currentState
+                                                          .openDrawer();
+                                                    },
+                                                  ),
+                                                  total_notification != 0
+                                                      ? InkWell(
+                                                          onTap: () {
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                '/notifications');
+                                                          },
+                                                          child: Badge(
+                                                              padding: EdgeInsets
+                                                                  .all(5),
+                                                              badgeColor: Color(
+                                                                  0xff017EFF),
+                                                              position:
+                                                                  BadgePosition
+                                                                      .topEnd(
+                                                                          top:
+                                                                              1,
+                                                                          end:
+                                                                              8),
+                                                              animationDuration:
+                                                                  Duration(
+                                                                      milliseconds:
+                                                                          300),
+                                                              animationType:
+                                                                  BadgeAnimationType
+                                                                      .fade,
+                                                              badgeContent:
+                                                                  Text(
+                                                                total_notification
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        13),
+                                                              ),
+                                                              child: IconButton(
+                                                                icon:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .notifications,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  size: 24,
+                                                                ),
+                                                              )),
+                                                        )
+                                                      : IconButton(
                                                           icon: const Icon(
                                                             Icons.notifications,
                                                             color: Colors.white,
                                                             size: 24,
                                                           ),
-                                                        )),
-                                                  )
-                                                : IconButton(
-                                                    icon: const Icon(
-                                                      Icons.notifications,
-                                                      color: Colors.white,
-                                                      size: 24,
-                                                    ),
-                                                    onPressed: () {
+                                                          onPressed: () {
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                '/notifications');
+                                                          },
+                                                        ),
+                                                ]),
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    child: Column(children: <
+                                                        Widget>[
+                                                      Align(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Text(
+                                                          "Hello, " + _name,
+                                                          maxLines: 2,
+                                                          softWrap: true,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: normalText1,
+                                                        ),
+                                                      ),
+                                                      Align(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Text(
+                                                          email_id,
+                                                          style: normalText2,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10.0,
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
                                                       Navigator.pushNamed(
                                                           context,
-                                                          '/notifications');
+                                                          '/update-profile');
                                                     },
-                                                  ),
-                                          ]),
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Column(children: <Widget>[
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    "Hello, " + _name,
-                                                    maxLines: 2,
-                                                    softWrap: true,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: normalText1,
-                                                  ),
-                                                ),
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    email_id,
-                                                    style: normalText2,
-                                                  ),
-                                                ),
-                                              ]),
-                                            ),
-                                            SizedBox(
-                                              width: 10.0,
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                Navigator.pushNamed(
-                                                    context, '/update-profile');
-                                              },
-                                              child: Stack(children: [
-                                                Container(
-                                                  width: 70,
-                                                  height: 70,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Color(0xffffffff),
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          profile_image),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                    bottom: 0,
-                                                    right: 0,
-                                                    child: Container(
-                                                      height: 22,
-                                                      width: 22,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        border: Border.all(
-                                                          width: 1,
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .scaffoldBackgroundColor,
-                                                        ),
-                                                        color:
-                                                            Color(0xffFF317B),
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.edit,
-                                                        color: Colors.white,
-                                                        size: 12,
-                                                      ),
-                                                    )),
-                                              ]),
-                                            ),
-                                            SizedBox(
-                                              width: 10.0,
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 40.0,
-                                  ),
-                                  Container(
-                                    decoration: new BoxDecoration(
-                                        color: Color(0xffF9F9FB),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey,
-                                            offset: Offset(0.0, 1.0), //(x,y)
-                                            blurRadius: 3.0,
-                                          ),
-                                        ],
-                                        borderRadius: new BorderRadius.only(
-                                            topLeft:
-                                                const Radius.circular(15.0),
-                                            bottomLeft:
-                                                const Radius.circular(15.0),
-                                            bottomRight:
-                                                const Radius.circular(15.0),
-                                            topRight:
-                                                const Radius.circular(15.0))),
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 30.0),
-                                    padding: EdgeInsets.symmetric(vertical: 20),
-                                    child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 10.0,
-                                              ),
-                                              child: Text("My Progress",
-                                                  style: normalText9),
-                                            ),
-                                          ),
-                                          Container(
-                                            child: new Stack(
-                                              children: <Widget>[
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: Container(
-                                                    child:
-                                                        new CircularPercentIndicator(
-                                                      //  radius: 45.0,
-                                                      animation: true,
-                                                      animationDuration: 1200,
-                                                      radius: 120.0,
-                                                      lineWidth: 5.0,
-                                                      arcType: ArcType.HALF,
-                                                      percent: average / 100,
-                                                      backgroundColor:
-                                                          Color(0xffF2F2F2),
-
-                                                      center: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 5,
-                                                                right: 5,
-                                                                top: 30),
-                                                        child: Column(
-                                                            children: <Widget>[
-                                                              Text(
-                                                                  average.toString() +
-                                                                      "%",
-                                                                  style:
-                                                                      normalText10),
-                                                              Center(
-                                                                child: Text(
-                                                                    "Overall progress",
-                                                                    style:
-                                                                        normalText8),
-                                                              ),
-                                                            ]),
-                                                      ),
-                                                      linearGradient:
-                                                          LinearGradient(
-                                                        colors: [
-                                                          Color(0xff017EFF),
-                                                          Color(0xff017EFF),
-                                                        ],
-                                                        begin: FractionalOffset
-                                                            .topCenter,
-                                                        end: FractionalOffset
-                                                            .bottomCenter,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: Container(
-                                                    padding: EdgeInsets.only(
-                                                        top: 80),
-                                                    child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: <Widget>[
-                                                          Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .center,
-                                                              children: <
-                                                                  Widget>[
-                                                                Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .center,
-                                                                    children: <
-                                                                        Widget>[
-                                                                      Text(
-                                                                          total_right_question,
-                                                                          style:
-                                                                              normalText11),
-                                                                      Text(
-                                                                          "Correct Answers",
-                                                                          style:
-                                                                              normalText12),
-                                                                    ]),
-                                                                SizedBox(
-                                                                  width: 20,
-                                                                ),
-                                                                Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .center,
-                                                                    children: <
-                                                                        Widget>[
-                                                                      Text(
-                                                                          total_wrong_question,
-                                                                          style:
-                                                                              normalText11),
-                                                                      Text(
-                                                                          "Incorrect Answers",
-                                                                          style:
-                                                                              normalText12),
-                                                                    ]),
-                                                              ]),
-                                                          SizedBox(
-                                                            height: 12,
+                                                    child: Stack(children: [
+                                                      Container(
+                                                        width: 70,
+                                                        height: 70,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color:
+                                                              Color(0xffffffff),
+                                                          image:
+                                                              DecorationImage(
+                                                            image: NetworkImage(
+                                                                profile_image),
+                                                            fit: BoxFit.cover,
                                                           ),
-                                                          Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .center,
-                                                              children: <
-                                                                  Widget>[
-                                                                Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .center,
-                                                                    children: <
-                                                                        Widget>[
-                                                                      Text(
-                                                                          total_skip_question,
-                                                                          style:
-                                                                              normalText11),
-                                                                      Text(
-                                                                          "Questions Skipped",
-                                                                          style:
-                                                                              normalText12),
-                                                                    ]),
-                                                                SizedBox(
-                                                                  width: 20,
-                                                                ),
-                                                                Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .center,
-                                                                    children: <
-                                                                        Widget>[
-                                                                      Text(
-                                                                          total_test,
-                                                                          style:
-                                                                              normalText11),
-                                                                      Text(
-                                                                          "Tests Attempted",
-                                                                          style:
-                                                                              normalText12),
-                                                                    ]),
-                                                              ]),
-                                                        ]),
+                                                        ),
+                                                      ),
+                                                      Positioned(
+                                                          bottom: 0,
+                                                          right: 0,
+                                                          child: Container(
+                                                            height: 22,
+                                                            width: 22,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                              border:
+                                                                  Border.all(
+                                                                width: 1,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .scaffoldBackgroundColor,
+                                                              ),
+                                                              color: Color(
+                                                                  0xffFF317B),
+                                                            ),
+                                                            child: Icon(
+                                                              Icons.edit,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 12,
+                                                            ),
+                                                          )),
+                                                    ]),
                                                   ),
+                                                  SizedBox(
+                                                    width: 10.0,
+                                                  ),
+                                                ]),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 40.0,
+                                        ),
+                                        Container(
+                                          decoration: new BoxDecoration(
+                                              color: Color(0xffF9F9FB),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey,
+                                                  offset:
+                                                      Offset(0.0, 1.0), //(x,y)
+                                                  blurRadius: 3.0,
                                                 ),
                                               ],
-                                            ),
-                                          )
-                                        ]),
-                                  ),
-                                ]),
+                                              borderRadius:
+                                                  new BorderRadius.only(
+                                                      topLeft:
+                                                          const Radius.circular(
+                                                              15.0),
+                                                      bottomLeft:
+                                                          const Radius.circular(
+                                                              15.0),
+                                                      bottomRight:
+                                                          const Radius.circular(
+                                                              15.0),
+                                                      topRight:
+                                                          const Radius.circular(
+                                                              15.0))),
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 30.0),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 20),
+                                          child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                      horizontal: 10.0,
+                                                    ),
+                                                    child: Text("My Progress",
+                                                        style: normalText9),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  child: new Stack(
+                                                    children: <Widget>[
+                                                      Align(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Container(
+                                                          child:
+                                                              new CircularPercentIndicator(
+                                                            //  radius: 45.0,
+                                                            animation: true,
+                                                            animationDuration:
+                                                                1200,
+                                                            radius: 120.0,
+                                                            lineWidth: 5.0,
+                                                            arcType:
+                                                                ArcType.HALF,
+                                                            percent:
+                                                                average / 100,
+                                                            backgroundColor:
+                                                                Color(
+                                                                    0xffF2F2F2),
+
+                                                            center: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 5,
+                                                                      right: 5,
+                                                                      top: 30),
+                                                              child: Column(
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Text(
+                                                                        average.toString() +
+                                                                            "%",
+                                                                        style:
+                                                                            normalText10),
+                                                                    Center(
+                                                                      child: Text(
+                                                                          "Overall progress",
+                                                                          style:
+                                                                              normalText8),
+                                                                    ),
+                                                                  ]),
+                                                            ),
+                                                            linearGradient:
+                                                                LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                    0xff017EFF),
+                                                                Color(
+                                                                    0xff017EFF),
+                                                              ],
+                                                              begin:
+                                                                  FractionalOffset
+                                                                      .topCenter,
+                                                              end: FractionalOffset
+                                                                  .bottomCenter,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Align(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 80),
+                                                          child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
+                                                              children: <
+                                                                  Widget>[
+                                                                Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .center,
+                                                                    children: <
+                                                                        Widget>[
+                                                                      Column(
+                                                                          mainAxisAlignment: MainAxisAlignment
+                                                                              .center,
+                                                                          crossAxisAlignment: CrossAxisAlignment
+                                                                              .center,
+                                                                          children: <
+                                                                              Widget>[
+                                                                            Text(total_right_question,
+                                                                                style: normalText11),
+                                                                            Text("Correct Answers",
+                                                                                style: normalText12),
+                                                                          ]),
+                                                                      SizedBox(
+                                                                        width:
+                                                                            20,
+                                                                      ),
+                                                                      Column(
+                                                                          mainAxisAlignment: MainAxisAlignment
+                                                                              .center,
+                                                                          crossAxisAlignment: CrossAxisAlignment
+                                                                              .center,
+                                                                          children: <
+                                                                              Widget>[
+                                                                            Text(total_wrong_question,
+                                                                                style: normalText11),
+                                                                            Text("Incorrect Answers",
+                                                                                style: normalText12),
+                                                                          ]),
+                                                                    ]),
+                                                                SizedBox(
+                                                                  height: 12,
+                                                                ),
+                                                                Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .center,
+                                                                    children: <
+                                                                        Widget>[
+                                                                      Column(
+                                                                          mainAxisAlignment: MainAxisAlignment
+                                                                              .center,
+                                                                          crossAxisAlignment: CrossAxisAlignment
+                                                                              .center,
+                                                                          children: <
+                                                                              Widget>[
+                                                                            Text(total_skip_question,
+                                                                                style: normalText11),
+                                                                            Text("Questions Skipped",
+                                                                                style: normalText12),
+                                                                          ]),
+                                                                      SizedBox(
+                                                                        width:
+                                                                            20,
+                                                                      ),
+                                                                      Column(
+                                                                          mainAxisAlignment: MainAxisAlignment
+                                                                              .center,
+                                                                          crossAxisAlignment: CrossAxisAlignment
+                                                                              .center,
+                                                                          children: <
+                                                                              Widget>[
+                                                                            Text(total_test,
+                                                                                style: normalText11),
+                                                                            Text("Tests Attempted",
+                                                                                style: normalText12),
+                                                                          ]),
+                                                                    ]),
+                                                              ]),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ]),
+                                        ),
+                                      ]),
+                                ),
+                              )
+                            ],
                           ),
-                        )
-                      ],
-                    ),
-                  ),
+                        ),
                   SizedBox(
                     height: 20.0,
                   ),
-
                   Container(
                     padding:
                         EdgeInsets.only(left: 15, right: 20, bottom: 5, top: 5),
@@ -1726,8 +1706,6 @@ class _ChangePageState extends State<HomePage> {
                               fontSize: 16),
                         ),
                       ),
-
-
                     ]),
                   ),
                   const SizedBox(height: 10.0),
@@ -1742,36 +1720,32 @@ class _ChangePageState extends State<HomePage> {
                         Expanded(
                           child: InkWell(
                             onTap: () {
-                              /*  if(total_test=="0"){
-                                        Navigator.pushNamed(
-                                            context, '/chapters-list');
-                                      }
-                                     else if(total_test=="1") {
-                                        if (payment == "0") {
-                                          Navigator.pushNamed(context, '/plan',
-                                            arguments: <String, String>{
-                                              'order_id': order_id.toString(),
-                                              'signupid': user_id.toString(),
-                                              'mobile': _mobile,
-                                              'email': email_id,
-                                              'out': 'in'
-                                            },
-
-                                          );
-                                        }
-                                        else {
-                                          Navigator.pushNamed(
-                                              context, '/chapters-list');
-                                        }
-                                      }
-                                     else{
-                                        Navigator.pushNamed(
-                                            context, '/chapters-list');
-                                      }*/
-                              Navigator.pushNamed(
-                                context,
-                                '/create-test',
-                              );
+                              if (total_test == "0") {
+                                Navigator.pushNamed(context, '/chapters-list');
+                              } else if (total_test == "1") {
+                                if (payment == "0") {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/plan',
+                                    arguments: <String, String>{
+                                      'order_id': order_id.toString(),
+                                      'signupid': user_id.toString(),
+                                      'mobile': _mobile,
+                                      'email': email_id,
+                                      'out': 'in'
+                                    },
+                                  );
+                                } else {
+                                  Navigator.pushNamed(
+                                      context, '/chapters-list');
+                                }
+                              } else {
+                                Navigator.pushNamed(context, '/chapters-list');
+                              }
+                              // Navigator.pushNamed(
+                              //   context,
+                              //   '/create-test',
+                              // );
                             },
                             child: _buildWikiCategory(
                                 "assets/images/ordered_list.png",
@@ -1853,7 +1827,7 @@ class _ChangePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 16.0),
                   show_btm(),
-                 /* const SizedBox(height: 16.0),
+                  /* const SizedBox(height: 16.0),
                  Container(
                     padding: EdgeInsets.only(
                       left: 20,
@@ -1950,7 +1924,6 @@ class _ChangePageState extends State<HomePage> {
       ),
       child: CarouselSlider.builder(
           options: CarouselOptions(
-
             initialPage: 1,
             viewportFraction: 1.0,
             enableInfiniteScroll: true,
@@ -1967,8 +1940,7 @@ class _ChangePageState extends State<HomePage> {
             if (itemIndex == 1) {
               return InkWell(
                   onTap: () {
-                    Navigator.pushNamed(
-                        context, '/update-profile');
+                    Navigator.pushNamed(context, '/update-profile');
                   },
                   child: Container(
                     padding: EdgeInsets.only(
@@ -2120,22 +2092,20 @@ class _ChangePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-
                       ],
                     ),
                   ));
             } else {
               return InkWell(
-                  onTap: () {
-
-                  },
+                  onTap: () {},
                   child: Container(
                     padding: EdgeInsets.only(
                         top: 10, bottom: 1, left: 10, right: 10),
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: banner!=""?NetworkImage(banner):AssetImage(
-                            'assets/images/back.jpeg'),
+                        image: banner != ""
+                            ? NetworkImage(banner)
+                            : AssetImage('assets/images/back.jpeg'),
                         fit: BoxFit.fill,
                       ),
                       borderRadius: BorderRadius.only(

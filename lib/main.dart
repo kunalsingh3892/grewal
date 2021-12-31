@@ -14,6 +14,7 @@ import 'package:grewal/screens/chapter_overview.dart';
 import 'package:grewal/screens/chapter_select.dart';
 import 'package:grewal/screens/chapters_list.dart';
 import 'package:grewal/screens/create_mcq.dart';
+import 'package:grewal/screens/create_mcq_subjective.dart';
 
 import 'package:grewal/screens/create_ticket.dart';
 import 'package:grewal/screens/dashboard.dart';
@@ -21,6 +22,9 @@ import 'package:grewal/screens/dashboard.dart';
 import 'package:grewal/screens/home_page.dart';
 import 'package:grewal/screens/institute_test_list.dart';
 import 'package:grewal/screens/intro_screens.dart';
+import 'package:grewal/screens/mcq_level_testing/mcq_level_test.dart';
+import 'package:grewal/screens/mcq_level_testing/start_subjective_test.dart';
+import 'package:grewal/screens/mcq_level_testing/subjective_test.dart';
 import 'package:grewal/screens/model_dash.dart';
 import 'package:grewal/screens/mtp_list.dart';
 import 'package:grewal/screens/mts.dart';
@@ -595,6 +599,47 @@ class _MyAppState extends State<MyApp> {
                   settings: settings,
                 );
                 break;
+              case '/mcq-level-testing':
+                var obj = settings.arguments;
+                return PageTransition(
+                  child: MCQLevelTest(
+                    argument: obj,
+                  ),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/subjective_test':
+                var obj = settings.arguments;
+                return PageTransition(
+                  child: StartSubjectiveTest(
+                    argument: obj,
+                  ),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/create-subjective':
+                // var obj = settings.arguments;
+                return PageTransition(
+                  child: CreateSubjective(
+                      // argument: obj,
+                      ),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/start-subjective-test':
+                var obj = settings.arguments;
+                return PageTransition(
+                  child: StartSubjective(
+                    argument: obj,
+                  ),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+
               default:
                 return null;
             }

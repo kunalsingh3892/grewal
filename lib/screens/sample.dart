@@ -88,8 +88,7 @@ class _SettingsState extends State<ViewPerformanceChart> {
         enableDoubleTapZooming: true,
         enablePanning: true,
         enablePinching: true,
-        enableSelectionZooming: true
-    );
+        enableSelectionZooming: true);
     _getUser();
   }
 
@@ -117,9 +116,7 @@ class _SettingsState extends State<ViewPerformanceChart> {
   var easy;
   var diff;
   var avg;
-  List<_SalesData> datas = [
-
-  ];
+  List<_SalesData> datas = [];
   Future _getPerformanceData() async {
     Map<String, String> headers = {
       // 'Content-Type': 'application/json',
@@ -130,40 +127,100 @@ class _SettingsState extends State<ViewPerformanceChart> {
       new Uri.https(BASE_URL, API_PATH + "/test-performancenew"),
       body: {
         "user_id": user_id,
-        "test_id": type=="institute"?"":test_id,
-        "inst_test_id":type=="institute"?test_id:"",
+        "test_id": type == "institute" ? "" : test_id,
+        "inst_test_id": type == "institute" ? test_id : "",
       },
       headers: headers,
     );
-    print({
-      "user_id": user_id,
-      "test_id": type=="institute"?"":test_id,
-      "inst_test_id":type=="institute"?test_id:"",
-    });
+    print(response.body);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
 
       setState(() {
-
-
-      datas=[
-        _SalesData('1', double.parse(data['questionwiseanalytic'][0]['time_taken']),data['questionwiseanalytic'][0]['final_result'],data['questionwiseanalytic'][0]['short_diffculttype']),
-        _SalesData('2', double.parse(data['questionwiseanalytic'][1]['time_taken']),data['questionwiseanalytic'][1]['final_result'],data['questionwiseanalytic'][1]['short_diffculttype']),
-        _SalesData('3', double.parse(data['questionwiseanalytic'][2]['time_taken']),data['questionwiseanalytic'][2]['final_result'],data['questionwiseanalytic'][2]['short_diffculttype']),
-        _SalesData('4', double.parse(data['questionwiseanalytic'][3]['time_taken']),data['questionwiseanalytic'][3]['final_result'],data['questionwiseanalytic'][3]['short_diffculttype']),
-        _SalesData('5', double.parse(data['questionwiseanalytic'][4]['time_taken']),data['questionwiseanalytic'][4]['final_result'],data['questionwiseanalytic'][4]['short_diffculttype']),
-        _SalesData('6', double.parse(data['questionwiseanalytic'][5]['time_taken']),data['questionwiseanalytic'][5]['final_result'],data['questionwiseanalytic'][5]['short_diffculttype']),
-        _SalesData('7', double.parse(data['questionwiseanalytic'][6]['time_taken']),data['questionwiseanalytic'][6]['final_result'],data['questionwiseanalytic'][6]['short_diffculttype']),
-        _SalesData('8', double.parse(data['questionwiseanalytic'][7]['time_taken']),data['questionwiseanalytic'][7]['final_result'],data['questionwiseanalytic'][7]['short_diffculttype']),
-        _SalesData('9', double.parse(data['questionwiseanalytic'][8]['time_taken']),data['questionwiseanalytic'][8]['final_result'],data['questionwiseanalytic'][8]['short_diffculttype']),
-        _SalesData('10', double.parse(data['questionwiseanalytic'][9]['time_taken']),data['questionwiseanalytic'][9]['final_result'],data['questionwiseanalytic'][9]['short_diffculttype']),
-        _SalesData('11', double.parse(data['questionwiseanalytic'][10]['time_taken']),data['questionwiseanalytic'][10]['final_result'],data['questionwiseanalytic'][10]['short_diffculttype']),
-        _SalesData('12', double.parse(data['questionwiseanalytic'][11]['time_taken']),data['questionwiseanalytic'][11]['final_result'],data['questionwiseanalytic'][11]['short_diffculttype']),
-        _SalesData('13', double.parse(data['questionwiseanalytic'][12]['time_taken']),data['questionwiseanalytic'][12]['final_result'],data['questionwiseanalytic'][12]['short_diffculttype']),
-        _SalesData('14', double.parse(data['questionwiseanalytic'][13]['time_taken']),data['questionwiseanalytic'][13]['final_result'],data['questionwiseanalytic'][13]['short_diffculttype']),
-        _SalesData('15', double.parse(data['questionwiseanalytic'][14]['time_taken']),data['questionwiseanalytic'][14]['final_result'],data['questionwiseanalytic'][14]['short_diffculttype']),
-
-      ];
+        for (var i = 0; i < data['questionwiseanalytic'].length; i++) {
+          datas.add(_SalesData(
+              (i + 1).toString(),
+              double.parse(data['questionwiseanalytic'][i]['time_taken']),
+              data['questionwiseanalytic'][i]['final_result'],
+              data['questionwiseanalytic'][i]['short_diffculttype']));
+        }
+        // datas = [
+        //   _SalesData(
+        //       '1',
+        //       double.parse(data['questionwiseanalytic'][0]['time_taken']),
+        //       data['questionwiseanalytic'][0]['final_result'],
+        //       data['questionwiseanalytic'][0]['short_diffculttype']),
+        //   _SalesData(
+        //       '2',
+        //       double.parse(data['questionwiseanalytic'][1]['time_taken']),
+        //       data['questionwiseanalytic'][1]['final_result'],
+        //       data['questionwiseanalytic'][1]['short_diffculttype']),
+        //   _SalesData(
+        //       '3',
+        //       double.parse(data['questionwiseanalytic'][2]['time_taken']),
+        //       data['questionwiseanalytic'][2]['final_result'],
+        //       data['questionwiseanalytic'][2]['short_diffculttype']),
+        //   _SalesData(
+        //       '4',
+        //       double.parse(data['questionwiseanalytic'][3]['time_taken']),
+        //       data['questionwiseanalytic'][3]['final_result'],
+        //       data['questionwiseanalytic'][3]['short_diffculttype']),
+        //   _SalesData(
+        //       '5',
+        //       double.parse(data['questionwiseanalytic'][4]['time_taken']),
+        //       data['questionwiseanalytic'][4]['final_result'],
+        //       data['questionwiseanalytic'][4]['short_diffculttype']),
+        //   _SalesData(
+        //       '6',
+        //       double.parse(data['questionwiseanalytic'][5]['time_taken']),
+        //       data['questionwiseanalytic'][5]['final_result'],
+        //       data['questionwiseanalytic'][5]['short_diffculttype']),
+        //   _SalesData(
+        //       '7',
+        //       double.parse(data['questionwiseanalytic'][6]['time_taken']),
+        //       data['questionwiseanalytic'][6]['final_result'],
+        //       data['questionwiseanalytic'][6]['short_diffculttype']),
+        //   _SalesData(
+        //       '8',
+        //       double.parse(data['questionwiseanalytic'][7]['time_taken']),
+        //       data['questionwiseanalytic'][7]['final_result'],
+        //       data['questionwiseanalytic'][7]['short_diffculttype']),
+        //   _SalesData(
+        //       '9',
+        //       double.parse(data['questionwiseanalytic'][8]['time_taken']),
+        //       data['questionwiseanalytic'][8]['final_result'],
+        //       data['questionwiseanalytic'][8]['short_diffculttype']),
+        //   _SalesData(
+        //       '10',
+        //       double.parse(data['questionwiseanalytic'][9]['time_taken']),
+        //       data['questionwiseanalytic'][9]['final_result'],
+        //       data['questionwiseanalytic'][9]['short_diffculttype']),
+        // _SalesData(
+        //     '11',
+        //     double.parse(data['questionwiseanalytic'][10]['time_taken']),
+        //     data['questionwiseanalytic'][10]['final_result'],
+        //     data['questionwiseanalytic'][10]['short_diffculttype']),
+        // _SalesData(
+        //     '12',
+        //     double.parse(data['questionwiseanalytic'][11]['time_taken']),
+        //     data['questionwiseanalytic'][11]['final_result'],
+        //     data['questionwiseanalytic'][11]['short_diffculttype']),
+        // _SalesData(
+        //     '13',
+        //     double.parse(data['questionwiseanalytic'][12]['time_taken']),
+        //     data['questionwiseanalytic'][12]['final_result'],
+        //     data['questionwiseanalytic'][12]['short_diffculttype']),
+        // _SalesData(
+        //     '14',
+        //     double.parse(data['questionwiseanalytic'][13]['time_taken']),
+        //     data['questionwiseanalytic'][13]['final_result'],
+        //     data['questionwiseanalytic'][13]['short_diffculttype']),
+        // _SalesData(
+        //     '15',
+        //     double.parse(data['questionwiseanalytic'][14]['time_taken']),
+        //     data['questionwiseanalytic'][14]['final_result'],
+        //     data['questionwiseanalytic'][14]['short_diffculttype']),
+        // ];
       });
       /* chartData = [
         ChartData('Easy', double.parse(data['easy_right_per'].toString())),
@@ -180,6 +237,7 @@ class _SettingsState extends State<ViewPerformanceChart> {
     return FutureBuilder(
       future: _chapterData,
       builder: (context, snapshot) {
+        print(snapshot.data.toString());
         if (snapshot.hasData) {
           if (snapshot.data != null) {
             return Column(mainAxisSize: MainAxisSize.min, children: [
@@ -197,12 +255,12 @@ class _SettingsState extends State<ViewPerformanceChart> {
                   padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 20),
                   child: Column(children: [
                     Container(
-                      child: Text("Question Wise Time Analysis", style: normalText6),
+                      child: Text("Question Wise Time Analysis",
+                          style: normalText6),
                     ),
                     SizedBox(
                       height: 10,
                     ),
-
                     Expanded(
                       child: SfCartesianChart(
                           primaryXAxis: CategoryAxis(),
@@ -214,24 +272,29 @@ class _SettingsState extends State<ViewPerformanceChart> {
                           series: <ChartSeries<_SalesData, String>>[
                             BarSeries<_SalesData, String>(
                                 dataSource: datas,
-                                xValueMapper: (_SalesData sales, _) => sales.year,
-                                yValueMapper: (_SalesData sales, _) => sales.sales,
-                                xAxisName:"Questions",
-                                yAxisName:"Time(s)",
+                                xValueMapper: (_SalesData sales, _) =>
+                                    sales.year,
+                                yValueMapper: (_SalesData sales, _) =>
+                                    sales.sales,
+                                xAxisName: "Questions",
+                                yAxisName: "Time(s)",
                                 name: 'Time(s)',
                                 trackPadding: 10,
-
                                 trackColor: Color(0xff2E2A4A),
-                                dataLabelSettings: DataLabelSettings(isVisible: true),
-                                dataLabelMapper: (_SalesData sales, _) => sales.short_diffculttype,
-                                pointColorMapper: (_SalesData sales, _) =>sales.status=="W"?Color(0xffFF3E3E):Color(0xff57E56E),
-                                color:Color(0xffFF3E3E),
+                                dataLabelSettings:
+                                    DataLabelSettings(isVisible: true),
+                                dataLabelMapper: (_SalesData sales, _) =>
+                                    sales.short_diffculttype,
+                                pointColorMapper: (_SalesData sales, _) =>
+                                    sales.status == "W"
+                                        ? Color(0xffFF3E3E)
+                                        : Color(0xff57E56E),
+                                color: Color(0xffFF3E3E),
                                 enableTooltip: true,
-
-                                borderRadius: BorderRadius.all(Radius.circular(15)))
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15)))
                           ]),
                     ),
-
                     Container(
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -252,9 +315,7 @@ class _SettingsState extends State<ViewPerformanceChart> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text("(E) Easy", style: normalText10),
-
                             Text("(M) Medium", style: normalText10),
-
                             Text("(D) Difficult", style: normalText10)
                           ]),
                     ),
@@ -268,39 +329,39 @@ class _SettingsState extends State<ViewPerformanceChart> {
         } else {
           return Center(
               child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: SpinKitFadingCube(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
-                        ),
-                      );
-                    },
-                    size: 30.0,
-                  ),
-                ),
-              ));
+            alignment: Alignment.center,
+            child: Container(
+              child: SpinKitFadingCube(
+                itemBuilder: (_, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color:
+                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+                    ),
+                  );
+                },
+                size: 30.0,
+              ),
+            ),
+          ));
         }
       },
     );
   }
 
-  Color colorName(){
+  Color colorName() {
     Color color;
 
-    for(int i=0;i<datas.length;i++){
-      if(datas[i].status=="W"){
-        color=Color(0xff57E56E);
-      }
-      else{
-        color=Color(0xffFF3E3E);
+    for (int i = 0; i < datas.length; i++) {
+      if (datas[i].status == "W") {
+        color = Color(0xff57E56E);
+      } else {
+        color = Color(0xffFF3E3E);
       }
     }
     return color;
-
   }
+
   Widget _emptyOrders() {
     return Center(
       child: Container(
@@ -461,8 +522,9 @@ class ChartData {
   final String name;
   final double value;
 }
+
 class _SalesData {
-  _SalesData(this.year, this.sales,this.status,this.short_diffculttype);
+  _SalesData(this.year, this.sales, this.status, this.short_diffculttype);
 
   final String year;
   final double sales;

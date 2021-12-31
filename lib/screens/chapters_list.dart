@@ -10,7 +10,6 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart';
 
-
 class ChapterList extends StatefulWidget {
   final String modal;
 
@@ -34,9 +33,9 @@ class _SettingsState extends State<ChapterList> {
   String profile_image = '';
   List<UserDetails> _userDetails = [];
   List<UserDetails> _searchResult = [];
-  String user_id="";
-  String class_id="";
-  String board_id="";
+  String user_id = "";
+  String class_id = "";
+  String board_id = "";
   String payment = '';
   String total_test_quetion = '';
   String _mobile = "";
@@ -47,10 +46,8 @@ class _SettingsState extends State<ChapterList> {
   void initState() {
     super.initState();
     _getUser();
-
-
-
   }
+
   Widget _networkImage1(url) {
     return Container(
       margin: EdgeInsets.only(
@@ -66,10 +63,10 @@ class _SettingsState extends State<ChapterList> {
           image: NetworkImage(profile_image),
           fit: BoxFit.cover,
         ),
-
       ),
     );
   }
+
   _getUser() async {
     Preference().getPreferences().then((prefs) {
       setState(() {
@@ -83,7 +80,7 @@ class _SettingsState extends State<ChapterList> {
         total_test_quetion = prefs.getString('total_test').toString();
         payment = prefs.getString('payment').toString();
         api_token = prefs.getString('api_token').toString();
-        _chapterData= _getChapterData();
+        _chapterData = _getChapterData();
       });
     });
   }
@@ -93,32 +90,32 @@ class _SettingsState extends State<ChapterList> {
       image: NetworkImage(url),
     );
   }
+
   List<bool> showExpand = new List();
   Future _getChapterData() async {
     _searchResult.clear();
     _userDetails.clear();
     completeController.text = "";
     Map<String, String> headers = {
-     // 'Content-Type': 'application/json',
+      // 'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Bearer $api_token',
     };
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/chapter"),
       body: {
-        "board_id":board_id,
-        "class_id":class_id,
-        "subject_id":"8",
-        "student_id":user_id
+        "board_id": board_id,
+        "class_id": class_id,
+        "subject_id": "8",
+        "student_id": user_id
       },
       headers: headers,
-
     );
     print({
-      "board_id":board_id,
-      "class_id":class_id,
-      "subject_id":"8",
-      "student_id":user_id
+      "board_id": board_id,
+      "class_id": class_id,
+      "subject_id": "8",
+      "student_id": user_id
     });
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
@@ -185,32 +182,32 @@ class _SettingsState extends State<ChapterList> {
       future: _chapterData,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          if(snapshot.data['Response'].length!=0) {
-            return  _searchResult.length != 0 ||
-                completeController.text.isNotEmpty
-                ?Container(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  primary: false,
-                  itemCount: _searchResult.length,
-                  itemBuilder: (context, index) {
-                    return  InkWell(
-                      onTap: (){
-                        setState(() {
-                          showExpand[index]=!showExpand[index];
-                        });
-
-                      },
-                      child: Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 15.0,vertical: 10),
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                   /* Container(
+          if (snapshot.data['Response'].length != 0) {
+            return _searchResult.length != 0 ||
+                    completeController.text.isNotEmpty
+                ? Container(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        primary: false,
+                        itemCount: _searchResult.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                showExpand[index] = !showExpand[index];
+                              });
+                            },
+                            child: Column(children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15.0, vertical: 10),
+                                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      /* Container(
                                       //  padding: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
                                       height: 60,
                                       width: 60,
@@ -221,7 +218,7 @@ class _SettingsState extends State<ChapterList> {
                                               bottomLeft: const Radius.circular(5.0),
                                               bottomRight: const Radius.circular(5.0),
                                               topRight: const Radius.circular(5.0))),
-                                      child: *//*_networkImage(snapshot.data['url']+snapshot.data['Response'][index]['image']),*//*
+                                      child: */ /*_networkImage(snapshot.data['url']+snapshot.data['Response'][index]['image']),*/ /*
                                       Center(
                                         child: Text(
                                           _searchResult[index].chapter_name[0]
@@ -234,86 +231,96 @@ class _SettingsState extends State<ChapterList> {
                                     SizedBox(
                                       width: 12.0,
                                     ),*/
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: <Widget>[
-
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .spaceBetween,
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Text(
+                                                      _searchResult[index]
+                                                          .chapter_name,
+                                                      maxLines: 3,
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: normalText5),
+                                                ),
+                                                showExpand[index]
+                                                    ? Icon(
+                                                        Icons
+                                                            .arrow_drop_up_outlined,
+                                                        color:
+                                                            Color(0xff017EFF),
+                                                        size: 24,
+                                                      )
+                                                    : Icon(
+                                                        Icons.arrow_drop_down,
+                                                        color:
+                                                            Color(0xff017EFF),
+                                                        size: 24,
+                                                      ),
+                                              ],
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                  _searchResult[index]
+                                                      .short_description,
+                                                  maxLines: 2,
+                                                  softWrap: true,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: normalText7),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                              showExpand[index]
+                                  ? Column(
+                                      children: [
+                                        const SizedBox(height: 5),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15,
+                                              right: 15,
+                                              bottom: 5,
+                                              top: 5),
+                                          child: Row(
                                             children: <Widget>[
                                               Expanded(
-                                                child: Text(
-                                                    _searchResult[index].chapter_name,
-                                                    maxLines: 3,
-                                                    softWrap: true,
-                                                    overflow:
-                                                    TextOverflow.ellipsis,
-                                                    style: normalText5
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/chapter-overview',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'chapter_id':
+                                                            _searchResult[index]
+                                                                .id
+                                                                .toString(),
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/video_icon.png",
+                                                      "Chapter Overview",
+                                                      Color(0xff415EB6),
+                                                      Color(0xffEEF7FE)),
                                                 ),
                                               ),
-
-                                              showExpand[index]?Icon(
-                                                Icons.arrow_drop_up_outlined,
-                                                color: Color(0xff017EFF),
-                                                size: 24,
-                                              ): Icon(
-                                                Icons.arrow_drop_down,
-                                                color: Color(0xff017EFF),
-                                                size: 24,
-                                              ),
-                                            ],
-                                          ),
-
-                                          Container(
-                                            child: Text(
-                                                _searchResult[index].short_description,
-                                                maxLines: 2,
-                                                softWrap: true,
-                                                overflow:
-                                                TextOverflow.ellipsis,
-                                                style: normalText7
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ]
-                              ),
-                            ),
-
-                            showExpand[index]? Column(children: [
-                              const SizedBox(height: 5),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5, top: 5),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/chapter-overview',
-                                            arguments: <String, String>{
-                                              'chapter_id':  _searchResult[index].id.toString(),
-                                            },
-                                          );
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/video_icon.png",
-                                            "Chapter Overview",
-                                            Color(0xff415EB6),
-                                            Color(0xffEEF7FE)),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16.0),
-                                   /* Expanded(
+                                              const SizedBox(width: 16.0),
+                                              /* Expanded(
                                       child: InkWell(
                                         onTap: () {
                                           Navigator.pushNamed(
@@ -332,69 +339,115 @@ class _SettingsState extends State<ChapterList> {
                                       ),
                                     ),*/
 
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/test-list',
-                                            arguments: <String, String>{
-                                              'chapter_id':  _searchResult[index].id.toString(),
-                                              'chapter_name':  _searchResult[index].chapter_name.toString(),
-                                              'type':"inside"
-                                            },
-                                          );
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(context,
+                                                        '/mcq-level-testing',
+                                                        arguments: <String,
+                                                            String>{
+                                                          'chapter_id':
+                                                              _searchResult[
+                                                                      index]
+                                                                  .id
+                                                                  .toString(),
+                                                        });
+                                                    // Navigator.pushNamed(
+                                                    //   context,
+                                                    //   '/test-list',
+                                                    //   arguments: <String,
+                                                    //       String>{
+                                                    //     'chapter_id':
+                                                    //         _searchResult[index]
+                                                    //             .id
+                                                    //             .toString(),
+                                                    //     'chapter_name':
+                                                    //         _searchResult[index]
+                                                    //             .chapter_name
+                                                    //             .toString(),
+                                                    //     'type': "inside"
+                                                    //   },
+                                                    // );
+                                                    // Navigator.pushNamed(context,
+                                                    //     '/mcq-level-testing',
+                                                    //     arguments: {
+                                                    //       "chapter_id":
+                                                    //           _searchResult[
+                                                    //                   index]
+                                                    //               .id
+                                                    //               .toString()
+                                                    //     });
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/video_icon.png",
+                                                      "MCQ's",
+                                                      Color(0xffAC4141),
+                                                      Color(0xffFEEEEE)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10.0),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15,
+                                              right: 15,
+                                              bottom: 5,
+                                              top: 5),
+                                          child: Row(
+                                            children: <Widget>[
+                                              //  const SizedBox(width: 16.0),
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/ticket-list',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'chapter_id':
+                                                            _searchResult[index]
+                                                                .id
+                                                                .toString(),
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/video_icon.png",
+                                                      "Ask your Queries",
+                                                      Color(0xff38CD8B),
+                                                      Color(0xffE9FFF5)),
+                                                ),
+                                              ),
 
-
-
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/video_icon.png",
-                                            "MCQ's",
-                                            Color(0xffAC4141),
-                                            Color(0xffFEEEEE)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 10.0),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5, top: 5),
-                                child: Row(
-                                  children: <Widget>[
-
-                                  //  const SizedBox(width: 16.0),
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: (){
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/ticket-list',
-                                            arguments: <String, String>{
-                                              'chapter_id':  _searchResult[index].id.toString(),
-                                            },
-                                          );
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/video_icon.png",
-                                            "Ask your Queries",
-                                            Color(0xff38CD8B),
-                                            Color(0xffE9FFF5)),
-                                      ),
-                                    ),
-
-                                    const SizedBox(width: 16.0),
-                                    Expanded(
-                                      child: Container(),
-                                    ),
-
-
-                                  ],
-                                ),
-                              ),
-                              /* const SizedBox(height: 10.0),
+                                              const SizedBox(width: 16.0),
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/subjective_test',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'chapter_id':
+                                                            _searchResult[index]
+                                                                .id
+                                                                .toString(),
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/support.png",
+                                                      "Subjective Test",
+                                                      Color(0xff38CD8B),
+                                                      Color(0xffE9FFF5)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        /* const SizedBox(height: 10.0),
                               Container(
                                 padding: EdgeInsets.only(
                                     left: 15, right: 15, bottom: 5, top: 5),
@@ -442,44 +495,43 @@ class _SettingsState extends State<ChapterList> {
                                   ],
                                 ),
                               ),*/
-                              const SizedBox(height: 5.0),
-                            ],):Container(),
-                            new Container(
-                                padding: EdgeInsets.only(left: 15,right: 10),
-                                child: Divider(
-                                  color: Color(0xffE8E8E8),
-                                  thickness: 1,
-                                )),
-                          ]
-                      ),
-                    );
-                  }
-
-              ),
-            ):
-            Container(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  primary: false,
-                  itemCount: snapshot.data['Response'].length,
-                  itemBuilder: (context, index) {
-                    return  InkWell(
-                      onTap: (){
-                        setState(() {
-                          showExpand[index]=!showExpand[index];
-                        });
-
-                      },
-                      child: Column(
-                          children: <Widget>[
-                            Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 15.0,vertical: 10),
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                  child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                       /* Container(
+                                        const SizedBox(height: 5.0),
+                                      ],
+                                    )
+                                  : Container(),
+                              new Container(
+                                  padding: EdgeInsets.only(left: 15, right: 10),
+                                  child: Divider(
+                                    color: Color(0xffE8E8E8),
+                                    thickness: 1,
+                                  )),
+                            ]),
+                          );
+                        }),
+                  )
+                : Container(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        primary: false,
+                        itemCount: snapshot.data['Response'].length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                showExpand[index] = !showExpand[index];
+                              });
+                            },
+                            child: Column(children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15.0, vertical: 10),
+                                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      /* Container(
                                         //  padding: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
                                           height: 60,
                                           width: 60,
@@ -490,7 +542,7 @@ class _SettingsState extends State<ChapterList> {
                                                   bottomLeft: const Radius.circular(5.0),
                                                   bottomRight: const Radius.circular(5.0),
                                                   topRight: const Radius.circular(5.0))),
-                                       child: *//*_networkImage(snapshot.data['url']+snapshot.data['Response'][index]['image']),*//*
+                                       child: */ /*_networkImage(snapshot.data['url']+snapshot.data['Response'][index]['image']),*/ /*
                                           Center(
                                             child: Text(
                                               snapshot
@@ -504,44 +556,48 @@ class _SettingsState extends State<ChapterList> {
                                         SizedBox(
                                           width: 12.0,
                                         ),*/
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .start,
-                                            children: <Widget>[
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Text(
+                                                      snapshot.data['Response']
+                                                              [index]
+                                                          ['chapter_name'],
+                                                      maxLines: 3,
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: normalText5),
+                                                ),
+                                                showExpand[index]
+                                                    ? Icon(
+                                                        Icons
+                                                            .arrow_drop_up_outlined,
+                                                        color:
+                                                            Color(0xff017EFF),
+                                                        size: 24,
+                                                      )
+                                                    : Icon(
+                                                        Icons.arrow_drop_down,
+                                                        color:
+                                                            Color(0xff017EFF),
+                                                        size: 24,
+                                                      ),
+                                              ],
+                                            ),
 
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment
-                                                    .spaceBetween,
-                                                children: <Widget>[
-                                                  Expanded(
-                                                    child: Text(
-                                                      snapshot
-                                                          .data['Response'][index]['chapter_name'],
-                                                        maxLines: 3,
-                                                        softWrap: true,
-                                                        overflow:
-                                                        TextOverflow.ellipsis,
-                                                        style: normalText5
-                                                    ),
-                                                  ),
-
-                                                  showExpand[index]?Icon(
-                                                    Icons.arrow_drop_up_outlined,
-                                                    color: Color(0xff017EFF),
-                                                    size: 24,
-                                                  ): Icon(
-                                                    Icons.arrow_drop_down,
-                                                    color: Color(0xff017EFF),
-                                                    size: 24,
-                                                  ),
-                                                ],
-                                              ),
-
-                                             /* snapshot
+                                            /* snapshot
                                                   .data['Response'][index]['short_description']!=null? Container(
                                                 child: Text(
                                                     snapshot
@@ -562,41 +618,47 @@ class _SettingsState extends State<ChapterList> {
                                                     style: normalText7
                                                 ),
                                               ),*/
-                                            ],
-                                          ),
+                                          ],
                                         ),
-                                      ]
-                                  ),
-                                ),
-
-                            showExpand[index]? Column(children: [
-                              const SizedBox(height: 5),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5, top: 5),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/chapter-overview',
-                                            arguments: <String, String>{
-                                              'chapter_id': snapshot
-                                                  .data['Response'][index]['id'].toString(),
-                                            },
-                                          );
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/ordered_list.png",
-                                            "Chapter Overview",
-                                            Color(0xff415EB6),
-                                            Color(0xffEEF7FE)),
                                       ),
-                                    ),
-                                    const SizedBox(width: 16.0),
-                                  /*  Expanded(
+                                    ]),
+                              ),
+                              showExpand[index]
+                                  ? Column(
+                                      children: [
+                                        const SizedBox(height: 5),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15,
+                                              right: 15,
+                                              bottom: 5,
+                                              top: 5),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/chapter-overview',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'chapter_id': snapshot
+                                                            .data['Response']
+                                                                [index]['id']
+                                                            .toString(),
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/ordered_list.png",
+                                                      "Chapter Overview",
+                                                      Color(0xff415EB6),
+                                                      Color(0xffEEF7FE)),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16.0),
+                                              /*  Expanded(
                                       child: InkWell(
                                         onTap: () {
                                           Navigator.pushNamed(
@@ -616,67 +678,106 @@ class _SettingsState extends State<ChapterList> {
                                       ),
                                     ),
 */
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/test-list',
-                                            arguments: <String, String>{
-                                              'chapter_id': snapshot.data['Response'][index]['id'].toString(),
-                                              'chapter_name': snapshot.data['Response'][index]['chapter_name'].toString(),
-                                              'type':"inside"
-                                            },
-                                          );
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/mcq.png",
-                                            "MCQ's",
-                                            Color(0xffAC4141),
-                                            Color(0xffFEEEEE)),
-                                      ),
-                                    ),
-
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 10.0),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5, top: 5),
-                                child: Row(
-                                  children: <Widget>[
-
-
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: (){
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/ticket-list',
-                                            arguments: <String, String>{
-                                              'chapter_id': snapshot.data['Response'][index]['id'].toString(),
-
-                                            },
-                                          );
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/support.png",
-                                            "Ask your Queries",
-                                            Color(0xff38CD8B),
-                                            Color(0xffE9FFF5)),
-                                      ),
-                                    ),
-                                   const SizedBox(width: 16.0),
-                                    Expanded(
-                                      child: Container(),
-                                    ),
-
-                                  ],
-                                ),
-                              ),
-                             /* const SizedBox(height: 10.0),
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    // Navigator.pushNamed(
+                                                    //   context,
+                                                    //   '/test-list',
+                                                    //   arguments: <String,
+                                                    //       String>{
+                                                    //     'chapter_id': snapshot
+                                                    //         .data['Response']
+                                                    //             [index]['id']
+                                                    //         .toString(),
+                                                    //     'chapter_name': snapshot
+                                                    //         .data['Response']
+                                                    //             [index]
+                                                    //             ['chapter_name']
+                                                    //         .toString(),
+                                                    //     'type': "inside"
+                                                    //   },
+                                                    // );
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/mcq-level-testing',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'chapter_id': snapshot
+                                                            .data['Response']
+                                                                [index]['id']
+                                                            .toString(),
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/mcq.png",
+                                                      "MCQ's",
+                                                      Color(0xffAC4141),
+                                                      Color(0xffFEEEEE)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10.0),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15,
+                                              right: 15,
+                                              bottom: 5,
+                                              top: 5),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/ticket-list',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'chapter_id': snapshot
+                                                            .data['Response']
+                                                                [index]['id']
+                                                            .toString(),
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/support.png",
+                                                      "Ask your Queries",
+                                                      Color(0xff38CD8B),
+                                                      Color(0xffE9FFF5)),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16.0),
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/subjective_test',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'chapter_id': snapshot
+                                                            .data['Response']
+                                                                [index]['id']
+                                                            .toString(),
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/support.png",
+                                                      "Subjective Test",
+                                                      Color(0xff38CD8B),
+                                                      Color(0xffE9FFF5)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        /* const SizedBox(height: 10.0),
                               Container(
                                 padding: EdgeInsets.only(
                                     left: 15, right: 15, bottom: 5, top: 5),
@@ -724,43 +825,41 @@ class _SettingsState extends State<ChapterList> {
                                   ],
                                 ),
                               ),*/
-                              const SizedBox(height: 5.0),
-                            ],):Container(),
-                            new Container(
-                                padding: EdgeInsets.only(left: 15,right: 10),
-                                child: Divider(
-                                  color: Color(0xffE8E8E8),
-                                  thickness: 1,
-                                )),
-                          ]
-                      ),
-                    );
-                  }
-
-              ),
-            );
-          }
-          else{
+                                        const SizedBox(height: 5.0),
+                                      ],
+                                    )
+                                  : Container(),
+                              new Container(
+                                  padding: EdgeInsets.only(left: 15, right: 10),
+                                  child: Divider(
+                                    color: Color(0xffE8E8E8),
+                                    thickness: 1,
+                                  )),
+                            ]),
+                          );
+                        }),
+                  );
+          } else {
             return _emptyOrders();
           }
-
-        }  else {
+        } else {
           return Center(
               child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: SpinKitFadingCube(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
-                        ),
-                      );
-                    },
-                    size: 30.0,
-                  ),
-                ),
-              ));
+            alignment: Alignment.center,
+            child: Container(
+              child: SpinKitFadingCube(
+                itemBuilder: (_, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color:
+                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+                    ),
+                  );
+                },
+                size: 30.0,
+              ),
+            ),
+          ));
         }
       },
     );
@@ -770,156 +869,156 @@ class _SettingsState extends State<ChapterList> {
     return Center(
       child: Container(
           child: Text(
-            'NO RECORDS FOUND!',
-            style: TextStyle(fontSize: 20, letterSpacing: 1, color: Color(0xff2E2A4A)),
-          )),
+        'NO RECORDS FOUND!',
+        style:
+            TextStyle(fontSize: 20, letterSpacing: 1, color: Color(0xff2E2A4A)),
+      )),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.white,
-        appBar: widget.modal != ""?AppBar(
-          elevation: 0.0,
-          leading: widget.modal != ""? Row(children: <Widget>[
-            IconButton(
-              icon: Image(
-                image: AssetImage("assets/images/Icon.png"),
-                height: 20.0,
-                width: 10.0,
-                color: Color(0xff2E2A4A),
-              ),
-              onPressed: (){
-                Navigator.of(context).pop(false);
-              },
-            ),
-
-          ]):Row(children: <Widget>[
-            IconButton(
-              icon: Image(
-                image: AssetImage("assets/images/list_icon.png"),
-                height: 20.0,
-                width: 10.0,
-                color: Color(0xff2E2A4A),
-              ),
-              onPressed: (){
-                Navigator.of(context).pop(false);
-              },
-            ),
-
-          ]),
-          centerTitle: true,
-          title: Container(
-            child: Text("List of Chapters", style: normalText6),
-          ),
-          flexibleSpace: Container(
-            height: 100,
-            color: Color(0xffffffff),
-          ),
-          actions: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 30,
-                child: _networkImage1(
-                  profile_image,
+        backgroundColor: Colors.white,
+        appBar: widget.modal != ""
+            ? AppBar(
+                elevation: 0.0,
+                leading: widget.modal != ""
+                    ? Row(children: <Widget>[
+                        IconButton(
+                          icon: Image(
+                            image: AssetImage("assets/images/Icon.png"),
+                            height: 20.0,
+                            width: 10.0,
+                            color: Color(0xff2E2A4A),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                        ),
+                      ])
+                    : Row(children: <Widget>[
+                        IconButton(
+                          icon: Image(
+                            image: AssetImage("assets/images/list_icon.png"),
+                            height: 20.0,
+                            width: 10.0,
+                            color: Color(0xff2E2A4A),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                        ),
+                      ]),
+                centerTitle: true,
+                title: Container(
+                  child: Text("List of Chapters", style: normalText6),
                 ),
+                flexibleSpace: Container(
+                  height: 100,
+                  color: Color(0xffffffff),
+                ),
+                actions: <Widget>[
+                  Align(
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 30,
+                      child: _networkImage1(
+                        profile_image,
+                      ),
+                    ),
+                  ),
+                ],
+                iconTheme: IconThemeData(
+                  color: Colors.white, //change your color here
+                ),
+                backgroundColor: Colors.transparent,
+              )
+            : null,
+        body: ModalProgressHUD(
+          inAsyncCall: isLoading,
+          child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
               ),
-            ),
-          ],
-          iconTheme: IconThemeData(
-            color: Colors.white, //change your color here
-          ),
-          backgroundColor: Colors.transparent,
-        ):null,
-      body:ModalProgressHUD(
-        inAsyncCall: isLoading,
-        child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
-            child: Container(
-              margin: EdgeInsets.symmetric(
-                horizontal: deviceSize.width * 0.02,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-
-                  Container(
-                    padding: EdgeInsets.only(left: 15, right: 15, top: 5),
-                    margin: EdgeInsets.only( bottom: 10),
-                    child: Row(children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: new TextField(
-                              enabled: true,
-                              controller: completeController,
-                              decoration: InputDecoration(
-                                fillColor: Color(0xfff9f9fb),
-                                filled: true,
-                                contentPadding:
-                                EdgeInsets.fromLTRB(10, 30, 30, 0),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  borderSide: BorderSide(
-                                    color: Color(0xfff9f9fb),
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: deviceSize.width * 0.02,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(left: 15, right: 15, top: 5),
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: Row(children: <Widget>[
+                        Expanded(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: new TextField(
+                                enabled: true,
+                                controller: completeController,
+                                decoration: InputDecoration(
+                                  fillColor: Color(0xfff9f9fb),
+                                  filled: true,
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10, 30, 30, 0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderSide: BorderSide(
+                                      color: Color(0xfff9f9fb),
+                                    ),
                                   ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  borderSide: BorderSide(
-                                    color: Color(0xfff9f9fb),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderSide: BorderSide(
+                                      color: Color(0xfff9f9fb),
+                                    ),
                                   ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  borderSide: BorderSide(
-                                    color: Color(0xfff9f9fb),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderSide: BorderSide(
+                                      color: Color(0xfff9f9fb),
+                                    ),
                                   ),
-                                ),
-                                counterText: "",
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  borderSide: BorderSide(
-                                    color: Color(0xfff9f9fb),
+                                  counterText: "",
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderSide: BorderSide(
+                                      color: Color(0xfff9f9fb),
+                                    ),
                                   ),
-                                ),
-                                disabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  borderSide: BorderSide(
-                                    color: Color(0xfff9f9fb),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderSide: BorderSide(
+                                      color: Color(0xfff9f9fb),
+                                    ),
                                   ),
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: Color(0xff200E32),
+                                    size: 24,
+                                  ),
+                                  hintStyle: TextStyle(
+                                      color: Color(0xffBBBFC3), fontSize: 16),
+                                  hintText: 'Search your chapters... ',
                                 ),
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: Color(0xff200E32),
-                                  size: 24,
+                                style: TextStyle(
+                                  color: Colors.black,
                                 ),
-                                hintStyle: TextStyle(
-                                    color: Color(0xffBBBFC3), fontSize: 16),
-                                hintText: 'Search your chapters... ',
+                                keyboardType: TextInputType.text,
+                                cursorColor: Colors.black,
+                                textCapitalization: TextCapitalization.none,
+                                onChanged: onSearchTextChanged,
                               ),
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                              keyboardType: TextInputType.text,
-                              cursorColor: Colors.black,
-                              textCapitalization: TextCapitalization.none,
-                              onChanged: onSearchTextChanged,
                             ),
                           ),
                         ),
-                      ),
-                     /* SizedBox(
+                        /* SizedBox(
                         width: 10.0,
                       ),
                       Container(
@@ -932,26 +1031,23 @@ class _SettingsState extends State<ChapterList> {
                             width: 15,
                             fit: BoxFit.fill),
                       ),*/
-                    ]),
-                  ),
-
-                   Expanded(child:
-                    Container(
+                      ]),
+                    ),
+                    Expanded(
+                      child: Container(
                         padding: EdgeInsets.only(bottom: 5),
                         child: chapterList(deviceSize),
                       ),
-
-                  ),
-
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                ],
-              ),
-            )),
-      )
-    );
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                  ],
+                ),
+              )),
+        ));
   }
+
   onSearchTextChanged(String text) async {
     print(text);
     _searchResult.clear();
@@ -973,15 +1069,13 @@ class _SettingsState extends State<ChapterList> {
 }
 
 class UserDetails {
-  final String id,
-      chapter_name,
-      short_description;
+  final String id, chapter_name, short_description;
 
-  UserDetails(
-      {this.id,
-        this.chapter_name,
-        this.short_description,
-      });
+  UserDetails({
+    this.id,
+    this.chapter_name,
+    this.short_description,
+  });
 
   factory UserDetails.fromJson(Map<String, dynamic> json) {
     return new UserDetails(

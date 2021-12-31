@@ -19,7 +19,6 @@ import 'get_otp.dart';
 import 'login_with_logo.dart';
 import 'otp_verification.dart';
 
-
 class SplashScreen extends StatefulWidget {
   final Color backgroundColor = Colors.white;
   final TextStyle styleTextUnderTheLoader = TextStyle(
@@ -33,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
   bool _loggedIn = false;
   bool _introIn = false;
   final splashDelay = 2;
-  String appName,packageName,version,buildNumber;
+  String appName, packageName, version, buildNumber;
   AppUpdateInfo _updateInfo;
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
@@ -47,18 +46,19 @@ class _SplashScreenState extends State<SplashScreen> {
       version = packageInfo.version;
       buildNumber = packageInfo.buildNumber;
 
-      print("<<<<<<<<<<<"+appName);
-      print("<<<<<<<<<<<"+packageName);
-      print("<<<<<<<<<<<"+version);
-      print("<<<<<<<<<<<"+buildNumber);
+      print("<<<<<<<<<<<" + appName);
+      print("<<<<<<<<<<<" + packageName);
+      print("<<<<<<<<<<<" + version);
+      print("<<<<<<<<<<<" + buildNumber);
     });
-  //  _versionCheck();
-   // checkForUpdate();
+    //  _versionCheck();
+    // checkForUpdate();
     _checkLoggedIn();
     _loadWidget();
   }
+
   Future<void> secureScreen() async {
-    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   }
   /*Future<void> checkForUpdate() async {
     InAppUpdate.checkForUpdate().then((info) {
@@ -75,25 +75,22 @@ class _SplashScreenState extends State<SplashScreen> {
           .showSnackBar(SnackBar(content: Text(text)));
     }
   }
+
   Future _versionCheck() async {
-    Map<String, String> headers = {
-      'Accept': 'application/json'
-    };
+    Map<String, String> headers = {'Accept': 'application/json'};
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/version"),
       body: "",
       headers: headers,
-
     );
 
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       print(data);
 
-      if(int.parse(data['Response'][0]['android'])<=int.parse(buildNumber)){
+      if (int.parse(data['Response'][0]['android']) <= int.parse(buildNumber)) {
         _loadWidget();
-      }
-      else{
+      } else {
         _showCompulsoryUpdateDialog(
           context,
           "Please update the app to continue to version ${data['Response'][0]['android'] ?? ""}",
@@ -105,7 +102,6 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-
   _showCompulsoryUpdateDialog(context, String message) async {
     await showDialog<String>(
       context: context,
@@ -115,42 +111,45 @@ class _SplashScreenState extends State<SplashScreen> {
         String btnLabel = "Update Now";
         return Platform.isIOS
             ? new CupertinoAlertDialog(
-          title: Text(title),
-          content: Text(message),
-
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text(
-                btnLabel,
-              ),
-              isDefaultAction: true,
-              onPressed: _onUpdateNowClicked,
-            ),
-          ],
-        )
+                title: Text(title),
+                content: Text(message),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    child: Text(
+                      btnLabel,
+                    ),
+                    isDefaultAction: true,
+                    onPressed: _onUpdateNowClicked,
+                  ),
+                ],
+              )
             : new AlertDialog(
-          buttonPadding: EdgeInsets.all(10),
-          backgroundColor:Color(0xff2E2A4A) ,
-          title: Text(
-            title,
-            style: TextStyle(fontSize: 22,color: Colors.white),
-          ),
-          content: Text(message, style: TextStyle(color: Colors.white),),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(btnLabel, style: TextStyle(color: Colors.white),),
-              onPressed: _onUpdateNowClicked,
-            ),
-          ],
-        );
+                buttonPadding: EdgeInsets.all(10),
+                backgroundColor: Color(0xff2E2A4A),
+                title: Text(
+                  title,
+                  style: TextStyle(fontSize: 22, color: Colors.white),
+                ),
+                content: Text(
+                  message,
+                  style: TextStyle(color: Colors.white),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text(
+                      btnLabel,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: _onUpdateNowClicked,
+                  ),
+                ],
+              );
       },
     );
   }
 
   _onUpdateNowClicked() {
-    StoreRedirect.redirect(
-        androidAppId: packageName,
-        iOSAppId: packageName);
+    StoreRedirect.redirect(androidAppId: packageName, iOSAppId: packageName);
   }
 
   _checkLoggedIn() async {
@@ -166,16 +165,16 @@ class _SplashScreenState extends State<SplashScreen> {
       });
     } else {
       setState(() {
-          _loggedIn = false;
-      if(_isIntroIn==null){
-        _introIn=false;
-      }
-      else{
-        _introIn=_isIntroIn;
-      }
+        _loggedIn = false;
+        if (_isIntroIn == null) {
+          _introIn = false;
+        } else {
+          _introIn = _isIntroIn;
+        }
       });
     }
   }
+
   _loadWidget() async {
     var _duration = Duration(seconds: splashDelay);
     return Timer(_duration, navigationPage);
@@ -191,17 +190,13 @@ class _SplashScreenState extends State<SplashScreen> {
       var obj = 0;
       return Dashboard();
     } else {
-      if(_introIn==null){
+      if (_introIn == null) {
         return LoginWithLogo();
-      }
-      else if(_introIn==true){
+      } else if (_introIn == true) {
         return LoginWithLogo();
-      }
-
-      else{
+      } else {
         return IntroScreens();
       }
-
     }
   }
 
@@ -210,66 +205,58 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
-      body: Stack(
-        children: [
-          Container(
-           // color: Color(0xfff7f7f7),
+      body: Stack(children: [
+        Container(
+          // color: Color(0xfff7f7f7),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-                Stack(
-          children: [
-            Image.asset(
-                   'assets/images/Vector6.png',
-                    // fit: BoxFit.fill,
-                  ),
-               Positioned(
-                 bottom: 20.0,
-                 right: 0.0,
-                 left: 0.0,
+              Stack(children: [
+                Image.asset(
+                  'assets/images/Vector6.png',
+                  // fit: BoxFit.fill,
+                ),
+                Positioned(
+                  bottom: 20.0,
+                  right: 0.0,
+                  left: 0.0,
                   top: 0.0,
                   child: Container(
                     alignment: Alignment.center,
                     child: Image.asset(
-                        'assets/images/grewal_academy.png',
-                        width: 150,
-                        height: 180,
-                       ),
+                      'assets/images/grewal_academy.png',
+                      width: 150,
+                      height: 180,
+                    ),
                   ),
                 ),
-
-          ]
-                ),
-
+              ]),
               Align(
                 alignment: FractionalOffset.bottomCenter,
-                child:
-                  Image.asset(
-                    'assets/images/splash_back.png',
+                child: Image.asset(
+                  'assets/images/splash_back.png',
 
-                    // fit: BoxFit.fill,
-                  ),
+                  // fit: BoxFit.fill,
+                ),
               ),
-
             ],
           ),
         ),
-          Container(
-            child: Center(
-              child: Container(
-                width: 300,
-                height: 300,
-                alignment: Alignment.center,
-                child: Image.asset(
-                  'assets/images/blue_splash.png',
-                ),
+        Container(
+          child: Center(
+            child: Container(
+              width: 300,
+              height: 300,
+              alignment: Alignment.center,
+              child: Image.asset(
+                'assets/images/blue_splash.png',
               ),
             ),
           ),
-        ]
-      ),
+        ),
+      ]),
     );
   }
 }

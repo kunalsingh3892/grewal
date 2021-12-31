@@ -37,7 +37,7 @@ dependencies:
   carousel_slider: ^2.3.1
   connectivity: ^3.0.6
   intl: ^0.17.0
-  percent_indicator: "^2.1.7+2"
+  percent_indicator: ^3.4.0
   razorpay_flutter: ^1.2.6
   multi_select_flutter: ^4.0.0
   servicestack: ^1.0.11
@@ -77,6 +77,8 @@ dependencies:
   in_app_update: ^2.0.0
   flutter_custom_clippers: ^2.0.0
   provider: ^6.0.0
+  flutter_timeline: ^0.3.0
+  flutter_countdown_timer: ^4.1.0
 
 
   # The following adds the Cupertino Icons font to your application.

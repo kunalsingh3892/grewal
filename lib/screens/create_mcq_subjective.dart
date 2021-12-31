@@ -15,16 +15,12 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import '../constants.dart';
 
-class CreateMCQ extends StatefulWidget {
-  final Object argument;
-
-  const CreateMCQ({Key key, this.argument}) : super(key: key);
-
+class CreateSubjective extends StatefulWidget {
   @override
   _LoginWithLogoState createState() => _LoginWithLogoState();
 }
 
-class _LoginWithLogoState extends State<CreateMCQ> {
+class _LoginWithLogoState extends State<CreateSubjective> {
   // final _formKey = GlobalKey<FormState>();
   // final nameController = TextEditingController();
   // final chapterController = TextEditingController();
@@ -79,16 +75,18 @@ class _LoginWithLogoState extends State<CreateMCQ> {
   // String selectedLeveId = "";
   // String api_token = "";
   // String set_id = "";
-
+  // String totalQuestions = "";
+  // var data = {};
   // @override
   // void initState() {
   //   super.initState();
+
   //   var encodedJson = json.encode(widget.argument);
   //   var data = json.decode(encodedJson);
-  //   chapter_id = data['chapter_id'];
-  //   set_id = data['set_id'];
-  //   // type = data['type'];
-  //   _getUser();
+  //   totalQuestions = data['total_qus'].toString();
+
+  //   data = data;
+  //   print(data.toString() + " test");
   // }
 
   // List question = [];
@@ -309,7 +307,8 @@ class _LoginWithLogoState extends State<CreateMCQ> {
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
-    Map<String, String> arg = ModalRoute.of(context).settings.arguments;
+
+    Map map = ModalRoute.of(context).settings.arguments as Map;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
@@ -359,7 +358,10 @@ class _LoginWithLogoState extends State<CreateMCQ> {
                               Container(
                                 alignment: Alignment.topLeft,
                                 child: Text(
-                                    "This test comprises of 10 MCQ's questions.",
+                                    "This test comprises of total (" +
+                                        jsonDecode(jsonEncode(map))['total_qus']
+                                            .toString() +
+                                        ") Subjective questions.",
                                     style: normalText1),
                               ),
                               // const SizedBox(height: 25.0),
@@ -382,20 +384,13 @@ class _LoginWithLogoState extends State<CreateMCQ> {
                               //       "Case based Questions- 1 (4 Questions).",
                               //       style: normalText2),
                               // ),
-                              const SizedBox(height: 25.0),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                    "Time to complete this test - \n" +
-                                        Duration(
-                                                seconds: int.parse(
-                                                    arg['timeToComp']
-                                                        .toString()))
-                                            .inMinutes
-                                            .toString() +
-                                        " Minutes.",
-                                    style: normalText3),
-                              ),
+                              // const SizedBox(height: 25.0),
+                              // Container(
+                              //   alignment: Alignment.topLeft,
+                              //   child: Text(
+                              //       "Time to complete this test - 30 Minutes.",
+                              //       style: normalText3),
+                              // ),
                             ])
                             // : Column(children: <Widget>[
                             //     Container(
@@ -505,8 +500,10 @@ class _LoginWithLogoState extends State<CreateMCQ> {
                                     //     .arguments);
                                     Navigator.pushNamed(
                                       context,
-                                      '/test-correct',
-                                      arguments: arg,
+                                      '/start-subjective-test',
+                                      arguments: ModalRoute.of(context)
+                                          .settings
+                                          .arguments,
                                     );
                                     //     } else {
                                     //       setState(() {
