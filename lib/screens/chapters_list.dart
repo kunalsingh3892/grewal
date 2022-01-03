@@ -380,7 +380,7 @@ class _SettingsState extends State<ChapterList> {
                                                   },
                                                   child: _buildWikiCategory(
                                                       "assets/images/video_icon.png",
-                                                      "MCQ's",
+                                                      "Objective type Questions",
                                                       Color(0xffAC4141),
                                                       Color(0xffFEEEEE)),
                                                 ),
@@ -425,21 +425,32 @@ class _SettingsState extends State<ChapterList> {
                                               Expanded(
                                                 child: InkWell(
                                                   onTap: () {
+                                                    // Navigator.pushNamed(
+                                                    //   context,
+                                                    //   '/subjective_test',
+                                                    //   arguments: <String,
+                                                    //       String>{
+                                                    //     'chapter_id':
+                                                    //         _searchResult[index]
+                                                    //             .id
+                                                    //             .toString(),
+                                                    //   },
+                                                    // );
                                                     Navigator.pushNamed(
                                                       context,
-                                                      '/subjective_test',
+                                                      '/start-subjective-list',
                                                       arguments: <String,
                                                           String>{
-                                                        'chapter_id':
-                                                            _searchResult[index]
-                                                                .id
-                                                                .toString(),
+                                                        'chapter_id': snapshot
+                                                            .data['Response']
+                                                                [index]['id']
+                                                            .toString(),
                                                       },
                                                     );
                                                   },
                                                   child: _buildWikiCategory(
                                                       "assets/images/support.png",
-                                                      "Subjective Test",
+                                                      "Subjective Questions",
                                                       Color(0xff38CD8B),
                                                       Color(0xffE9FFF5)),
                                                 ),
@@ -712,7 +723,7 @@ class _SettingsState extends State<ChapterList> {
                                                   },
                                                   child: _buildWikiCategory(
                                                       "assets/images/mcq.png",
-                                                      "MCQ's",
+                                                      "Objective Type Questions",
                                                       Color(0xffAC4141),
                                                       Color(0xffFEEEEE)),
                                                 ),
@@ -755,9 +766,20 @@ class _SettingsState extends State<ChapterList> {
                                               Expanded(
                                                 child: InkWell(
                                                   onTap: () {
+                                                    // Navigator.pushNamed(
+                                                    //   context,
+                                                    //   '/subjective_test',
+                                                    //   arguments: <String,
+                                                    //       String>{
+                                                    //     'chapter_id': snapshot
+                                                    //         .data['Response']
+                                                    //             [index]['id']
+                                                    //         .toString(),
+                                                    //   },
+                                                    // );
                                                     Navigator.pushNamed(
                                                       context,
-                                                      '/subjective_test',
+                                                      '/start-subjective-list',
                                                       arguments: <String,
                                                           String>{
                                                         'chapter_id': snapshot
@@ -769,7 +791,7 @@ class _SettingsState extends State<ChapterList> {
                                                   },
                                                   child: _buildWikiCategory(
                                                       "assets/images/support.png",
-                                                      "Subjective Test",
+                                                      "Subjective Questions",
                                                       Color(0xff38CD8B),
                                                       Color(0xffE9FFF5)),
                                                 ),

@@ -25,6 +25,7 @@ import 'package:grewal/screens/intro_screens.dart';
 import 'package:grewal/screens/mcq_level_testing/mcq_level_test.dart';
 import 'package:grewal/screens/mcq_level_testing/start_subjective_test.dart';
 import 'package:grewal/screens/mcq_level_testing/subjective_test.dart';
+import 'package:grewal/screens/mcq_level_testing/subjective_test_list.dart';
 import 'package:grewal/screens/model_dash.dart';
 import 'package:grewal/screens/mtp_list.dart';
 import 'package:grewal/screens/mts.dart';
@@ -633,6 +634,16 @@ class _MyAppState extends State<MyApp> {
                 var obj = settings.arguments;
                 return PageTransition(
                   child: StartSubjective(
+                    argument: obj,
+                  ),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/start-subjective-list':
+                var obj = settings.arguments;
+                return PageTransition(
+                  child: SubjectiveTestListGiven(
                     argument: obj,
                   ),
                   type: PageTransitionType.leftToRight,

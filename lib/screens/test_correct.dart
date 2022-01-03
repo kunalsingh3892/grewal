@@ -830,7 +830,8 @@ class _LoginWithLogoState extends State<StartMCQ>
                                                 .replaceAll("<p>", "")
                                                 .replaceAll("</p>", "")
                                                 .replaceAll("&nbsp;", "")
-                                                .replaceAll("&#39;", "\'"),
+                                                .replaceAll("&#39;", "\'")
+                                                .replaceAll("&amp;", "\'"),
                                         textAlign: TextAlign.left,
                                         // maxLines: 100,
                                         overflow: TextOverflow.visible,

@@ -90,4 +90,42 @@ class MCQLevelTestAPI {
     }
     return {"ErrorCode": "123"};
   }
+
+  Future<List> getSubjectiveTestList(String userId) async {
+    await getToken();
+
+    var response = await http.post(
+      new Uri.https(BASE_URL, API_PATH + "/subjective-test-list"),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + api_token.toString(),
+      },
+      body: {"student_id": userId.toString()},
+    );
+    print(jsonEncode({"student_id": userId.toString()}));
+    print(response.body);
+
+    if (jsonDecode(response.body)['ErrorCode'] == 0) {
+      return jsonDecode(response.body)['Response'];
+    }
+    return [];
+  }
+
+  Future<int> getTotalQuestionCountofTest(String userId, String testId) async {
+    await getToken();
+
+    var response = await http.post(
+      new Uri.https(BASE_URL, API_PATH + "/check-result"),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + api_token.toString(),
+      },
+      body: {"test_id": testId.toString(), "user_id": userId.toString()},
+    );
+
+    if (jsonDecode(response.body)['ErrorCode'] == 0) {
+      return jsonDecode(response.body)['Response'].length;
+    }
+    return 0;
+  }
 }

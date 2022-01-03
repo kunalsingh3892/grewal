@@ -63,7 +63,12 @@ class _StartSubjectiveTestState extends State<StartSubjectiveTest> {
       MCQLevelTestAPI().getTopicListChapterWise(chapter_id).then((value) {
         if (value.length > 0) {
           setState(() {
-            topicsList.addAll(value);
+            value.forEach((element) {
+              if (element['totaldetails'] > 0) {
+                print(element['totaldetails']);
+                topicsList.add(element);
+              }
+            });
             isLoading = false;
           });
         }
@@ -120,29 +125,37 @@ class _StartSubjectiveTestState extends State<StartSubjectiveTest> {
               padding: const EdgeInsets.all(14.0),
               child: Column(children: [
                 Expanded(
-                  flex: 3,
+                  flex: 4,
                   child: Column(
                     children: [
                       DropdownButtonFormField(
                           validator: (value) =>
                               value == null ? "Required" : null,
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(14),
+                            // contentPadding: EdgeInsets.all(5),
                             border: OutlineInputBorder(),
                             labelText: 'Select Topics',
                           ),
                           isExpanded: true,
-                          items: topicsList
-                              .map((e) => DropdownMenuItem(
-                                    child: Text(
-                                      e['name'].toString() +
-                                          "( Detailed - " +
-                                          e['totaldetails'].toString() +
-                                          " )",
-                                    ),
-                                    value: e,
-                                  ))
-                              .toList(),
+                          items: topicsList.map((e) {
+                            return DropdownMenuItem(
+                              child: Container(
+                                child: ListTile(
+                                  style: ListTileStyle.list,
+                                  title: Text(
+                                    e['name'].toString(),
+                                  ),
+                                  subtitle: Text(
+                                      "Subjective : " +
+                                          e['totaldetails'].toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black)),
+                                ),
+                              ),
+                              value: e,
+                            );
+                          }).toList(),
                           onChanged: (val) {
                             setState(() {
                               topicSelect = true;
