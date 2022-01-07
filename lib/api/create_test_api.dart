@@ -52,20 +52,26 @@ class MCQLevelTestAPI {
     return {};
   }
 
-  Future<List> getTopicListChapterWise(String chapter_id) async {
+  Future<List> getTopicListChapterWise(
+      String chapter_id, String student_id) async {
     await getToken();
-
+    print(jsonEncode({
+      "chapter_id": chapter_id.toString(),
+      "student_id": student_id.toString()
+    }));
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/topiclistchapterwise"),
       headers: {
-        'Accept': 'application/json',
+        // 'Accept': 'application/json',
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + api_token.toString(),
       },
-      body: {
-        "chapter_id": chapter_id,
-      },
+      body: jsonEncode({
+        "chapter_id": chapter_id.toString(),
+        "student_id": student_id.toString()
+      }),
     );
-
+    print(response.body);
     if (jsonDecode(response.body)['ErrorCode'] == 0) {
       return jsonDecode(response.body)['Response'];
     }
@@ -91,7 +97,8 @@ class MCQLevelTestAPI {
     return {"ErrorCode": "123"};
   }
 
-  Future<List> getSubjectiveTestList(String userId) async {
+  Future<List> getSubjectiveTestList(String userId, String chapter_id) async {
+    print(chapter_id);
     await getToken();
 
     var response = await http.post(
@@ -102,11 +109,18 @@ class MCQLevelTestAPI {
       },
       body: {"student_id": userId.toString()},
     );
-    print(jsonEncode({"student_id": userId.toString()}));
-    print(response.body);
 
     if (jsonDecode(response.body)['ErrorCode'] == 0) {
-      return jsonDecode(response.body)['Response'];
+      List temp = jsonDecode(response.body)['Response'];
+      List res = [];
+      temp.forEach((e) {
+        if (e['chapter'] != null) {
+          if (int.parse(e['chapter'].toString()) == int.parse(chapter_id)) {
+            res.add(e);
+          }
+        }
+      });
+      return res;
     }
     return [];
   }

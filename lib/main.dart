@@ -14,6 +14,7 @@ import 'package:grewal/screens/chapter_overview.dart';
 import 'package:grewal/screens/chapter_select.dart';
 import 'package:grewal/screens/chapters_list.dart';
 import 'package:grewal/screens/create_mcq.dart';
+import 'package:grewal/screens/create_mcq_new.dart';
 import 'package:grewal/screens/create_mcq_subjective.dart';
 
 import 'package:grewal/screens/create_ticket.dart';
@@ -49,8 +50,10 @@ import 'package:grewal/screens/splash.dart';
 import 'package:grewal/screens/static_screens/privacy_policy.dart';
 import 'package:grewal/screens/static_screens/refund_policies.dart';
 import 'package:grewal/screens/static_screens/t_c.dart';
+import 'package:grewal/screens/subject_list.dart';
 import 'package:grewal/screens/support_detail.dart';
 import 'package:grewal/screens/support_list.dart';
+import 'package:grewal/screens/test_correct.dart';
 import 'package:grewal/screens/test_list.dart';
 import 'package:grewal/screens/ticket_details.dart';
 import 'package:grewal/screens/ticket_list.dart';
@@ -60,6 +63,8 @@ import 'package:grewal/screens/videos_screen/question_view.dart';
 import 'package:grewal/screens/videos_screen/videos.dart';
 import 'package:grewal/screens/videos_screen/videos_detail.dart';
 import 'package:grewal/screens/view_performance.dart';
+import 'package:grewal/screens/view_performance_new.dart';
+import 'package:grewal/screens/view_test.dart';
 import 'package:grewal/screens/work_flow.dart';
 import 'package:grewal/services/Timer_Data.dart';
 
@@ -75,8 +80,8 @@ import 'screens/login_with_logo.dart';
 import 'screens/otp_verification.dart';
 import 'screens/plan.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'screens/test_correct.dart';
-import 'screens/view_test.dart';
+import 'screens/test_correct_new.dart';
+import 'screens/view_test_new.dart';
 
 Future<void> main() async {
   runZonedGuarded(() async {
@@ -285,7 +290,7 @@ class _MyAppState extends State<MyApp> {
 
               case '/chapters-list':
                 return PageTransition(
-                  child: ChapterList("yes"),
+                  child: ChapterList("yes", {}),
                   type: PageTransitionType.leftToRight,
                   settings: settings,
                 );
@@ -302,6 +307,14 @@ class _MyAppState extends State<MyApp> {
                 var obj = settings.arguments;
                 return PageTransition(
                   child: CreateMCQ(argument: obj),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/create-mcq-new':
+                var obj = settings.arguments;
+                return PageTransition(
+                  child: CreateMCQ2(argument: obj),
                   type: PageTransitionType.leftToRight,
                   settings: settings,
                 );
@@ -334,6 +347,38 @@ class _MyAppState extends State<MyApp> {
                 var obj = settings.arguments;
                 return PageTransition(
                   child: TicketDetails(argument: obj),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/test-correct-new':
+                var obj = settings.arguments;
+                return PageTransition(
+                  child: StartMCQ2(argument: obj),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/test-correct':
+                var obj = settings.arguments;
+                return PageTransition(
+                  child: StartMCQ(argument: obj),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/view-test-new':
+                var obj = settings.arguments;
+                return PageTransition(
+                  child: ViewMCQ2(argument: obj),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/view-performance-new':
+                var obj = settings.arguments;
+                return PageTransition(
+                  child: ViewPerformance2(argument: obj),
                   type: PageTransitionType.leftToRight,
                   settings: settings,
                 );
@@ -646,6 +691,13 @@ class _MyAppState extends State<MyApp> {
                   child: SubjectiveTestListGiven(
                     argument: obj,
                   ),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/subject-list':
+                return PageTransition(
+                  child: SubjectList(),
                   type: PageTransitionType.leftToRight,
                   settings: settings,
                 );

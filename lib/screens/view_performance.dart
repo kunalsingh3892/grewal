@@ -86,8 +86,8 @@ class _SettingsState extends State<ViewPerformance> {
   String type = "";
   String test_id = "";
   String profile_image = '';
-  String total_ques = "";
-  bool show_pie = true;
+
+  bool show_pie=true;
   @override
   void initState() {
     super.initState();
@@ -95,12 +95,10 @@ class _SettingsState extends State<ViewPerformance> {
     var data = json.decode(encodedJson);
     test_id = data['test_id'];
     type = data['type'];
-    total_ques = data['total_ques'];
     _tooltipBehavior = TooltipBehavior(enable: true);
 
     _getUser();
   }
-
   String api_token = "";
   _getUser() async {
     Preference().getPreferences().then((prefs) {
@@ -138,15 +136,15 @@ class _SettingsState extends State<ViewPerformance> {
       new Uri.https(BASE_URL, API_PATH + "/test-performancenew"),
       body: {
         "user_id": user_id,
-        "test_id": type == "institute" ? "" : test_id,
-        "inst_test_id": type == "institute" ? test_id : "",
+        "test_id": type=="institute"?"":test_id,
+        "inst_test_id":type=="institute"?test_id:"",
       },
       headers: headers,
     );
     print(jsonEncode({
       "user_id": user_id,
-      "test_id": type == "institute" ? "" : test_id,
-      "inst_test_id": type == "institute" ? test_id : "",
+      "test_id": type=="institute"?"":test_id,
+      "inst_test_id":type=="institute"?test_id:"",
     }));
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
@@ -162,59 +160,60 @@ class _SettingsState extends State<ViewPerformance> {
         }
       }
 
-      if (data['question_type'].length != 0) {
+      if(data['question_type'].length!=0) {
         setState(() {
           if (data['question_type'].length == 3) {
             chartData = [
-              ChartData(
-                  data['question_type'][0]['questiontype_name'],
+              ChartData(data['question_type'][0]['questiontype_name'],
                   double.parse(data['question_type'][0]['total_percentage']),
                   data['question_type'][0]['total_question'].toString(),
                   data['question_type'][0]['question_type_id'].toString(),
                   Color(0xff017EFF)),
-              ChartData(
-                  data['question_type'][1]['questiontype_name'],
+              ChartData(data['question_type'][1]['questiontype_name'],
                   double.parse(data['question_type'][1]['total_percentage']),
                   data['question_type'][1]['total_question'].toString(),
                   data['question_type'][1]['question_type_id'].toString(),
                   Color(0xffFFC700)),
-              ChartData(
-                  data['question_type'][2]['questiontype_name'],
+              ChartData(data['question_type'][2]['questiontype_name'],
                   double.parse(data['question_type'][2]['total_percentage']),
                   data['question_type'][2]['total_question'].toString(),
                   data['question_type'][2]['question_type_id'].toString(),
                   Color(0xff4CE364)),
             ];
-          } else if (data['question_type'].length == 2) {
+          }
+          else if (data['question_type'].length == 2) {
             chartData = [
-              ChartData(
-                  data['question_type'][0]['questiontype_name'],
+              ChartData(data['question_type'][0]['questiontype_name'],
                   double.parse(data['question_type'][0]['total_percentage']),
                   data['question_type'][0]['total_question'].toString(),
                   data['question_type'][0]['question_type_id'].toString(),
                   Color(0xff017EFF)),
-              ChartData(
-                  data['question_type'][1]['questiontype_name'],
+              ChartData(data['question_type'][1]['questiontype_name'],
                   double.parse(data['question_type'][1]['total_percentage']),
                   data['question_type'][1]['total_question'].toString(),
                   data['question_type'][1]['question_type_id'].toString(),
                   Color(0xffFFC700)),
+
             ];
-          } else {
+          }
+          else {
             chartData = [
-              ChartData(
-                  data['question_type'][0]['questiontype_name'],
+              ChartData(data['question_type'][0]['questiontype_name'],
                   double.parse(data['question_type'][0]['total_percentage']),
                   data['question_type'][0]['total_question'].toString(),
                   data['question_type'][0]['question_type_id'].toString(),
                   Color(0xff017EFF)),
+
+
             ];
           }
         });
-      } else {
+      }
+      else{
         setState(() {
-          show_pie = false;
+          show_pie=false;
         });
+
       }
 
       return data;
@@ -226,6 +225,8 @@ class _SettingsState extends State<ViewPerformance> {
   int _currentSliderValue = 2;
 
   int touchedIndex = -1;
+
+
 
   List<String> color = [];
 
@@ -278,47 +279,50 @@ class _SettingsState extends State<ViewPerformance> {
 
   final _random = Random();
 
-  Widget winnerText(int data) {
-    if (data < 51) {
+  Widget winnerText(int data){
+    if(data<51){
       return Container(
-          child: Text(
-              "Revise your chapter and re-take tests to improve your accuracy.",
-              //  textAlign: TextAlign.justify,
+          child: Text("Revise your chapter and re-take tests to improve your accuracy.",
+            //  textAlign: TextAlign.justify,
               style: normalText4));
-    } else if (data > 75) {
+
+    }
+    else if(data>75){
       return Container(
-          child: Text(
-              "Congratulations, you have earned your badge! Keep practicing more questions.",
-              //  textAlign: TextAlign.justify,
-              style: normalText4));
-    } else {
-      return Container(
-          child: Text(
-              "Practice more to improve your accuracy level . Identify weaker topics and revise concepts.",
-              //  textAlign: TextAlign.justify,
+          child: Text("Congratulations, you have earned your badge! Keep practicing more questions.",
+            //  textAlign: TextAlign.justify,
               style: normalText4));
     }
-  }
+    else{
+      return Container(
+          child: Text("Practice more to improve your accuracy level . Identify weaker topics and revise concepts.",
+            //  textAlign: TextAlign.justify,
+              style: normalText4));
+    }
 
-  Widget winner(int data) {
-    if (data < 51) {
-      return Image(
+  }
+  Widget winner(int data){
+    if(data<51){
+      return  Image(
         image: AssetImage(
           'assets/images/thumb_down.png',
         ),
         height: 100.0,
         width: 100.0,
       );
-    } else if (data > 75) {
-      return Image(
+
+    }
+    else if(data>75){
+      return  Image(
         image: AssetImage(
           'assets/images/badge.png',
         ),
         height: 100.0,
         width: 100.0,
       );
-    } else {
-      return Image(
+    }
+    else{
+      return  Image(
         image: AssetImage(
           'assets/images/thumb_up.png',
         ),
@@ -326,18 +330,24 @@ class _SettingsState extends State<ViewPerformance> {
         width: 100.0,
       );
     }
-  }
 
-  Color widgetColor(int index) {
-    if (_value1[index].toString() == "100") {
+
+
+  }
+  Color widgetColor(int index){
+    if(_value1[index].toString() == "100") {
       return Color(0xff4CE364);
-    } else if (_value1[index].toString() == "0") {
+    }
+    else if(_value1[index].toString() == "0"){
       return Colors.grey.shade300;
-    } else {
+    }
+    else{
       return Color(0xff0293ee);
     }
-  }
 
+
+
+  }
   Widget chapterList(Size deviceSize) {
     return FutureBuilder(
       future: _chapterData,
@@ -358,10 +368,8 @@ class _SettingsState extends State<ViewPerformance> {
                               bottomLeft: const Radius.circular(20.0),
                               bottomRight: const Radius.circular(20.0),
                               topRight: const Radius.circular(20.0))),
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+                      margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
                       child: Column(children: [
                         /*  Container(
                             child: Text("Test Performance", style: normalText6),
@@ -404,8 +412,7 @@ class _SettingsState extends State<ViewPerformance> {
                                   Align(
                                     alignment: Alignment.center,
                                     child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           Container(
                                             child: Row(
@@ -461,17 +468,17 @@ class _SettingsState extends State<ViewPerformance> {
                                   SizedBox(
                                     height: 15.0,
                                   ),
-                                  winner(
-                                      snapshot.data['total_test_percentage']),
+                                  winner(snapshot.data[
+                                  'total_test_percentage']),
                                   SizedBox(
                                     height: 15.0,
                                   ),
                                   Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    child: winnerText(
-                                        snapshot.data['total_test_percentage']),
-                                  ),
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      child: winnerText(snapshot.data[
+                                      'total_test_percentage']),
+                                    ),
+
                                 ],
                               ),
                             ),
@@ -491,10 +498,8 @@ class _SettingsState extends State<ViewPerformance> {
                               bottomLeft: const Radius.circular(20.0),
                               bottomRight: const Radius.circular(20.0),
                               topRight: const Radius.circular(20.0))),
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+                      margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
                       child: Column(children: [
                         Container(
                           child: Text("Performance based on Topics",
@@ -529,7 +534,7 @@ class _SettingsState extends State<ViewPerformance> {
                                         height: 10,
                                         width: 10,
                                         decoration: BoxDecoration(
-                                          color: widgetColor(index),
+                                          color:widgetColor(index),
                                           // border color
                                           shape: BoxShape.circle,
                                         ),
@@ -558,32 +563,20 @@ class _SettingsState extends State<ViewPerformance> {
                                     ),
                                     Row(children: <Widget>[
                                       Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.10,
-                                        child: Text(
-                                            _value1[index].toString() +
-                                                "% " +
-                                                "(" +
-                                                snapshot.data['topic'][index][
-                                                        'total_topic_right_question']
-                                                    .toString() +
-                                                "/" +
-                                                snapshot.data['topic'][index]
-                                                        ['total_topic_question']
-                                                    .toString() +
-                                                ")",
+                                        width: MediaQuery.of(context).size.width *
+                                            0.10,
+                                        child: Text(_value1[index].toString() + "% "+"("+snapshot.data['topic'][index]
+                                        ['total_topic_right_question'].toString()+"/"+snapshot.data['topic'][index]
+                                ['total_topic_question'].toString()+")",
                                             style: normalText1),
                                       ),
                                       Expanded(
                                         child: Container(
                                           child: LinearPercentIndicator(
-                                            backgroundColor:
-                                                Colors.grey.shade300,
+                                            backgroundColor: Colors.grey.shade300,
                                             lineHeight: 7.0,
                                             percent: _value1.length != 0
-                                                ? double.parse(_value1[index]) /
-                                                    100
+                                                ? double.parse(_value1[index]) / 100
                                                 : 0.0,
                                             center: Text(
                                               "",
@@ -605,7 +598,7 @@ class _SettingsState extends State<ViewPerformance> {
                         SizedBox(
                           height: 10,
                         ),
-                        /*  Container(
+                      /*  Container(
                           padding: EdgeInsets.symmetric(horizontal: 30),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -661,10 +654,8 @@ class _SettingsState extends State<ViewPerformance> {
                               bottomLeft: const Radius.circular(20.0),
                               bottomRight: const Radius.circular(20.0),
                               topRight: const Radius.circular(20.0))),
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
+                      margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
                       child: Column(children: [
                         Container(
                           child: Text("Performance based on Categories",
@@ -680,12 +671,7 @@ class _SettingsState extends State<ViewPerformance> {
                               currentValue: int.parse(
                                   snapshot.data['easy_right_per'].toString()),
                               displayText: '%',
-                              displayTextStyle: TextStyle(
-                                  color: snapshot.data['easy_right_per']
-                                              .toString() !=
-                                          "0"
-                                      ? Colors.white
-                                      : Color(0xff22215B)),
+                              displayTextStyle: TextStyle(color: snapshot.data['easy_right_per'].toString()!="0"?Colors.white:Color(0xff22215B)),
                               backgroundColor: Color(0xffEEF7FE),
                               progressColor: Color(0xff22215B),
                               verticalDirection: VerticalDirection.up,
@@ -706,17 +692,12 @@ class _SettingsState extends State<ViewPerformance> {
                           Expanded(
                             child: Container(
                                 child: FAProgressBar(
-                              currentValue: int.parse(snapshot
-                                  .data['average_right_per']
-                                  .toString()),
+                              currentValue: int.parse(
+                                  snapshot.data['average_right_per'].toString()),
                               displayText: '%',
-                              displayTextStyle: TextStyle(
-                                  color: snapshot.data['average_right_per']
-                                              .toString() !=
-                                          "0"
-                                      ? Colors.white
-                                      : Color(0xff017EFF)),
-                              backgroundColor: Color(0xffEEF7FE),
+                                  displayTextStyle: TextStyle(color: snapshot.data['average_right_per'].toString()!="0"?Colors.white:Color(0xff017EFF)),
+
+                                  backgroundColor: Color(0xffEEF7FE),
                               progressColor: Color(0xff017EFF),
                               verticalDirection: VerticalDirection.up,
                               direction: Axis.horizontal,
@@ -736,17 +717,13 @@ class _SettingsState extends State<ViewPerformance> {
                           Expanded(
                             child: Container(
                                 child: FAProgressBar(
-                              currentValue: int.parse(snapshot
-                                  .data['diffcult_right_per']
-                                  .toString()),
+                              currentValue: int.parse(
+                                  snapshot.data['diffcult_right_per'].toString()),
                               displayText: '%',
-                              displayTextStyle: TextStyle(
-                                  color: snapshot.data['diffcult_right_per']
-                                              .toString() !=
-                                          "0"
-                                      ? Colors.white
-                                      : Color(0xffFF317B)),
-                              backgroundColor: Color(0xffEEF7FE),
+                                  displayTextStyle: TextStyle(color: snapshot.data['diffcult_right_per'].toString()!="0"?Colors.white:Color(0xffFF317B)),
+
+
+                                  backgroundColor:Color(0xffEEF7FE),
                               progressColor: Color(0xffFF317B),
                               verticalDirection: VerticalDirection.up,
                               direction: Axis.horizontal,
@@ -787,24 +764,18 @@ class _SettingsState extends State<ViewPerformance> {
                               bottomLeft: const Radius.circular(20.0),
                               bottomRight: const Radius.circular(20.0),
                               topRight: const Radius.circular(20.0))),
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+                      margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
                       child: Column(children: [
                         Container(
-                          child:
-                              Text("Total Time Analysis", style: normalText6),
+                          child: Text("Total Time Analysis", style: normalText6),
                         ),
                         Container(
                           child: Text(
-                              snapshot.data['evaluation'][0]
-                                          ['total_time_taken_minut']
+                              snapshot.data['evaluation'][0]['total_time_taken_minut']
                                       .toString() +
-                                  " Min " +
-                                  snapshot.data['evaluation'][0]
-                                          ['total_time_taken_second']
-                                      .toString() +
+                                  " Min "+ snapshot.data['evaluation'][0]['total_time_taken_second']
+                                  .toString() +
                                   " Sec",
                               style: normalText6),
                         ),
@@ -823,9 +794,8 @@ class _SettingsState extends State<ViewPerformance> {
                                   animationDuration: 1200,
                                   radius: 100.0,
                                   lineWidth: 10.0,
-                                  percent: double.parse(snapshot
-                                          .data['evaluation'][0]
-                                              ['accuracy_level']
+                                  percent: double.parse(snapshot.data['evaluation']
+                                              [0]['accuracy_level']
                                           .toString()) /
                                       100,
                                   backgroundColor: Color(0xffF2F2F2),
@@ -849,8 +819,7 @@ class _SettingsState extends State<ViewPerformance> {
                                   height: 10,
                                 ),
                                 Container(
-                                  child: Text("Accuracy Level",
-                                      style: normalText1),
+                                  child: Text("Accuracy Level", style: normalText1),
                                 ),
                               ]),
                               new Padding(
@@ -865,17 +834,12 @@ class _SettingsState extends State<ViewPerformance> {
                                   lineWidth: 10.0,
                                   reverse: true,
                                   backgroundColor: Color(0xffF2F2F2),
-                                  percent: snapshot.data['evaluation'][0]
-                                              ['answer_speed'] >
-                                          100
-                                      ? (100 / 100)
-                                      : double.parse(snapshot.data['evaluation']
-                                                  [0]['answer_speed']
-                                              .toString()) /
-                                          100,
+                                  percent: snapshot.data['evaluation']
+                                  [0]['answer_speed']>100?(100/100):double.parse(snapshot.data['evaluation']
+                                              [0]['answer_speed']
+                                          .toString()) / 100,
                                   center: new Text(
-                                      snapshot.data['evaluation'][0]
-                                                  ['answer_speed']
+                                      snapshot.data['evaluation'][0]['answer_speed']
                                               .toString() +
                                           " s",
                                       style: normalText9),
@@ -903,109 +867,98 @@ class _SettingsState extends State<ViewPerformance> {
                           height: 10,
                         ),
                         Container(
+
                           margin: const EdgeInsets.only(right: 8.0, left: 8),
                           child: ButtonTheme(
                             height: 25.0,
-                            minWidth: MediaQuery.of(context).size.width * 0.40,
+                            minWidth:  MediaQuery.of(context).size.width * 0.40,
                             child: RaisedButton(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 30),
+                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0)),
                               textColor: Colors.white,
                               color: Color(0xff017EFF),
                               onPressed: () async {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/sample',
+                                Navigator.pushNamed(context, '/sample',
                                   arguments: <String, String>{
                                     'test_id': test_id,
-                                    'type':
-                                        type == "institute" ? "institute" : ""
+                                    'type': type=="institute"?"institute":""
                                   },
                                 );
                               },
-                              child: Text("Question Wise Time Analysis",
+                              child: Text(
+                                  "Question Wise Time Analysis",
                                   style: normalText3),
                             ),
                           ),
+
                         ),
                       ]),
                     ),
                     SizedBox(
                       height: 10,
                     ),
-                    show_pie
-                        ? Container(
-                            width: deviceSize.width,
-                            decoration: new BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: new BorderRadius.only(
-                                    topLeft: const Radius.circular(20.0),
-                                    bottomLeft: const Radius.circular(20.0),
-                                    bottomRight: const Radius.circular(20.0),
-                                    topRight: const Radius.circular(20.0))),
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 20.0, vertical: 20),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10.0, vertical: 20),
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Center(
-                                    child: Container(
-                                      child: Text(
-                                          "Question Type Result Analysis (Correct)",
-                                          style: normalText6),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    child: SfCircularChart(
-                                        tooltipBehavior: _tooltipBehavior,
-                                        legend: Legend(
-                                            isVisible: true,
-                                            position: LegendPosition.bottom,
-                                            height: "150",
-                                            padding: 20,
-                                            orientation:
-                                                LegendItemOrientation.vertical,
-                                            textStyle: normalTex10),
-                                        series: <CircularSeries>[
-                                          DoughnutSeries<ChartData, String>(
-                                            animationDuration: 2000,
-                                            enableSmartLabels: true,
-                                            enableTooltip: true,
-                                            explode: true,
-                                            dataSource: chartData,
-                                            selectionBehavior:
-                                                SelectionBehavior(
-                                              enable: true,
-                                            ),
-                                            dataLabelSettings:
-                                                DataLabelSettings(
-                                              isVisible: true,
-                                            ),
-                                            dataLabelMapper:
-                                                (ChartData sales, _) =>
-                                                    sales.y1.toString(),
-                                            pointColorMapper:
-                                                (ChartData data, _) =>
-                                                    data.color,
-                                            xValueMapper: (ChartData data, _) =>
-                                                data.x,
-                                            yValueMapper: (ChartData data, _) =>
-                                                data.y,
-                                            radius: "80",
-                                            innerRadius: "30",
-                                          )
-                                        ]),
-                                  )
-                                ]),
-                          )
-                        : Container(),
+                 show_pie? Container(
+                        width: deviceSize.width,
+                        decoration: new BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: new BorderRadius.only(
+                                topLeft: const Radius.circular(20.0),
+                                bottomLeft: const Radius.circular(20.0),
+                                bottomRight: const Radius.circular(20.0),
+                                topRight: const Radius.circular(20.0))),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                          Center(
+                            child: Container(
+                              child:
+                                  Text("Question Type Result Analysis (Correct)", style: normalText6),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+
+                              Container(
+                                child: SfCircularChart(
+                                    tooltipBehavior: _tooltipBehavior,
+
+
+                                    legend: Legend(isVisible: true,position:LegendPosition.bottom,height: "150",padding:20,
+                                        orientation: LegendItemOrientation.vertical,textStyle:normalTex10),
+                                    series: <CircularSeries>[
+
+                                      DoughnutSeries<ChartData, String>(
+                                        animationDuration: 2000,
+                                        enableSmartLabels: true,
+                                        enableTooltip: true,
+                                        explode: true,
+                                        dataSource: chartData,
+
+                                        selectionBehavior: SelectionBehavior(enable:true,),
+                                        dataLabelSettings: DataLabelSettings(isVisible: true,),
+                                        dataLabelMapper: (ChartData sales, _) =>
+                                        sales.y1.toString(),
+                                        pointColorMapper:(ChartData data,  _) => data.color,
+                                        xValueMapper: (ChartData data, _) => data.x,
+                                        yValueMapper: (ChartData data, _) => data.y,
+
+                                        radius: "80",
+                                        innerRadius: "30",
+                                      )
+                                    ]
+                                ),
+
+
+                              )
+
+                        ]),
+                      ):Container(),
                     SizedBox(
                       height: 10,
                     ),
@@ -1018,7 +971,6 @@ class _SettingsState extends State<ViewPerformance> {
                             '/view-test',
                             arguments: <String, String>{
                               'test_id': test_id,
-                              'total_question': total_ques.toString()
                             },
                           );
                         },
@@ -1027,8 +979,7 @@ class _SettingsState extends State<ViewPerformance> {
                           height: 50,
                           color: Colors.blueAccent,
                           child: Center(
-                            child:
-                                Text('Review Your Answers', style: normalText5),
+                            child: Text('Review Your Answers', style: normalText5),
                           ),
                         ),
                       ),
@@ -1043,25 +994,25 @@ class _SettingsState extends State<ViewPerformance> {
         } else {
           return Center(
               child: Align(
-            alignment: Alignment.center,
-            child: Container(
-              child: SpinKitFadingCube(
-                itemBuilder: (_, int index) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      color:
-                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
-                    ),
-                  );
-                },
-                size: 30.0,
-              ),
-            ),
-          ));
+                alignment: Alignment.center,
+                child: Container(
+                  child: SpinKitFadingCube(
+                    itemBuilder: (_, int index) {
+                      return DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
+                        ),
+                      );
+                    },
+                    size: 30.0,
+                  ),
+                ),
+              ));
         }
       },
     );
   }
+
 
   Widget _emptyOrders() {
     return Center(
@@ -1091,7 +1042,6 @@ class _SettingsState extends State<ViewPerformance> {
       ),
     );
   }
-
   Future<dynamic> ShowCapturedWidget(
       BuildContext context, Uint8List capturedImage) {
     return showDialog(
@@ -1108,7 +1058,6 @@ class _SettingsState extends State<ViewPerformance> {
       ),
     );
   }
-
   _requestPermission() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
@@ -1116,28 +1065,29 @@ class _SettingsState extends State<ViewPerformance> {
 
     final info = statuses[Permission.storage].toString();
     print(info);
-  }
 
+  }
   final GlobalKey _key = GlobalKey();
   void _takeScreenshot() async {
-    RenderRepaintBoundary boundary =
-        _key.currentContext.findRenderObject() as RenderRepaintBoundary;
 
-    ui.Image image = await boundary.toImage();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    if (byteData != null) {
-      Uint8List pngBytes = byteData.buffer.asUint8List();
+      RenderRepaintBoundary boundary =
+      _key.currentContext.findRenderObject() as RenderRepaintBoundary;
 
-      // Saving the screenshot to the gallery
-      final result = await ImageGallerySaver.saveImage(
-        byteData.buffer.asUint8List(),
-      );
-      print(result);
-      Fluttertoast.showToast(msg: "Save Successfully");
-    }
+      ui.Image image = await boundary.toImage();
+      ByteData byteData = await image.toByteData(
+          format: ui.ImageByteFormat.png);
+      if (byteData != null) {
+        Uint8List pngBytes = byteData.buffer.asUint8List();
+
+        // Saving the screenshot to the gallery
+        final result = await ImageGallerySaver.saveImage(
+            byteData.buffer.asUint8List(),
+        );
+        print(result);
+        Fluttertoast.showToast(msg: "Save Successfully");
+      }
   }
-
-  /* Future<bool> _requestPermission(Permission permission) async {
+ /* Future<bool> _requestPermission(Permission permission) async {
     if (await permission.isGranted) {
       return true;
     } else {
@@ -1151,72 +1101,79 @@ class _SettingsState extends State<ViewPerformance> {
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pop(false);
-        Navigator.pushNamed(context, '/dashboard');
-        return false;
-      },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0.0,
-          leading: InkWell(
-            child: Row(children: <Widget>[
-              IconButton(
-                icon: Image(
-                  image: AssetImage("assets/images/Icon.png"),
-                  height: 20.0,
-                  width: 10.0,
-                  color: Color(0xff2E2A4A),
+    return  WillPopScope(
+        onWillPop: () async {
+          Navigator.of(context).pop(false);
+          Navigator.pushNamed(context, '/dashboard');
+          return false;
+        },
+        child: Scaffold(
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                elevation: 0.0,
+                leading: InkWell(
+                  child: Row(children: <Widget>[
+                    IconButton(
+                      icon: Image(
+                        image: AssetImage("assets/images/Icon.png"),
+                        height: 20.0,
+                        width: 10.0,
+                        color: Color(0xff2E2A4A),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                        Navigator.pushNamed(context, '/dashboard');
+                      },
+                    ),
+                  ]),
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                  Navigator.pushNamed(context, '/dashboard');
-                },
-              ),
-            ]),
-          ),
-          centerTitle: true,
-          title: Container(
-            child: Text("My Performance", style: normalText6),
-          ),
-          flexibleSpace: Container(
-            height: 100,
-            color: Color(0xffffffff),
-          ),
-          actions: <Widget>[
-            InkWell(
-              onTap: () {
-                _takeScreenshot();
-              },
-              child: Align(
-                alignment: Alignment.center,
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 30,
-                  child: Icon(
-                    Icons.download,
-                    color: Color(0xff2E2A4A),
+                centerTitle: true,
+                title: Container(
+                  child: Text("My Performance", style: normalText6),
+                ),
+                flexibleSpace: Container(
+                  height: 100,
+                  color: Color(0xffffffff),
+                ),
+                actions: <Widget>[
+                  InkWell(
+                    onTap: (){
+
+                        _takeScreenshot();
+
+
+                    },
+
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 30,
+                        child:Icon(Icons.download,color:Color(0xff2E2A4A) ,),
+                      ),
+                    ),
                   ),
+                ],
+                iconTheme: IconThemeData(
+                  color: Colors.white, //change your color here
                 ),
+                backgroundColor: Colors.transparent,
+              ),
+              body: Container(
+                color: Color(0xff2E2A4A),
+                child: Container(
+                  padding: EdgeInsets.only(bottom: 5),
+                  child: chapterList(deviceSize)
+                ),
+
               ),
             ),
-          ],
-          iconTheme: IconThemeData(
-            color: Colors.white, //change your color here
-          ),
-          backgroundColor: Colors.transparent,
-        ),
-        body: Container(
-          color: Color(0xff2E2A4A),
-          child: Container(
-              padding: EdgeInsets.only(bottom: 5),
-              child: chapterList(deviceSize)),
-        ),
-      ),
-    );
+
+
+      );
+
   }
+
 }
 
 class Clipper extends CustomClipper<Path> {
@@ -1246,7 +1203,7 @@ class Clipper extends CustomClipper<Path> {
 }
 
 class ChartData {
-  ChartData(this.x, this.y, this.y1, this.z, [this.color]);
+  ChartData(this.x, this.y,this.y1,this.z, [this.color]);
   final String x;
   final double y;
   final String y1;

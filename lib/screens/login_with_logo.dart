@@ -274,6 +274,9 @@ class _LoginWithLogoState extends State<LoginWithLogo> {
                             'api_token', data['Response']['api_token']);
                         prefs.setBool('payment_status',
                             data['payment_flag'] == 1 ? true : false);
+                        prefs.setBool('payment_status2',
+                            data['term_two'] == 1 ? true : false);
+
                         print(data['Response']['api_token']);
                         if (data['Response']['institute_id'] != null) {
                           prefs.setString('institute_id',

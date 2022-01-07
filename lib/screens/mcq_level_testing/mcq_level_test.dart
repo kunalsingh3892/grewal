@@ -52,6 +52,7 @@ class _SettingsState extends State<MCQLevelTest> {
           .then((value) {
         if (value.length > 0) {
           setState(() {
+            setList.clear();
             setList.addAll(value);
             isLoading = false;
           });
@@ -126,6 +127,8 @@ class _SettingsState extends State<MCQLevelTest> {
                           child: ListView(
                             shrinkWrap: true,
                             children: setList.map((e) {
+                              int percent =
+                                  double.parse(e['percent'].toString()).toInt();
                               int currentIndex = setList.indexOf(e);
                               bool active = false;
 
@@ -141,14 +144,14 @@ class _SettingsState extends State<MCQLevelTest> {
                                   timeToComplete = 1200;
                                   break;
                               }
-                              print(currentIndex.toString());
+
                               if (currentIndex == 0) {
                                 active = true;
                               } else {
-                                if (int.parse(setList[currentIndex - 1]
-                                            ['percent']
-                                        .toString()
-                                        .split(".")[0]) >=
+                                if (double.parse(setList[currentIndex - 1]
+                                                ['percent']
+                                            .toString())
+                                        .toInt() >=
                                     60) {
                                   active = true;
                                 }
@@ -188,7 +191,7 @@ class _SettingsState extends State<MCQLevelTest> {
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        if (e['percent'] != 0)
+                                                        if (percent != 0)
                                                           Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
@@ -196,7 +199,7 @@ class _SettingsState extends State<MCQLevelTest> {
                                                             children: [
                                                               Text(
                                                                 "Scored\n" +
-                                                                    e['percent']
+                                                                    percent
                                                                         .toString() +
                                                                     "%",
                                                                 style: TextStyle(
@@ -211,14 +214,25 @@ class _SettingsState extends State<MCQLevelTest> {
                                                                     Navigator
                                                                         .pushNamed(
                                                                       context,
-                                                                      '/view-performance',
+                                                                      '/view-performance-new',
                                                                       arguments: <
                                                                           String,
                                                                           String>{
-                                                                        'test_id':
-                                                                            e['testId'].toString(),
+                                                                        'test_id': e['testId']
+                                                                            .toString()
+                                                                            .toString(),
                                                                         'type':
                                                                             "",
+                                                                        'total_ques':
+                                                                            "10",
+                                                                        "chapter_id":
+                                                                            chapter_id.toString(),
+                                                                        "testType":
+                                                                            "obj",
+                                                                        "reattempt": e['percent'] ==
+                                                                                0
+                                                                            ? "0"
+                                                                            : "1"
                                                                       },
                                                                     );
                                                                   },
@@ -230,8 +244,9 @@ class _SettingsState extends State<MCQLevelTest> {
                                                             onTap: () async {
                                                               Navigator.pushNamed(
                                                                   context,
-                                                                  '/create-mcq',
+                                                                  '/create-mcq-new',
                                                                   arguments: {
+                                                                    "type": "",
                                                                     "test_id": e[
                                                                             'testId']
                                                                         .toString(),
@@ -249,8 +264,7 @@ class _SettingsState extends State<MCQLevelTest> {
                                                                             .toString()
                                                                   });
                                                             },
-                                                            child: e['percent'] ==
-                                                                    0
+                                                            child: percent == 0
                                                                 ? Text(
                                                                     "Tap to Attempt",
                                                                     style: TextStyle(
@@ -258,13 +272,14 @@ class _SettingsState extends State<MCQLevelTest> {
                                                                             .green,
                                                                         fontSize:
                                                                             16))
-                                                                : Text(
-                                                                    "Tap Re-Attempt",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .green,
-                                                                        fontSize:
-                                                                            16)))
+                                                                : percent < 60
+                                                                    ? Text(
+                                                                        "Tap Re-Attempt",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.green,
+                                                                            fontSize: 16))
+                                                                    : Text(""))
                                                       ],
                                                     )
                                                   : Row(
@@ -302,7 +317,7 @@ class _SettingsState extends State<MCQLevelTest> {
                                         height: 40.0,
                                         width: 40.0,
                                         child: active
-                                            ? e['percent'] == 0
+                                            ? percent == 0
                                                 ? Icon(Icons
                                                     .check_box_outline_blank)
                                                 : Icon(Icons.check_box_outlined)

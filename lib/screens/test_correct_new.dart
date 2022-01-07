@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:convert';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -18,18 +16,18 @@ import 'package:intl/intl.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:http/http.dart' as http;
 
-import '../../constants.dart';
+import '../constants.dart';
 
-class StartSubjective extends StatefulWidget {
+class StartMCQ2 extends StatefulWidget {
   final Object argument;
 
-  const StartSubjective({Key key, this.argument}) : super(key: key);
+  const StartMCQ2({Key key, this.argument}) : super(key: key);
 
   @override
   _LoginWithLogoState createState() => _LoginWithLogoState();
 }
 
-class _LoginWithLogoState extends State<StartSubjective>
+class _LoginWithLogoState extends State<StartMCQ2>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
@@ -60,24 +58,23 @@ class _LoginWithLogoState extends State<StartSubjective>
   List<XMLJSON> xmlList = new List();
 
   bool full_show = false;
-  String testQuestionId = "";
-  String totalQuestions = "";
+
   List<bool> previousClicked;
   List<bool> optionsClicked;
   Map finalMap = {};
   @override
   void initState() {
     super.initState();
-
     var encodedJson = json.encode(widget.argument);
     var data = json.decode(encodedJson);
-    print(json.encode(widget.argument) + "  2nd");
-
-    test_id = data['Response']['testId'].toString();
-    chapter_id = data['chapter_id'].toString();
-    finalMap["TestQuestionId"] = data['Response']['TestQuestionId'].toString();
-    finalMap["test_id"] = data['Response']['testId'].toString();
-
+    chapter_id = data["chapter_id"].toString();
+    set_id = data["set_id"];
+    re_attempt = data['re-attempt'] == "true" ? true : false;
+    test_id = data['test_id'];
+    type = data['type'];
+    _duration = int.parse(data['timeToComp'].toString());
+    _duration1 = int.parse(data['timeToComp'].toString());
+    print(re_attempt);
     _scrollController = ScrollController()
       ..addListener(() {
         setState(() {});
@@ -102,41 +99,54 @@ class _LoginWithLogoState extends State<StartSubjective>
         _getTime();
         _quiz = _getTestData();
         _controller.start();
-        _controller1.start();
+        //   _controller1.start();
       });
     });
   }
 
   Future _getTestData() async {
     var response = await http.post(
-        new Uri.https(BASE_URL, API_PATH + "/subjective-test-start"),
+        new Uri.https(BASE_URL, API_PATH + "/start-level-test"),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer ' + api_token.toString(),
         },
         body: {
-          "test_id": test_id.toString(),
-          "student_id": user_id.toString()
+          "student_id": user_id.toString(),
+          "chapter_id": chapter_id,
+          "set_id": set_id
         });
-    print(jsonEncode(
-        {"test_id": test_id.toString(), "student_id": user_id.toString()}));
+    print(jsonEncode({
+      "student_id": user_id.toString(),
+      "chapter_id": chapter_id,
+      "set_id": set_id
+    }));
     if (response.statusCode == 200) {
-      Map data = jsonDecode(response.body);
-      setState(() {
-        totalQuestions = data['Response'].length.toString();
-      });
+      Map a = jsonDecode(response.body);
+      Map data = {};
+      arr = new List(10);
+      optionsClicked = new List(10);
+      previousClicked = new List(10);
 
-      arr = new List(int.parse(totalQuestions));
-      optionsClicked = new List(int.parse(totalQuestions));
-      previousClicked = new List(int.parse(totalQuestions));
-
-      for (int i = 0; i < int.parse(totalQuestions); i++) {
+      data['ErrorCode'] = a["ErrorCode"].toString();
+      List temp = [];
+      for (int i = 0; i < 10; i++) {
         setState(() {
           optionsClicked[i] = false;
           previousClicked[i] = false;
         });
+        temp.add(a['Response'][i.toString()]);
       }
+      data['Response'] = temp;
+      finalMap["TestQuestionId"] = a['Response']["TestQuestionId"];
+      finalMap["set_id"] = a['Response']["set_id"];
+      finalMap["chapter_id"] = chapter_id.toString();
+      if (re_attempt) {
+        finalMap["test_id"] = test_id.toString();
+      }
+      finalMap["user_id"] = user_id.toString();
 
+      print(data);
       return data;
     } else {
       throw Exception('Something went wrong');
@@ -172,7 +182,8 @@ class _LoginWithLogoState extends State<StartSubjective>
               value: 1,
               groupValue: arr[index],
               color: Color(0xffF9F9FB),
-              groupName: response[0]['option_name'],
+              groupName:
+                  response[0]['option_name'].toString().replaceAll("?", "₹"),
               onChanged: (val) {
                 selectedRadio(val, index);
               },
@@ -186,7 +197,8 @@ class _LoginWithLogoState extends State<StartSubjective>
               value: 2,
               groupValue: arr[index],
               color: Color(0xffF9F9FB),
-              groupName: response[1]['option_name'],
+              groupName:
+                  response[1]['option_name'].toString().replaceAll("?", "₹"),
               onChanged: (val) {
                 selectedRadio(val, index);
               },
@@ -200,7 +212,8 @@ class _LoginWithLogoState extends State<StartSubjective>
               value: 3,
               groupValue: arr[index],
               color: Color(0xffF9F9FB),
-              groupName: response[2]['option_name'],
+              groupName:
+                  response[2]['option_name'].toString().replaceAll("?", "₹"),
               onChanged: (val) {
                 selectedRadio(val, index);
               },
@@ -214,7 +227,8 @@ class _LoginWithLogoState extends State<StartSubjective>
               value: 4,
               groupValue: arr[index],
               color: Color(0xffF9F9FB),
-              groupName: response[3]['option_name'],
+              groupName:
+                  response[3]['option_name'].toString().replaceAll("?", "₹"),
               onChanged: (val) {
                 selectedRadio(val, index);
               },
@@ -265,15 +279,16 @@ class _LoginWithLogoState extends State<StartSubjective>
   CarouselController buttonCarouselController = CarouselController();
 
   Widget ansBuilder(response, int itemIndex) {
-    // if (response[itemIndex]['type'] == "MCQ") {
-    return _radioBuilderMCQ(response[itemIndex]['question_option'], itemIndex);
-    // } else if (response[itemIndex]['type'] == "Case Study") {
-    //   return _radioBuilderMCQ(
-    //       response[itemIndex]['question_option'], itemIndex);
-    // } else if (response[itemIndex]['type'] == "Assertion Reasoning") {
-    //   return _radioBuilderMCQ(
-    //       response[itemIndex]['question_option'], itemIndex);
-    // }
+    if (response[itemIndex]['type'] == "MCQ") {
+      return _radioBuilderMCQ(
+          response[itemIndex]['question_option'], itemIndex);
+    } else if (response[itemIndex]['type'] == "Case Study") {
+      return _radioBuilderMCQ(
+          response[itemIndex]['question_option'], itemIndex);
+    } else if (response[itemIndex]['type'] == "Assertion Reasoning") {
+      return _radioBuilderMCQ(
+          response[itemIndex]['question_option'], itemIndex);
+    }
   }
 
   void timerValueChangeListener(Duration timeElapsed) {
@@ -307,8 +322,7 @@ class _LoginWithLogoState extends State<StartSubjective>
         if (snapshot.connectionState == ConnectionState.done) {
           var errorCode = snapshot.data['ErrorCode'];
           var response = snapshot.data['Response'];
-
-          if (errorCode == 0) {
+          if (errorCode == "0") {
             return response.length != 0
                 ? Container(
                     child: CarouselSlider.builder(
@@ -330,12 +344,9 @@ class _LoginWithLogoState extends State<StartSubjective>
                           return ListView(primary: false, children: <Widget>[
                             Container(
                                 child: Column(children: <Widget>[
-                              SizedBox(
-                                height: 20,
-                              ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(top: 0, right: 10),
+                                    const EdgeInsets.only(top: 250, right: 10),
                                 child: Align(
                                   alignment: Alignment.bottomRight,
                                   child: Container(
@@ -350,10 +361,13 @@ class _LoginWithLogoState extends State<StartSubjective>
                                       controller: _controller1,
 
                                       // Width of the Countdown Widget.
-                                      width: 0,
+                                      width:
+                                          MediaQuery.of(context).size.width / 7,
 
                                       // Height of the Countdown Widget.
-                                      height: 0,
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              10,
 
                                       // Ring Color for Countdown Widget.
                                       ringColor: Colors.white,
@@ -412,189 +426,327 @@ class _LoginWithLogoState extends State<StartSubjective>
                                   ),
                                 ),
                               ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    full_show = !full_show;
-                                  });
-                                },
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Container(
-                                      color: Color(0xffF9F9FB),
-                                      padding: EdgeInsets.only(
-                                          left: 15,
-                                          right: 15,
-                                          top: 10,
-                                          bottom: 10),
-                                      margin:
-                                          EdgeInsets.only(left: 10, right: 10),
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            full_show
-                                                ? response[itemIndex][
-                                                            'comprahensive_paragraph ']
-                                                        .contains("<")
-                                                    ? Container(
-                                                        child: Html(
-                                                          data: response[
-                                                                  itemIndex][
-                                                              'comprahensive_paragraph '],
-                                                          style: {
-                                                            "table": Style(
-                                                              backgroundColor:
-                                                                  Color
-                                                                      .fromARGB(
-                                                                          0x50,
-                                                                          0xee,
-                                                                          0xee,
-                                                                          0xee),
-                                                            ),
-                                                            "tr": Style(
-                                                              border: Border(
-                                                                bottom: BorderSide(
-                                                                    color: Colors
-                                                                        .black),
-                                                                top: BorderSide(
-                                                                    color: Colors
-                                                                        .black),
-                                                                right: BorderSide(
-                                                                    color: Colors
-                                                                        .black),
-                                                                left: BorderSide(
-                                                                    color: Colors
-                                                                        .black),
-                                                              ),
-                                                            ),
-                                                            "th": Style(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(6),
-                                                              backgroundColor:
-                                                                  Colors.grey,
-                                                            ),
-                                                            "td": Style(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(6),
-                                                              alignment:
-                                                                  Alignment
-                                                                      .topLeft,
-                                                            ),
-                                                            'h5': Style(
-                                                                maxLines: 2,
-                                                                textOverflow:
-                                                                    TextOverflow
-                                                                        .ellipsis),
-                                                          },
-                                                        ),
-                                                      )
-                                                    : Flexible(
-                                                        child: Text(
-                                                            response[itemIndex][
-                                                                'comprahensive_paragraph '],
-                                                            textAlign:
-                                                                TextAlign.left,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .visible,
-                                                            style: normalText4),
-                                                      )
-                                                : response[itemIndex][
-                                                            'comprahensive_paragraph ']
-                                                        .contains("<")
-                                                    ? Container(
-                                                        child: Html(
-                                                          data: response[
-                                                                  itemIndex][
-                                                              'comprahensive_paragraph '],
-                                                          style: {
-                                                            "table": Style(
-                                                              backgroundColor:
-                                                                  Color
-                                                                      .fromARGB(
-                                                                          0x50,
-                                                                          0xee,
-                                                                          0xee,
-                                                                          0xee),
-                                                            ),
-                                                            "tr": Style(
-                                                              border: Border(
-                                                                bottom: BorderSide(
-                                                                    color: Colors
-                                                                        .black),
-                                                                top: BorderSide(
-                                                                    color: Colors
-                                                                        .black),
-                                                                right: BorderSide(
-                                                                    color: Colors
-                                                                        .black),
-                                                                left: BorderSide(
-                                                                    color: Colors
-                                                                        .black),
-                                                              ),
-                                                            ),
-                                                            "th": Style(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(6),
-                                                              backgroundColor:
-                                                                  Colors.grey,
-                                                            ),
-                                                            "td": Style(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(6),
-                                                              alignment:
-                                                                  Alignment
-                                                                      .topLeft,
-                                                            ),
-                                                            'h5': Style(
-                                                                maxLines: 2,
-                                                                textOverflow:
-                                                                    TextOverflow
-                                                                        .ellipsis),
-                                                          },
-                                                        ),
-                                                      )
-                                                    : Flexible(
-                                                        child: Text(
-                                                            response[itemIndex][
-                                                                'comprahensive_paragraph '],
-                                                            textAlign:
-                                                                TextAlign.left,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .visible,
-                                                            style: normalText4),
-                                                      ),
-                                            full_show
-                                                ? Icon(
-                                                    Icons
-                                                        .arrow_drop_up_outlined,
-                                                    color: Color(0xff017EFF),
-                                                    size: 24,
-                                                  )
-                                                : Icon(
-                                                    Icons.arrow_drop_down,
-                                                    color: Color(0xff017EFF),
-                                                    size: 24,
-                                                  )
-                                          ]),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              /* response[itemIndex]['type'] == "Case Study"
+                                  ? Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                            left: 15, right: 15),
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                    "Case Based MCQ" + ': ',
+                                                    textAlign: TextAlign.left,
+                                                    style: normalText3),
+                                              ),
+                                            ]),
+                                      ),
+                                    )
+                                  : Container(),
                               SizedBox(
-                                height: 10,
-                              ),
+                                height: 12,
+                              ),*/
+                              // response[itemIndex]['type'] == "Case Study"
+                              //     ? itemIndex == 11
+                              //         ? Align(
+                              //             alignment: Alignment.topLeft,
+                              //             child: Container(
+                              //               color: Color(0xffF9F9FB),
+                              //               padding: EdgeInsets.only(
+                              //                   left: 15,
+                              //                   right: 15,
+                              //                   top: 10,
+                              //                   bottom: 10),
+                              //               margin: EdgeInsets.only(
+                              //                   left: 10, right: 10),
+                              //               child: Row(
+                              //                   mainAxisAlignment:
+                              //                       MainAxisAlignment.start,
+                              //                   crossAxisAlignment:
+                              //                       CrossAxisAlignment.start,
+                              //                   children: <Widget>[
+                              //                     response[itemIndex][
+                              //                                 'comprahensive_paragraph ']
+                              //                             .contains("<")
+                              //                         ? Flexible(
+                              //                             child: Html(
+                              //                               data: response[
+                              //                                       itemIndex][
+                              //                                   'comprahensive_paragraph '],
+                              //                               style: {
+                              //                                 "table": Style(
+                              //                                   backgroundColor:
+                              //                                       Color.fromARGB(
+                              //                                           0x50,
+                              //                                           0xee,
+                              //                                           0xee,
+                              //                                           0xee),
+                              //                                 ),
+                              //                                 "tr": Style(
+                              //                                   border: Border(
+                              //                                     bottom: BorderSide(
+                              //                                         color: Colors
+                              //                                             .black),
+                              //                                     top: BorderSide(
+                              //                                         color: Colors
+                              //                                             .black),
+                              //                                     right: BorderSide(
+                              //                                         color: Colors
+                              //                                             .black),
+                              //                                     left: BorderSide(
+                              //                                         color: Colors
+                              //                                             .black),
+                              //                                   ),
+                              //                                 ),
+                              //                                 "th": Style(
+                              //                                   padding:
+                              //                                       EdgeInsets
+                              //                                           .all(6),
+                              //                                   backgroundColor:
+                              //                                       Colors.grey,
+                              //                                 ),
+                              //                                 "td": Style(
+                              //                                   padding:
+                              //                                       EdgeInsets
+                              //                                           .all(6),
+                              //                                   alignment:
+                              //                                       Alignment
+                              //                                           .topLeft,
+                              //                                 ),
+                              //                                 'h5': Style(
+                              //                                     maxLines: 2,
+                              //                                     textOverflow:
+                              //                                         TextOverflow
+                              //                                             .ellipsis),
+                              //                               },
+                              //                             ),
+                              //                           )
+                              //                         : Flexible(
+                              //                             child: Text(
+                              //                                 response[
+                              //                                         itemIndex]
+                              //                                     [
+                              //                                     'comprahensive_paragraph '],
+                              //                                 textAlign:
+                              //                                     TextAlign
+                              //                                         .left,
+                              //                                 maxLines: 100,
+                              //                                 overflow:
+                              //                                     TextOverflow
+                              //                                         .visible,
+                              //                                 style:
+                              //                                     normalText4),
+                              //                           ),
+                              //                     /*  Icon(
+                              //                     Icons.arrow_drop_down,
+                              //                     color: Color(0xff017EFF),
+                              //                     size: 24,
+                              //                   )*/
+                              //                   ]),
+                              //             ),
+                              //           )
+                              //         : InkWell(
+                              //             onTap: () {
+                              //               setState(() {
+                              //                 full_show = !full_show;
+                              //               });
+                              //             },
+                              //             child: Align(
+                              //               alignment: Alignment.topLeft,
+                              //               child: Container(
+                              //                 color: Color(0xffF9F9FB),
+                              //                 padding: EdgeInsets.only(
+                              //                     left: 15,
+                              //                     right: 15,
+                              //                     top: 10,
+                              //                     bottom: 10),
+                              //                 margin: EdgeInsets.only(
+                              //                     left: 10, right: 10),
+                              //                 child: Row(
+                              //                     mainAxisAlignment:
+                              //                         MainAxisAlignment.start,
+                              //                     crossAxisAlignment:
+                              //                         CrossAxisAlignment.start,
+                              //                     children: <Widget>[
+                              //                       full_show
+                              //                           ? response[itemIndex][
+                              //                                       'comprahensive_paragraph ']
+                              //                                   .contains("<")
+                              //                               ? Flexible(
+                              //                                   child: Html(
+                              //                                     data: response[
+                              //                                             itemIndex]
+                              //                                         [
+                              //                                         'comprahensive_paragraph '],
+                              //                                     style: {
+                              //                                       "table":
+                              //                                           Style(
+                              //                                         backgroundColor: Color.fromARGB(
+                              //                                             0x50,
+                              //                                             0xee,
+                              //                                             0xee,
+                              //                                             0xee),
+                              //                                       ),
+                              //                                       "tr": Style(
+                              //                                         border:
+                              //                                             Border(
+                              //                                           bottom: BorderSide(
+                              //                                               color:
+                              //                                                   Colors.black),
+                              //                                           top: BorderSide(
+                              //                                               color:
+                              //                                                   Colors.black),
+                              //                                           right: BorderSide(
+                              //                                               color:
+                              //                                                   Colors.black),
+                              //                                           left: BorderSide(
+                              //                                               color:
+                              //                                                   Colors.black),
+                              //                                         ),
+                              //                                       ),
+                              //                                       "th": Style(
+                              //                                         padding:
+                              //                                             EdgeInsets.all(
+                              //                                                 6),
+                              //                                         backgroundColor:
+                              //                                             Colors
+                              //                                                 .grey,
+                              //                                       ),
+                              //                                       "td": Style(
+                              //                                         padding:
+                              //                                             EdgeInsets.all(
+                              //                                                 6),
+                              //                                         alignment:
+                              //                                             Alignment
+                              //                                                 .topLeft,
+                              //                                       ),
+                              //                                       'h5': Style(
+                              //                                           maxLines:
+                              //                                               2,
+                              //                                           textOverflow:
+                              //                                               TextOverflow.ellipsis),
+                              //                                     },
+                              //                                   ),
+                              //                                 )
+                              //                               : Flexible(
+                              //                                   child: Text(
+                              //                                       response[
+                              //                                               itemIndex]
+                              //                                           [
+                              //                                           'comprahensive_paragraph '],
+                              //                                       textAlign:
+                              //                                           TextAlign
+                              //                                               .left,
+                              //                                       overflow:
+                              //                                           TextOverflow
+                              //                                               .visible,
+                              //                                       style:
+                              //                                           normalText4),
+                              //                                 )
+                              //                           : response[itemIndex][
+                              //                                       'comprahensive_paragraph ']
+                              //                                   .contains("<")
+                              //                               ? Expanded(
+                              //                                   child: Html(
+                              //                                     data: response[
+                              //                                             itemIndex]
+                              //                                         [
+                              //                                         'comprahensive_paragraph '],
+                              //                                     style: {
+                              //                                       "table":
+                              //                                           Style(
+                              //                                         backgroundColor: Color.fromARGB(
+                              //                                             0x50,
+                              //                                             0xee,
+                              //                                             0xee,
+                              //                                             0xee),
+                              //                                       ),
+                              //                                       "tr": Style(
+                              //                                         border:
+                              //                                             Border(
+                              //                                           bottom: BorderSide(
+                              //                                               color:
+                              //                                                   Colors.black),
+                              //                                           top: BorderSide(
+                              //                                               color:
+                              //                                                   Colors.black),
+                              //                                           right: BorderSide(
+                              //                                               color:
+                              //                                                   Colors.black),
+                              //                                           left: BorderSide(
+                              //                                               color:
+                              //                                                   Colors.black),
+                              //                                         ),
+                              //                                       ),
+                              //                                       "th": Style(
+                              //                                         padding:
+                              //                                             EdgeInsets.all(
+                              //                                                 6),
+                              //                                         backgroundColor:
+                              //                                             Colors
+                              //                                                 .grey,
+                              //                                       ),
+                              //                                       "td": Style(
+                              //                                         padding:
+                              //                                             EdgeInsets.all(
+                              //                                                 6),
+                              //                                         alignment:
+                              //                                             Alignment
+                              //                                                 .topLeft,
+                              //                                       ),
+                              //                                       'h5': Style(
+                              //                                           maxLines:
+                              //                                               2,
+                              //                                           textOverflow:
+                              //                                               TextOverflow.ellipsis),
+                              //                                     },
+                              //                                   ),
+                              //                                 )
+                              //                               : Flexible(
+                              //                                   child: Text(
+                              //                                       response[
+                              //                                               itemIndex]
+                              //                                           [
+                              //                                           'comprahensive_paragraph '],
+                              //                                       textAlign:
+                              //                                           TextAlign
+                              //                                               .left,
+                              //                                       maxLines: 1,
+                              //                                       overflow:
+                              //                                           TextOverflow
+                              //                                               .visible,
+                              //                                       style:
+                              //                                           normalText4),
+                              //                                 ),
+                              //                       full_show
+                              //                           ? Icon(
+                              //                               Icons
+                              //                                   .arrow_drop_up_outlined,
+                              //                               color: Color(
+                              //                                   0xff017EFF),
+                              //                               size: 24,
+                              //                             )
+                              //                           : Icon(
+                              //                               Icons
+                              //                                   .arrow_drop_down,
+                              //                               color: Color(
+                              //                                   0xff017EFF),
+                              //                               size: 24,
+                              //                             )
+                              //                     ]),
+                              //               ),
+                              //             ),
+                              //           )
+                              //     : Container(),
+                              // SizedBox(
+                              //   height: 10,
+                              // ),
                               Align(
                                 alignment: Alignment.topLeft,
                                 child: Container(
@@ -753,9 +905,7 @@ class _LoginWithLogoState extends State<StartSubjective>
                                                     onPressed: () async {
                                                       XMLJSON xmljson =
                                                           new XMLJSON();
-                                                      print(xmljson);
-                                                      print(arr.toString() +
-                                                          " test");
+                                                      print(arr);
 
                                                       if (previousClicked
                                                           .contains(true)) {
@@ -1077,9 +1227,7 @@ class _LoginWithLogoState extends State<StartSubjective>
                                                           diff_mn.toString();
                                                       finalMap["questions"] =
                                                           xmlList;
-                                                      finalMap["user_id"] =
-                                                          user_id.toString();
-                                                      print(finalMap);
+
                                                       Map<String, String>
                                                           headers = {
                                                         'Accept':
@@ -1096,7 +1244,7 @@ class _LoginWithLogoState extends State<StartSubjective>
                                                         new Uri.https(
                                                             BASE_URL,
                                                             API_PATH +
-                                                                "/subjective-test-finish"),
+                                                                "/finish-level-test"),
                                                         body: jsonEncode(
                                                             finalMap),
                                                         headers: headers,
@@ -1128,19 +1276,24 @@ class _LoginWithLogoState extends State<StartSubjective>
                                                             '/view-performance-new',
                                                             arguments: <String,
                                                                 String>{
-                                                              'test_id': test_id
+                                                              'test_id': data[
+                                                                          'Response']
+                                                                      ['testId']
                                                                   .toString(),
                                                               'type': type ==
                                                                       "institute"
                                                                   ? "institute"
                                                                   : "",
                                                               'total_ques':
-                                                                  totalQuestions
-                                                                      .toString(),
+                                                                  "10",
                                                               "chapter_id":
                                                                   chapter_id
                                                                       .toString(),
-                                                              "testType": "sub"
+                                                              "testType": "obj",
+                                                              "reattempt":
+                                                                  re_attempt
+                                                                      ? "1"
+                                                                      : "0"
                                                             },
                                                           );
                                                         } else {
@@ -1177,7 +1330,7 @@ class _LoginWithLogoState extends State<StartSubjective>
                                   width: double.infinity,
                                   child: Center(
                                     child: Text(
-                                      '${itemIndex + 1}/' + totalQuestions,
+                                      '${itemIndex + 1}/10',
                                       style: normalText6,
                                     ),
                                   ),
@@ -1200,8 +1353,8 @@ class _LoginWithLogoState extends State<StartSubjective>
 
   CountDownController _controller = CountDownController();
   CountDownController _controller1 = CountDownController();
-  int _duration = 86400;
-  int _duration1 = 86400;
+  int _duration = 0;
+  int _duration1 = 0;
   Future<bool> _onWillPop() async {
     return (await showDialog(
           context: context,
@@ -1301,7 +1454,7 @@ class _LoginWithLogoState extends State<StartSubjective>
                       Positioned(
                         right: 0.0,
                         left: 0.0,
-                        top: 0.0,
+                        top: 60.0,
                         bottom: 0.0,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1309,8 +1462,8 @@ class _LoginWithLogoState extends State<StartSubjective>
                               Container(
                                 child: Image.asset(
                                   'assets/images/question.png',
-                                  width: 0,
-                                  height: 0,
+                                  width: 50,
+                                  height: 50,
                                 ),
                               ),
                               Expanded(
@@ -1329,10 +1482,14 @@ class _LoginWithLogoState extends State<StartSubjective>
                                         controller: _controller,
 
                                         // Width of the Countdown Widget.
-                                        width: 0,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4,
 
                                         // Height of the Countdown Widget.
-                                        height: 0,
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                4,
 
                                         // Ring Color for Countdown Widget.
                                         ringColor: Colors.grey[300],

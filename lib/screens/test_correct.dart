@@ -49,8 +49,7 @@ class _LoginWithLogoState extends State<StartMCQ>
   String board_id = "";
 
   String test_id = "";
-  String set_id = "";
-  bool re_attempt = false;
+
   var answerId;
   bool lastAns = false;
   bool done = false;
@@ -61,26 +60,20 @@ class _LoginWithLogoState extends State<StartMCQ>
 
   List<bool> previousClicked;
   List<bool> optionsClicked;
-  Map finalMap = {};
   @override
   void initState() {
     super.initState();
     var encodedJson = json.encode(widget.argument);
     var data = json.decode(encodedJson);
-    chapter_id = data["chapter_id"];
-    set_id = data["set_id"];
-    re_attempt = data['re-attempt'] == "true" ? true : false;
     test_id = data['test_id'];
-    _duration = int.parse(data['timeToComp'].toString());
-    _duration1 = int.parse(data['timeToComp'].toString());
-    print(re_attempt);
+    type = data['type'];
     _scrollController = ScrollController()
       ..addListener(() {
-        setState(() {});
+        setState(() {
+        });
       });
     _getUser();
   }
-
   ScrollController _scrollController;
   TextStyle normalText6 = GoogleFonts.montserrat(
       fontSize: 15,
@@ -98,59 +91,42 @@ class _LoginWithLogoState extends State<StartMCQ>
         _getTime();
         _quiz = _getTestData();
         _controller.start();
-        //   _controller1.start();
+     //   _controller1.start();
       });
     });
   }
 
   Future _getTestData() async {
+    Map<String, String> headers = {
+      // 'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $api_token',
+    };
     var response = await http.post(
-        new Uri.https(BASE_URL, API_PATH + "/start-level-test"),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ' + api_token.toString(),
-        },
-        body: {
-          "student_id": user_id.toString(),
-          "chapter_id": chapter_id,
-          "set_id": set_id
-        });
-    print(jsonEncode({
-      "student_id": user_id.toString(),
-      "chapter_id": chapter_id,
-      "set_id": set_id
-    }));
+      new Uri.https(BASE_URL, API_PATH + "/start-test"),
+      body: {"test_id": test_id, "user_id": user_id},
+      headers: headers,
+    );
+    print({"test_id": test_id, "user_id": user_id});
     if (response.statusCode == 200) {
-      Map a = jsonDecode(response.body);
-      Map data = {};
-      arr = new List(10);
-      optionsClicked = new List(10);
-      previousClicked = new List(10);
-
-      data['ErrorCode'] = a["ErrorCode"].toString();
-      List temp = [];
-      for (int i = 0; i < 10; i++) {
+      var data = json.decode(response.body);
+      arr = new List(data['Response'].length);
+      optionsClicked = new List(data['Response'].length);
+      previousClicked = new List(data['Response'].length);
+      for(int i=0;i<data['Response'].length;i++){
         setState(() {
-          optionsClicked[i] = false;
-          previousClicked[i] = false;
+          optionsClicked[i]=false;
+          previousClicked[i]=false;
         });
-        temp.add(a['Response'][i.toString()]);
       }
-      data['Response'] = temp;
-      finalMap["TestQuestionId"] = a['Response']["TestQuestionId"];
-      finalMap["set_id"] = a['Response']["set_id"];
-      finalMap["chapter_id"] = chapter_id.toString();
-      if (re_attempt) {
-        finalMap["test_id"] = test_id.toString();
-      }
-      finalMap["user_id"] = user_id.toString();
-
       print(data);
       return data;
     } else {
       throw Exception('Something went wrong');
     }
   }
+
+
 
   var currentTime;
 
@@ -232,7 +208,7 @@ class _LoginWithLogoState extends State<StartMCQ>
         ]));
   }
 
-  /* Widget _radioBuilderTRUE(response, int index) {
+ /* Widget _radioBuilderTRUE(response, int index) {
     return Container(
         margin: EdgeInsets.only(left: 10, right: 16),
         child: Column(children: <Widget>[
@@ -266,23 +242,25 @@ class _LoginWithLogoState extends State<StartMCQ>
 
   selectedRadio(int val, int ind) {
     setState(() {
-      optionsClicked[ind] = true;
+      optionsClicked[ind]=true;
       arr[ind] = val;
+      print(arr[ind]);
     });
   }
 
   CarouselController buttonCarouselController = CarouselController();
 
   Widget ansBuilder(response, int itemIndex) {
-    // if (response[itemIndex]['type'] == "MCQ") {
-    return _radioBuilderMCQ(response[itemIndex]['question_option'], itemIndex);
-    // } else if (response[itemIndex]['type'] == "Case Study") {
-    //   return _radioBuilderMCQ(
-    //       response[itemIndex]['question_option'], itemIndex);
-    // } else if (response[itemIndex]['type'] == "Assertion Reasoning") {
-    //   return _radioBuilderMCQ(
-    //       response[itemIndex]['question_option'], itemIndex);
-    // }
+    if (response[itemIndex]['type'] == "MCQ") {
+      return _radioBuilderMCQ(
+          response[itemIndex]['question_option'], itemIndex);
+    } else if (response[itemIndex]['type'] == "Case Study") {
+      return _radioBuilderMCQ(
+          response[itemIndex]['question_option'], itemIndex);
+    } else if(response[itemIndex]['type'] == "Assertion Reasoning"){
+      return _radioBuilderMCQ(
+          response[itemIndex]['question_option'], itemIndex);
+    }
   }
 
   void timerValueChangeListener(Duration timeElapsed) {
@@ -296,7 +274,6 @@ class _LoginWithLogoState extends State<StartMCQ>
   void handleTimerOnEnd() {
     print("timer has ended");
   }
-
   @override
   void dispose() {
     _scrollController.dispose(); // dispose the controller
@@ -307,7 +284,6 @@ class _LoginWithLogoState extends State<StartMCQ>
     _scrollController.animateTo(0,
         duration: Duration(seconds: 3), curve: Curves.linear);
   }
-
   Widget _customContent() {
     return FutureBuilder(
       future: _quiz,
@@ -316,8 +292,7 @@ class _LoginWithLogoState extends State<StartMCQ>
         if (snapshot.connectionState == ConnectionState.done) {
           var errorCode = snapshot.data['ErrorCode'];
           var response = snapshot.data['Response'];
-
-          if (errorCode == "0") {
+          if (errorCode == 0) {
             return response.length != 0
                 ? Container(
                     child: CarouselSlider.builder(
@@ -421,422 +396,304 @@ class _LoginWithLogoState extends State<StartMCQ>
                                   ),
                                 ),
                               ),
-                              // response[itemIndex]['type'] == "Case Study"
-                              //     ? Align(
-                              //         alignment: Alignment.topLeft,
-                              //         child: Container(
-                              //           padding: EdgeInsets.only(
-                              //               left: 15, right: 15),
-                              //           child: Row(
-                              //               mainAxisAlignment:
-                              //                   MainAxisAlignment.start,
-                              //               crossAxisAlignment:
-                              //                   CrossAxisAlignment.start,
-                              //               children: <Widget>[
-                              //                 Align(
-                              //                   alignment: Alignment.topLeft,
-                              //                   child: Text(
-                              //                       "Case Based MCQ" + ': ',
-                              //                       textAlign: TextAlign.left,
-                              //                       style: normalText3),
-                              //                 ),
-                              //               ]),
-                              //         ),
-                              //       )
-                              //     : Container(),
-                              // SizedBox(
-                              //   height: 12,
-                              // )
-                              // response[itemIndex]['type'] == "Case Study"
-                              //     ? itemIndex == 11
-                              //         ? Align(
-                              //             alignment: Alignment.topLeft,
-                              //             child: Container(
-                              //               color: Color(0xffF9F9FB),
-                              //               padding: EdgeInsets.only(
-                              //                   left: 15,
-                              //                   right: 15,
-                              //                   top: 10,
-                              //                   bottom: 10),
-                              //               margin: EdgeInsets.only(
-                              //                   left: 10, right: 10),
-                              //               child: Row(
-                              //                   mainAxisAlignment:
-                              //                       MainAxisAlignment.start,
-                              //                   crossAxisAlignment:
-                              //                       CrossAxisAlignment.start,
-                              //                   children: <Widget>[
-                              //                     response[itemIndex][
-                              //                                 'comprahensive_paragraph ']
-                              //                             .contains("<")
-                              //                         ? Flexible(
-                              //                             child: Html(
-                              //                               data: response[
-                              //                                       itemIndex][
-                              //                                   'comprahensive_paragraph '],
-                              //                               style: {
-                              //                                 "table": Style(
-                              //                                   backgroundColor:
-                              //                                       Color.fromARGB(
-                              //                                           0x50,
-                              //                                           0xee,
-                              //                                           0xee,
-                              //                                           0xee),
-                              //                                 ),
-                              //                                 "tr": Style(
-                              //                                   border: Border(
-                              //                                     bottom: BorderSide(
-                              //                                         color: Colors
-                              //                                             .black),
-                              //                                     top: BorderSide(
-                              //                                         color: Colors
-                              //                                             .black),
-                              //                                     right: BorderSide(
-                              //                                         color: Colors
-                              //                                             .black),
-                              //                                     left: BorderSide(
-                              //                                         color: Colors
-                              //                                             .black),
-                              //                                   ),
-                              //                                 ),
-                              //                                 "th": Style(
-                              //                                   padding:
-                              //                                       EdgeInsets
-                              //                                           .all(6),
-                              //                                   backgroundColor:
-                              //                                       Colors.grey,
-                              //                                 ),
-                              //                                 "td": Style(
-                              //                                   padding:
-                              //                                       EdgeInsets
-                              //                                           .all(6),
-                              //                                   alignment:
-                              //                                       Alignment
-                              //                                           .topLeft,
-                              //                                 ),
-                              //                                 'h5': Style(
-                              //                                     maxLines: 2,
-                              //                                     textOverflow:
-                              //                                         TextOverflow
-                              //                                             .ellipsis),
-                              //                               },
-                              //                             ),
-                              //                           )
-                              //                         : Flexible(
-                              //                             child: Text(
-                              //                                 response[
-                              //                                         itemIndex]
-                              //                                     [
-                              //                                     'comprahensive_paragraph '],
-                              //                                 textAlign:
-                              //                                     TextAlign
-                              //                                         .left,
-                              //                                 maxLines: 100,
-                              //                                 overflow:
-                              //                                     TextOverflow
-                              //                                         .visible,
-                              //                                 style:
-                              //                                     normalText4),
-                              //                           ),
-                              //                     /*  Icon(
-                              //                     Icons.arrow_drop_down,
-                              //                     color: Color(0xff017EFF),
-                              //                     size: 24,
-                              //                   )*/
-                              //                   ]),
-                              //             ),
-                              //           )
-                              //         : InkWell(
-                              //             onTap: () {
-                              //               setState(() {
-                              //                 full_show = !full_show;
-                              //               });
-                              //             },
-                              //             child: Align(
-                              //               alignment: Alignment.topLeft,
-                              //               child: Container(
-                              //                 color: Color(0xffF9F9FB),
-                              //                 padding: EdgeInsets.only(
-                              //                     left: 15,
-                              //                     right: 15,
-                              //                     top: 10,
-                              //                     bottom: 10),
-                              //                 margin: EdgeInsets.only(
-                              //                     left: 10, right: 10),
-                              //                 child: Row(
-                              //                     mainAxisAlignment:
-                              //                         MainAxisAlignment.start,
-                              //                     crossAxisAlignment:
-                              //                         CrossAxisAlignment.start,
-                              //                     children: <Widget>[
-                              //                       full_show
-                              //                           ? response[itemIndex][
-                              //                                       'comprahensive_paragraph ']
-                              //                                   .contains("<")
-                              //                               ? Flexible(
-                              //                                   child: Html(
-                              //                                     data: response[
-                              //                                             itemIndex]
-                              //                                         [
-                              //                                         'comprahensive_paragraph '],
-                              //                                     style: {
-                              //                                       "table":
-                              //                                           Style(
-                              //                                         backgroundColor: Color.fromARGB(
-                              //                                             0x50,
-                              //                                             0xee,
-                              //                                             0xee,
-                              //                                             0xee),
-                              //                                       ),
-                              //                                       "tr": Style(
-                              //                                         border:
-                              //                                             Border(
-                              //                                           bottom: BorderSide(
-                              //                                               color:
-                              //                                                   Colors.black),
-                              //                                           top: BorderSide(
-                              //                                               color:
-                              //                                                   Colors.black),
-                              //                                           right: BorderSide(
-                              //                                               color:
-                              //                                                   Colors.black),
-                              //                                           left: BorderSide(
-                              //                                               color:
-                              //                                                   Colors.black),
-                              //                                         ),
-                              //                                       ),
-                              //                                       "th": Style(
-                              //                                         padding:
-                              //                                             EdgeInsets.all(
-                              //                                                 6),
-                              //                                         backgroundColor:
-                              //                                             Colors
-                              //                                                 .grey,
-                              //                                       ),
-                              //                                       "td": Style(
-                              //                                         padding:
-                              //                                             EdgeInsets.all(
-                              //                                                 6),
-                              //                                         alignment:
-                              //                                             Alignment
-                              //                                                 .topLeft,
-                              //                                       ),
-                              //                                       'h5': Style(
-                              //                                           maxLines:
-                              //                                               2,
-                              //                                           textOverflow:
-                              //                                               TextOverflow.ellipsis),
-                              //                                     },
-                              //                                   ),
-                              //                                 )
-                              //                               : Flexible(
-                              //                                   child: Text(
-                              //                                       response[
-                              //                                               itemIndex]
-                              //                                           [
-                              //                                           'comprahensive_paragraph '],
-                              //                                       textAlign:
-                              //                                           TextAlign
-                              //                                               .left,
-                              //                                       overflow:
-                              //                                           TextOverflow
-                              //                                               .visible,
-                              //                                       style:
-                              //                                           normalText4),
-                              //                                 )
-                              //                           : response[itemIndex][
-                              //                                       'comprahensive_paragraph ']
-                              //                                   .contains("<")
-                              //                               ? Expanded(
-                              //                                   child: Html(
-                              //                                     data: response[
-                              //                                             itemIndex]
-                              //                                         [
-                              //                                         'comprahensive_paragraph '],
-                              //                                     style: {
-                              //                                       "table":
-                              //                                           Style(
-                              //                                         backgroundColor: Color.fromARGB(
-                              //                                             0x50,
-                              //                                             0xee,
-                              //                                             0xee,
-                              //                                             0xee),
-                              //                                       ),
-                              //                                       "tr": Style(
-                              //                                         border:
-                              //                                             Border(
-                              //                                           bottom: BorderSide(
-                              //                                               color:
-                              //                                                   Colors.black),
-                              //                                           top: BorderSide(
-                              //                                               color:
-                              //                                                   Colors.black),
-                              //                                           right: BorderSide(
-                              //                                               color:
-                              //                                                   Colors.black),
-                              //                                           left: BorderSide(
-                              //                                               color:
-                              //                                                   Colors.black),
-                              //                                         ),
-                              //                                       ),
-                              //                                       "th": Style(
-                              //                                         padding:
-                              //                                             EdgeInsets.all(
-                              //                                                 6),
-                              //                                         backgroundColor:
-                              //                                             Colors
-                              //                                                 .grey,
-                              //                                       ),
-                              //                                       "td": Style(
-                              //                                         padding:
-                              //                                             EdgeInsets.all(
-                              //                                                 6),
-                              //                                         alignment:
-                              //                                             Alignment
-                              //                                                 .topLeft,
-                              //                                       ),
-                              //                                       'h5': Style(
-                              //                                           maxLines:
-                              //                                               2,
-                              //                                           textOverflow:
-                              //                                               TextOverflow.ellipsis),
-                              //                                     },
-                              //                                   ),
-                              //                                 )
-                              //                               : Flexible(
-                              //                                   child: Text(
-                              //                                       response[
-                              //                                               itemIndex]
-                              //                                           [
-                              //                                           'comprahensive_paragraph '],
-                              //                                       textAlign:
-                              //                                           TextAlign
-                              //                                               .left,
-                              //                                       maxLines: 1,
-                              //                                       overflow:
-                              //                                           TextOverflow
-                              //                                               .visible,
-                              //                                       style:
-                              //                                           normalText4),
-                              //                                 ),
-                              //                       full_show
-                              //                           ? Icon(
-                              //                               Icons
-                              //                                   .arrow_drop_up_outlined,
-                              //                               color: Color(
-                              //                                   0xff017EFF),
-                              //                               size: 24,
-                              //                             )
-                              //                           : Icon(
-                              //                               Icons
-                              //                                   .arrow_drop_down,
-                              //                               color: Color(
-                              //                                   0xff017EFF),
-                              //                               size: 24,
-                              //                             )
-                              //                     ]),
-                              //               ),
-                              //             ),
-                              //           )
-                              //     : Container(),
-                              // SizedBox(
-                              //   height: 10,
-                              // ),
-                              // Align(
-                              //   alignment: Alignment.topLeft,
-                              //   child: Container(
-                              //     color: Color(0xffF9F9FB),
-                              //     padding: EdgeInsets.only(left: 15, right: 15),
-                              //     margin: EdgeInsets.only(left: 10, right: 10),
-                              //     child: Row(
-                              //         mainAxisAlignment:
-                              //             MainAxisAlignment.start,
-                              //         crossAxisAlignment:
-                              //             CrossAxisAlignment.start,
-                              //         children: <Widget>[
-                              //           /* Align(
-                              //             alignment: Alignment.centerLeft,
-                              //             child: Text(
-                              //                 "Q" +
-                              //                     (itemIndex + 1).toString() +
-                              //                     '. ',
-                              //                 textAlign: TextAlign.left,
-                              //                 style: normalText5),
-                              //           ),*/
-                              //           /*response[itemIndex][
-                              //           'question'].contains("&")?*/
-                              //           Flexible(
-                              //             child: Html(
-                              //               data: "Q" +
-                              //                   (itemIndex + 1).toString() +
-                              //                   '. ' +
-                              //                   response[itemIndex]['question'],
-                              //               style: {
-                              //                 "body": Style(
-                              //                   fontSize: FontSize(15.0),
-                              //                   color: Color(0xff2E2A4A),
-                              //                   fontWeight: FontWeight.w600,
-                              //                 ),
-                              //                 "table": Style(
-                              //                   backgroundColor: Color.fromARGB(
-                              //                       0x50, 0xee, 0xee, 0xee),
-                              //                 ),
-                              //                 "tr": Style(
-                              //                   border: Border(
-                              //                     bottom: BorderSide(
-                              //                         color: Colors.black),
-                              //                     top: BorderSide(
-                              //                         color: Colors.black),
-                              //                     right: BorderSide(
-                              //                         color: Colors.black),
-                              //                     left: BorderSide(
-                              //                         color: Colors.black),
-                              //                   ),
-                              //                 ),
-                              //                 "th": Style(
-                              //                   padding: EdgeInsets.all(6),
-                              //                   backgroundColor: Colors.grey,
-                              //                 ),
-                              //                 "td": Style(
-                              //                   padding: EdgeInsets.all(6),
-                              //                   alignment: Alignment.topLeft,
-                              //                 ),
-                              //                 'h5': Style(
-                              //                     maxLines: 2,
-                              //                     textOverflow:
-                              //                         TextOverflow.ellipsis),
-                              //               },
-                              //             ),
-                              //           ) /*:
+                             /* response[itemIndex]['type'] == "Case Study"
+                                  ? Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                            left: 15, right: 15),
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                    "Case Based MCQ" + ': ',
+                                                    textAlign: TextAlign.left,
+                                                    style: normalText3),
+                                              ),
+                                            ]),
+                                      ),
+                                    )
+                                  : Container(),
+                              SizedBox(
+                                height: 12,
+                              ),*/
+                              response[itemIndex]['type'] == "Case Study"
+                                  ? itemIndex == 11
+                                      ? Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Container(
+                                            color: Color(0xffF9F9FB),
+                                            padding: EdgeInsets.only(
+                                                left: 15,
+                                                right: 15,
+                                                top: 10,
+                                                bottom: 10),
+                                            margin: EdgeInsets.only(
+                                                left: 10, right: 10),
+                                            child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  response[itemIndex][
+                                                  'comprahensive_paragraph '].contains("<")?Flexible(
+                                                    child: Html(
+                                                      data: response[itemIndex][
+                                                      'comprahensive_paragraph '],
 
-                              // */
-                              //           ,
-                              //         ]),
-                              //   ),
-                              // ),
-                              // Text("data"),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                                      style: {
+                                                        "table": Style(
+                                                          backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                                                        ),
+                                                        "tr": Style(
+                                                          border: Border(
+                                                            bottom: BorderSide(color: Colors.black),
+                                                            top: BorderSide(color: Colors.black),
+                                                            right: BorderSide(color: Colors.black),
+                                                            left: BorderSide(color: Colors.black),
+                                                          ),
+                                                        ),
+                                                        "th": Style(
+                                                          padding: EdgeInsets.all(6),
+                                                          backgroundColor: Colors.grey,
+                                                        ),
+                                                        "td": Style(
+                                                          padding: EdgeInsets.all(6),
+                                                          alignment: Alignment.topLeft,
+                                                        ),
+                                                        'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                                                      },
+
+                                                    ),
+                                                  ):  Flexible(
+                                                    child: Text(
+                                                        response[itemIndex][
+                                                            'comprahensive_paragraph '],
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        maxLines: 100,
+                                                        overflow: TextOverflow
+                                                            .visible,
+                                                        style: normalText4),
+                                                  ),
+                                                  /*  Icon(
+                                                  Icons.arrow_drop_down,
+                                                  color: Color(0xff017EFF),
+                                                  size: 24,
+                                                )*/
+                                                ]),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              full_show = !full_show;
+                                            });
+                                          },
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Container(
+                                              color: Color(0xffF9F9FB),
+                                              padding: EdgeInsets.only(
+                                                  left: 15,
+                                                  right: 15,
+                                                  top: 10,
+                                                  bottom: 10),
+                                              margin: EdgeInsets.only(
+                                                  left: 10, right: 10),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    full_show
+                                                        ?response[itemIndex][
+                                                    'comprahensive_paragraph '].contains("<")?Flexible(
+                                                      child: Html(
+                                                        data: response[itemIndex][
+                                                        'comprahensive_paragraph '],
+                                                        style: {
+                                                          "table": Style(
+                                                            backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                              bottom: BorderSide(color: Colors.black),
+                                                              top: BorderSide(color: Colors.black),
+                                                              right: BorderSide(color: Colors.black),
+                                                              left: BorderSide(color: Colors.black),
+                                                            ),
+                                                          ),
+                                                          "th": Style(
+                                                            padding: EdgeInsets.all(6),
+                                                            backgroundColor: Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding: EdgeInsets.all(6),
+                                                            alignment: Alignment.topLeft,
+                                                          ),
+                                                          'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                                                        },
+
+                                                      ),
+                                                    ): Flexible(
+                                                            child: Text(
+                                                                response[
+                                                                        itemIndex]
+                                                                    [
+                                                                    'comprahensive_paragraph '],
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .visible,
+                                                                style:
+                                                                    normalText4),
+                                                          )
+                                                        :response[itemIndex][
+                                                    'comprahensive_paragraph '].contains("<")?Expanded(
+                                                      child: Html(
+                                                        data: response[itemIndex][
+                                                        'comprahensive_paragraph '],
+                                                        style: {
+                                                          "table": Style(
+                                                            backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                              bottom: BorderSide(color: Colors.black),
+                                                              top: BorderSide(color: Colors.black),
+                                                              right: BorderSide(color: Colors.black),
+                                                              left: BorderSide(color: Colors.black),
+                                                            ),
+                                                          ),
+                                                          "th": Style(
+                                                            padding: EdgeInsets.all(6),
+                                                            backgroundColor: Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding: EdgeInsets.all(6),
+
+                                                            alignment: Alignment.topLeft,
+                                                          ),
+                                                          'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                                                        },
+
+                                                      ),
+                                                    ): Flexible(
+                                                            child: Text(
+                                                                response[
+                                                                        itemIndex]
+                                                                    [
+                                                                    'comprahensive_paragraph '],
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                                maxLines: 1,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .visible,
+                                                                style:
+                                                                    normalText4),
+                                                          ),
+                                                    full_show
+                                                        ? Icon(
+                                                            Icons
+                                                                .arrow_drop_up_outlined,
+                                                            color: Color(
+                                                                0xff017EFF),
+                                                            size: 24,
+                                                          )
+                                                        : Icon(
+                                                            Icons
+                                                                .arrow_drop_down,
+                                                            color: Color(
+                                                                0xff017EFF),
+                                                            size: 24,
+                                                          )
+                                                  ]),
+                                            ),
+                                          ),
+                                        )
+                                  : Container(),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Align(
+                                alignment: Alignment.topLeft,
                                 child: Container(
-                                  color: Colors.white,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                        "Q" +
-                                            (itemIndex + 1).toString() +
-                                            ". " +
-                                            response[itemIndex]['question']
-                                                .toString()
-                                                .replaceAll("<p>", "")
-                                                .replaceAll("</p>", "")
-                                                .replaceAll("&nbsp;", "")
-                                                .replaceAll("&#39;", "\'")
-                                                .replaceAll("&amp;", "\'"),
-                                        textAlign: TextAlign.left,
-                                        // maxLines: 100,
-                                        overflow: TextOverflow.visible,
-                                        style: normalText5),
-                                  ),
+                                  color: Color(0xffF9F9FB),
+                                  padding: EdgeInsets.only(left: 15, right: 15),
+                                  margin: EdgeInsets.only(left: 10, right: 10),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                       /* Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                              "Q" +
+                                                  (itemIndex + 1).toString() +
+                                                  '. ',
+                                              textAlign: TextAlign.left,
+                                              style: normalText5),
+                                        ),*/
+                                        /*response[itemIndex][
+                                        'question'].contains("&")?*/Flexible(
+                                          child: Html(
+                                            data:"Q" +
+                                                (itemIndex + 1).toString() +
+                                                '. '+ response[itemIndex][
+                                            'question'],
+                                            style: {
+                                              "body": Style(
+                                                fontSize: FontSize(15.0),
+                                                color: Color(0xff2E2A4A),
+                                                fontWeight: FontWeight.w600,
+                                              ),
+
+                                              "table": Style(
+                                                backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                                              ),
+                                              "tr": Style(
+                                                border: Border(
+                                                  bottom: BorderSide(color: Colors.black),
+                                                  top: BorderSide(color: Colors.black),
+                                                  right: BorderSide(color: Colors.black),
+                                                  left: BorderSide(color: Colors.black),
+                                                ),
+                                              ),
+                                              "th": Style(
+                                                padding: EdgeInsets.all(6),
+                                                backgroundColor: Colors.grey,
+                                              ),
+                                              "td": Style(
+                                                padding: EdgeInsets.all(6),
+                                                alignment: Alignment.topLeft,
+                                              ),
+                                              'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                                            },
+
+                                          ),
+                                        )/*:  Flexible(
+                                          child: Text(
+                                              response[itemIndex]['question'],
+                                              textAlign: TextAlign.left,
+                                              maxLines: 100,
+                                              overflow: TextOverflow.visible,
+                                              style: normalText5),
+                                        )*/,
+                                      ]),
                                 ),
                               ),
                               SizedBox(
@@ -846,488 +703,417 @@ class _LoginWithLogoState extends State<StartMCQ>
                               ansBuilder(response, itemIndex),
                               lastAns != true
                                   ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                          Align(
-                                            alignment:
-                                                FractionalOffset.bottomRight,
-                                            child: ButtonTheme(
-                                              minWidth: 50.0,
-                                              height: 34.0,
-                                              child: Align(
-                                                alignment: Alignment.topRight,
-                                                child: Container(
-                                                  margin:
-                                                      EdgeInsets.only(left: 20),
-                                                  child: RaisedButton(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 2,
-                                                            bottom: 2,
-                                                            left: 25,
-                                                            right: 25),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25.0)),
-                                                    textColor: Colors.white,
-                                                    color: Color(0xff017EFF),
-                                                    onPressed: () async {
-                                                      onPreviousClick(
-                                                          itemIndex);
-                                                    },
-                                                    child: Text(
-                                                      "Previous",
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          letterSpacing: 1,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Align(
-                                            alignment:
-                                                FractionalOffset.bottomRight,
-                                            child: ButtonTheme(
-                                              minWidth: 50.0,
-                                              height: 34.0,
-                                              child: Align(
-                                                alignment: Alignment.topRight,
-                                                child: Container(
-                                                  margin: EdgeInsets.only(
-                                                      right: 20),
-                                                  child: RaisedButton(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 2,
-                                                            bottom: 2,
-                                                            left: 25,
-                                                            right: 25),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25.0)),
-                                                    textColor: Colors.white,
-                                                    color: Color(0xff017EFF),
-                                                    onPressed: () async {
-                                                      XMLJSON xmljson =
-                                                          new XMLJSON();
-                                                      print(arr);
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Align(
+                              alignment:
+                              FractionalOffset.bottomRight,
+                              child: ButtonTheme(
+                                minWidth: 50.0,
+                                height: 34.0,
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Container(
+                                    margin:
+                                    EdgeInsets.only(left: 20),
+                                    child: RaisedButton(
+                                      padding:
+                                      const EdgeInsets.only(
+                                          top: 2,
+                                          bottom: 2,
+                                          left: 25,
+                                          right: 25),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              25.0)),
+                                      textColor: Colors.white,
+                                      color: Color(0xff017EFF),
+                                      onPressed: () async {
 
-                                                      if (previousClicked
-                                                          .contains(true)) {
-                                                        if (optionsClicked[
-                                                                itemIndex] ==
-                                                            true) {
-                                                          optionsClicked[
-                                                                  itemIndex] =
-                                                              false;
-                                                        }
-                                                      }
-                                                      print(previousClicked);
-                                                      print(optionsClicked);
-                                                      if (arr[itemIndex] !=
-                                                          null) {
-                                                        // print(_controller1.getTime());
+                                        onPreviousClick(itemIndex);
 
-                                                        if (arr[itemIndex] ==
-                                                            1) {
-                                                          setState(() {
-                                                            xmljson.question =
-                                                                response[itemIndex]
-                                                                        ['id']
-                                                                    .toString();
-                                                            xmljson
-                                                                .answer = response[
-                                                                        itemIndex]
-                                                                    [
-                                                                    'question_option'][0]
-                                                                [
-                                                                'option_value'];
-                                                            xmljson.time_taken =
-                                                                _controller1
-                                                                    .getTime();
-                                                          });
-                                                          if (previousClicked[
-                                                              itemIndex]) {
-                                                            xmlList.removeAt(
-                                                                itemIndex);
-                                                            xmlList.insert(
-                                                                itemIndex,
-                                                                xmljson);
-                                                            print("a");
-                                                          } else {
-                                                            if (optionsClicked[
-                                                                    itemIndex] ==
-                                                                false) {
-                                                              xmlList.removeAt(
-                                                                  itemIndex);
-                                                              xmlList.insert(
-                                                                  itemIndex,
-                                                                  xmljson);
-                                                              print("b");
-                                                            } else {
-                                                              xmlList
-                                                                  .add(xmljson);
-                                                              print("c");
-                                                            }
-                                                          }
-                                                          print(xmlList);
-                                                        } else if (arr[
-                                                                itemIndex] ==
-                                                            2) {
-                                                          setState(() {
-                                                            xmljson.question =
-                                                                response[itemIndex]
-                                                                        ['id']
-                                                                    .toString();
-                                                            xmljson
-                                                                .answer = response[
-                                                                        itemIndex]
-                                                                    [
-                                                                    'question_option'][1]
-                                                                [
-                                                                'option_value'];
-                                                            xmljson.time_taken =
-                                                                _controller1
-                                                                    .getTime();
-                                                          });
-                                                          if (previousClicked[
-                                                              itemIndex]) {
-                                                            xmlList.removeAt(
-                                                                itemIndex);
-                                                            xmlList.insert(
-                                                                itemIndex,
-                                                                xmljson);
-                                                            print("a");
-                                                          } else {
-                                                            if (optionsClicked[
-                                                                    itemIndex] ==
-                                                                false) {
-                                                              xmlList.removeAt(
-                                                                  itemIndex);
-                                                              xmlList.insert(
-                                                                  itemIndex,
-                                                                  xmljson);
-                                                              print("b");
-                                                            } else {
-                                                              xmlList
-                                                                  .add(xmljson);
-                                                              print("c");
-                                                            }
-                                                          }
-                                                          print(jsonEncode(
-                                                              xmlList));
-                                                        } else if (arr[
-                                                                itemIndex] ==
-                                                            3) {
-                                                          setState(() {
-                                                            xmljson.question =
-                                                                response[itemIndex]
-                                                                        ['id']
-                                                                    .toString();
-                                                            xmljson
-                                                                .answer = response[
-                                                                        itemIndex]
-                                                                    [
-                                                                    'question_option'][2]
-                                                                [
-                                                                'option_value'];
-                                                            xmljson.time_taken =
-                                                                _controller1
-                                                                    .getTime();
-                                                          });
-                                                          if (previousClicked[
-                                                              itemIndex]) {
-                                                            xmlList.removeAt(
-                                                                itemIndex);
-                                                            xmlList.insert(
-                                                                itemIndex,
-                                                                xmljson);
-                                                            print("a");
-                                                          } else {
-                                                            if (optionsClicked[
-                                                                    itemIndex] ==
-                                                                false) {
-                                                              xmlList.removeAt(
-                                                                  itemIndex);
-                                                              xmlList.insert(
-                                                                  itemIndex,
-                                                                  xmljson);
-                                                              print("b");
-                                                            } else {
-                                                              xmlList
-                                                                  .add(xmljson);
-                                                              print("c");
-                                                            }
-                                                          }
-                                                          print(jsonEncode(
-                                                              xmlList));
-                                                        } else if (arr[
-                                                                itemIndex] ==
-                                                            4) {
-                                                          setState(() {
-                                                            xmljson.question =
-                                                                response[itemIndex]
-                                                                        ['id']
-                                                                    .toString();
-                                                            xmljson
-                                                                .answer = response[
-                                                                        itemIndex]
-                                                                    [
-                                                                    'question_option'][3]
-                                                                [
-                                                                'option_value'];
-                                                            xmljson.time_taken =
-                                                                _controller1
-                                                                    .getTime();
-                                                          });
-                                                          if (previousClicked[
-                                                              itemIndex]) {
-                                                            xmlList.removeAt(
-                                                                itemIndex);
-                                                            xmlList.insert(
-                                                                itemIndex,
-                                                                xmljson);
-                                                            print("a");
-                                                          } else {
-                                                            if (optionsClicked[
-                                                                    itemIndex] ==
-                                                                false) {
-                                                              xmlList.removeAt(
-                                                                  itemIndex);
-                                                              xmlList.insert(
-                                                                  itemIndex,
-                                                                  xmljson);
-                                                              print("b");
-                                                            } else {
-                                                              xmlList
-                                                                  .add(xmljson);
-                                                              print("c");
-                                                            }
-                                                          }
-                                                          print(jsonEncode(
-                                                              xmlList));
-                                                        }
-                                                        if (itemIndex ==
-                                                            (response.length -
-                                                                1)) {
-                                                          setState(() {
-                                                            lastAns = true;
-                                                          });
-                                                        }
+                                      },
+                                      child: Text(
+                                        "Previous",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            letterSpacing: 1,
+                                            fontWeight:
+                                            FontWeight.w400),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Align(
+                                        alignment: FractionalOffset.bottomRight,
+                                        child: ButtonTheme(
+                                          minWidth: 50.0,
+                                          height: 34.0,
+                                          child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: Container(
+                                              margin: EdgeInsets.only(right: 20),
+                                              child: RaisedButton(
+                                                padding: const EdgeInsets.only(
+                                                    top: 2,
+                                                    bottom: 2,
+                                                    left: 25,
+                                                    right: 25),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            25.0)),
+                                                textColor: Colors.white,
+                                                color: Color(0xff017EFF),
+                                                onPressed: () async {
+                                                  XMLJSON xmljson = new XMLJSON();
+                                                  print(arr);
 
-                                                        onNextClick(itemIndex);
-                                                        _scrollToTop();
-                                                      } else {
-                                                        Fluttertoast.showToast(
-                                                            msg:
-                                                                "Please Select Answer");
-                                                      }
-                                                    },
-                                                    child: Text(
-                                                      "Next",
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          letterSpacing: 1,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ])
-                                  : Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                          Align(
-                                            alignment:
-                                                FractionalOffset.bottomRight,
-                                            child: ButtonTheme(
-                                              minWidth: 50.0,
-                                              height: 34.0,
-                                              child: Align(
-                                                alignment: Alignment.topRight,
-                                                child: Container(
-                                                  margin:
-                                                      EdgeInsets.only(left: 20),
-                                                  child: RaisedButton(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 2,
-                                                            bottom: 2,
-                                                            left: 25,
-                                                            right: 25),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25.0)),
-                                                    textColor: Colors.white,
-                                                    color: Color(0xff017EFF),
-                                                    onPressed: () async {
-                                                      onPreviousClick(
-                                                          itemIndex);
-                                                    },
-                                                    child: Text(
-                                                      "Previous",
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          letterSpacing: 1,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Align(
-                                            alignment:
-                                                FractionalOffset.bottomRight,
-                                            child: ButtonTheme(
-                                              minWidth: 50.0,
-                                              height: 34.0,
-                                              child: Align(
-                                                alignment: Alignment.topRight,
-                                                child: Container(
-                                                  margin: EdgeInsets.only(
-                                                      right: 20),
-                                                  child: RaisedButton(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 2,
-                                                            bottom: 2,
-                                                            left: 25,
-                                                            right: 25),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25.0)),
-                                                    textColor: Colors.white,
-                                                    color: Color(0xff017EFF),
-                                                    onPressed: () async {
+                                                  if(previousClicked.contains(true)) {
+                                                    if (optionsClicked[itemIndex] ==
+                                                        true) {
+                                                      optionsClicked[itemIndex] =
+                                                      false;
+                                                    }
+                                                  }
+                                                  print(previousClicked);
+                                                  print(optionsClicked);
+                                                  if (arr[itemIndex] != null) {
+                                                   // print(_controller1.getTime());
+
+                                                    if (arr[itemIndex] == 1) {
                                                       setState(() {
-                                                        _loading = true;
+                                                        xmljson.question =
+                                                            response[itemIndex]
+                                                                    ['id']
+                                                                .toString();
+                                                        xmljson.answer = response[
+                                                                    itemIndex][
+                                                                'question_option']
+                                                            [0]['option_value'];
+                                                        xmljson.time_taken =
+                                                            _controller1
+                                                                .getTime();
                                                       });
-                                                      final currentTime1 =
-                                                          DateTime.now();
-                                                      final diff_mn =
-                                                          currentTime1
-                                                              .difference(
-                                                                  currentTime)
-                                                              .inSeconds;
-
-                                                      finalMap["start_time"] =
-                                                          currentTime
-                                                              .toString();
-                                                      finalMap["end_time"] =
-                                                          currentTime1
-                                                              .toString();
-                                                      finalMap["total_time"] =
-                                                          diff_mn.toString();
-                                                      finalMap["questions"] =
-                                                          xmlList;
-
-                                                      Map<String, String>
-                                                          headers = {
-                                                        'Accept':
-                                                            'application/json',
-                                                        'Content-Type':
-                                                            'application/json',
-                                                        'Authorization':
-                                                            'Bearer $api_token',
-                                                      };
-                                                      print(
-                                                          jsonEncode(finalMap));
-                                                      var response =
-                                                          await http.post(
-                                                        new Uri.https(
-                                                            BASE_URL,
-                                                            API_PATH +
-                                                                "/finish-level-test"),
-                                                        body: jsonEncode(
-                                                            finalMap),
-                                                        headers: headers,
-                                                      );
-
-                                                      if (response.statusCode ==
-                                                          200) {
-                                                        setState(() {
-                                                          _loading = false;
-                                                        });
-                                                        var data = json.decode(
-                                                            response.body);
-                                                        print(data);
-                                                        var errorCode =
-                                                            data['ErrorCode'];
-                                                        var errorMessage = data[
-                                                            'ErrorMessage'];
-                                                        if (errorCode == 0) {
-                                                          setState(() {
-                                                            _loading = false;
-                                                          });
-                                                          Fluttertoast.showToast(
-                                                              msg:
-                                                                  "Test Submitted Successfully");
-                                                          Navigator.pop(
-                                                              context);
-                                                          Navigator.pushNamed(
-                                                            context,
-                                                            '/view-performance',
-                                                            arguments: <String,
-                                                                String>{
-                                                              'test_id': data[
-                                                                          'Response']
-                                                                      ['testId']
-                                                                  .toString(),
-                                                              'type': type ==
-                                                                      "institute"
-                                                                  ? "institute"
-                                                                  : "",
-                                                              'total_ques': "10"
-                                                            },
-                                                          );
-                                                        } else {
-                                                          setState(() {
-                                                            _loading = false;
-                                                          });
-                                                          showAlertDialog(
-                                                              context,
-                                                              ALERT_DIALOG_TITLE,
-                                                              errorMessage);
-                                                        }
+                                                      if(previousClicked[itemIndex]){
+                                                        xmlList.removeAt(itemIndex);
+                                                        xmlList.insert(itemIndex, xmljson);
+                                                        print("a");
                                                       }
-                                                    },
-                                                    child: Text(
-                                                      "Submit",
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          letterSpacing: 1,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                  ),
+                                                      else{
+                                                        if(optionsClicked[itemIndex]==false){
+                                                          xmlList.removeAt(itemIndex);
+                                                          xmlList.insert(itemIndex, xmljson);
+                                                          print("b");
+                                                        }
+                                                        else{
+                                                          xmlList.add(xmljson);
+                                                          print("c");
+                                                        }
+
+                                                      }
+                                                      print(xmlList);
+                                                    } else if (arr[itemIndex] ==
+                                                        2) {
+                                                      setState(() {
+                                                        xmljson.question =
+                                                            response[itemIndex]
+                                                                    ['id']
+                                                                .toString();
+                                                        xmljson.answer = response[
+                                                                    itemIndex][
+                                                                'question_option']
+                                                            [1]['option_value'];
+                                                        xmljson.time_taken =
+                                                            _controller1
+                                                                .getTime();
+                                                      });
+                                                      if(previousClicked[itemIndex]){
+                                                        xmlList.removeAt(itemIndex);
+                                                        xmlList.insert(itemIndex, xmljson);
+                                                        print("a");
+                                                      }
+                                                      else{
+                                                        if(optionsClicked[itemIndex]==false){
+                                                          xmlList.removeAt(itemIndex);
+                                                          xmlList.insert(itemIndex, xmljson);
+                                                          print("b");
+                                                        }
+                                                        else{
+                                                          xmlList.add(xmljson);
+                                                          print("c");
+                                                        }
+
+                                                      }
+                                                      print(jsonEncode(xmlList));
+                                                    } else if (arr[itemIndex] ==
+                                                        3) {
+                                                      setState(() {
+                                                        xmljson.question =
+                                                            response[itemIndex]
+                                                                    ['id']
+                                                                .toString();
+                                                        xmljson.answer = response[
+                                                                    itemIndex][
+                                                                'question_option']
+                                                            [2]['option_value'];
+                                                        xmljson.time_taken =
+                                                            _controller1
+                                                                .getTime();
+                                                      });
+                                                      if(previousClicked[itemIndex]){
+                                                        xmlList.removeAt(itemIndex);
+                                                        xmlList.insert(itemIndex, xmljson);
+                                                        print("a");
+                                                      }
+                                                      else{
+                                                        if(optionsClicked[itemIndex]==false){
+                                                          xmlList.removeAt(itemIndex);
+                                                          xmlList.insert(itemIndex, xmljson);
+                                                          print("b");
+                                                        }
+                                                        else{
+                                                          xmlList.add(xmljson);
+                                                          print("c");
+                                                        }
+
+                                                      }
+                                                      print(jsonEncode(xmlList));
+                                                    } else if (arr[itemIndex] ==
+                                                        4) {
+                                                      setState(() {
+                                                        xmljson.question =
+                                                            response[itemIndex]
+                                                                    ['id']
+                                                                .toString();
+                                                        xmljson.answer = response[
+                                                                    itemIndex][
+                                                                'question_option']
+                                                            [3]['option_value'];
+                                                        xmljson.time_taken =
+                                                            _controller1
+                                                                .getTime();
+                                                      });
+                                                      if(previousClicked[itemIndex]){
+                                                        xmlList.removeAt(itemIndex);
+                                                        xmlList.insert(itemIndex, xmljson);
+                                                        print("a");
+                                                      }
+                                                      else{
+                                                        if(optionsClicked[itemIndex]==false){
+                                                          xmlList.removeAt(itemIndex);
+                                                          xmlList.insert(itemIndex, xmljson);
+                                                          print("b");
+                                                        }
+                                                        else{
+                                                          xmlList.add(xmljson);
+                                                          print("c");
+                                                        }
+
+                                                      }
+                                                      print(jsonEncode(xmlList));
+                                                    }
+                                                    if (itemIndex ==
+                                                        (response.length - 1)) {
+                                                      setState(() {
+                                                        lastAns = true;
+                                                      });
+                                                    }
+
+                                                    onNextClick(itemIndex);
+                                                    _scrollToTop();
+                                                  } else {
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Please Select Answer");
+                                                  }
+                                                },
+                                                child: Text(
+                                                  "Next",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      letterSpacing: 1,
+                                                      fontWeight:
+                                                          FontWeight.w400),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ]),
+                                        ),
+                                      ),
+                          ]
+                                  )
+                                  : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Align(
+                              alignment:
+                              FractionalOffset.bottomRight,
+                              child: ButtonTheme(
+                                minWidth: 50.0,
+                                height: 34.0,
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Container(
+                                    margin:
+                                    EdgeInsets.only(left: 20),
+                                    child: RaisedButton(
+                                      padding:
+                                      const EdgeInsets.only(
+                                          top: 2,
+                                          bottom: 2,
+                                          left: 25,
+                                          right: 25),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              25.0)),
+                                      textColor: Colors.white,
+                                      color: Color(0xff017EFF),
+                                      onPressed: () async {
+
+                                        onPreviousClick(itemIndex);
+
+                                      },
+                                      child: Text(
+                                        "Previous",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            letterSpacing: 1,
+                                            fontWeight:
+                                            FontWeight.w400),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Align(
+                                        alignment: FractionalOffset.bottomRight,
+                                        child: ButtonTheme(
+                                          minWidth: 50.0,
+                                          height: 34.0,
+                                          child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: Container(
+                                              margin: EdgeInsets.only(right: 20),
+                                              child: RaisedButton(
+                                                padding: const EdgeInsets.only(
+                                                    top: 2,
+                                                    bottom: 2,
+                                                    left: 25,
+                                                    right: 25),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            25.0)),
+                                                textColor: Colors.white,
+                                                color: Color(0xff017EFF),
+                                                onPressed: () async {
+                                                  setState(() {
+                                                    _loading = true;
+                                                  });
+                                                  final currentTime1 =
+                                                      DateTime.now();
+                                                  final diff_mn = currentTime1
+                                                      .difference(currentTime)
+                                                      .inSeconds;
+                                                  print(diff_mn);
+
+                                                  final msg = jsonEncode({
+                                                    "test_id": type=="institute"?"":test_id,
+                                                    "inst_test_id":type=="institute"?test_id:"",
+                                                    "user_id": user_id,
+                                                    "start_time":
+                                                        currentTime.toString(),
+                                                    "end_time":
+                                                        currentTime1.toString(),
+                                                    "total_time":
+                                                        diff_mn.toString(),
+                                                    "questions": xmlList
+                                                  });
+                                                  print(msg);
+                                                  Map<String, String> headers = {
+                                                    'Accept': 'application/json',
+                                                    'Content-Type': 'application/json',
+                                                    'Authorization': 'Bearer $api_token',
+                                                  };
+                                                  var response = await http.post(
+                                                    new Uri.https(
+                                                        BASE_URL,
+                                                        API_PATH +
+                                                            "/finish-test"),
+                                                    body: jsonEncode({
+                                                      "test_id": type=="institute"?"":test_id,
+                                                      "inst_test_id":type=="institute"?test_id:"",
+                                                      "user_id": user_id,
+                                                      "start_time":
+                                                          currentTime.toString(),
+                                                      "end_time":
+                                                          currentTime1.toString(),
+                                                      "total_time":
+                                                          diff_mn.toString(),
+                                                      "questions": xmlList
+                                                    }),
+                                                    headers: headers,
+                                                  );
+
+                                                  if (response.statusCode ==
+                                                      200) {
+                                                    setState(() {
+                                                      _loading = false;
+                                                    });
+                                                    var data = json
+                                                        .decode(response.body);
+                                                    print(data);
+                                                    var errorCode =
+                                                        data['ErrorCode'];
+                                                    var errorMessage =
+                                                        data['ErrorMessage'];
+                                                    if (errorCode == 0) {
+                                                      setState(() {
+                                                        _loading = false;
+                                                      });
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "Test Submitted Successfully");
+                                                      Navigator.pop(context);
+                                                      Navigator.pushNamed(
+                                                        context,
+                                                        '/view-performance', arguments: <String, String>{
+                                                          'test_id': test_id,
+                                                        'type':type=="institute"? "institute":"",
+                                                        },
+                                                      );
+                                                    } else {
+                                                      setState(() {
+                                                        _loading = false;
+                                                      });
+                                                      showAlertDialog(
+                                                          context,
+                                                          ALERT_DIALOG_TITLE,
+                                                          errorMessage);
+                                                    }
+                                                  }
+                                                },
+                                                child: Text(
+                                                  "Submit",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      letterSpacing: 1,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                          ]
+                                  ),
                               const SizedBox(
                                 height: 10,
                               ),
@@ -1337,7 +1123,7 @@ class _LoginWithLogoState extends State<StartMCQ>
                                   width: double.infinity,
                                   child: Center(
                                     child: Text(
-                                      '${itemIndex + 1}/10',
+                                      '${itemIndex + 1}/15',
                                       style: normalText6,
                                     ),
                                   ),
@@ -1360,41 +1146,39 @@ class _LoginWithLogoState extends State<StartMCQ>
 
   CountDownController _controller = CountDownController();
   CountDownController _controller1 = CountDownController();
-  int _duration = 0;
-  int _duration1 = 0;
+  int _duration = 1800;
+  int _duration1 = 1800;
   Future<bool> _onWillPop() async {
     return (await showDialog(
-          context: context,
-          builder: (context) => new AlertDialog(
-            /*title: new Text(
+      context: context,
+      builder: (context) => new AlertDialog(
+        /*title: new Text(
           "Your answers data will be cleared. Press yes to continue.",
         ),*/
-            content: new Text(
-                "Your answers data will be cleared. Press yes to continue."),
-            actions: <Widget>[
-              new FlatButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: new Text(
-                  "No",
-                  style: TextStyle(
-                    color: Color(0xff2E2A4A),
-                  ),
-                ),
+        content: new Text("Your answers data will be cleared. Press yes to continue."),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text(
+              "No",
+              style: TextStyle(
+                color: Color(0xff2E2A4A),
               ),
-              new FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                  Navigator.pushNamed(context, '/dashboard');
-                },
-                child:
-                    new Text("Yes", style: TextStyle(color: Color(0xff2E2A4A))),
-              ),
-            ],
+            ),
           ),
-        )) ??
+          new FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+              Navigator.pushNamed(context, '/dashboard');
+            },
+            child:
+            new Text("Yes", style: TextStyle(color: Color(0xff2E2A4A))),
+          ),
+        ],
+      ),
+    )) ??
         false;
   }
-
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
@@ -1406,21 +1190,20 @@ class _LoginWithLogoState extends State<StartMCQ>
           inAsyncCall: _loading,
           progressIndicator: Center(
               child: Align(
-            alignment: Alignment.center,
-            child: Container(
-              child: SpinKitFadingCube(
-                itemBuilder: (_, int index) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      color:
-                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
-                    ),
-                  );
-                },
-                size: 30.0,
-              ),
-            ),
-          )),
+                alignment: Alignment.center,
+                child: Container(
+                  child: SpinKitFadingCube(
+                    itemBuilder: (_, int index) {
+                      return DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
+                        ),
+                      );
+                    },
+                    size: 30.0,
+                  ),
+                ),
+              )),
           child: SingleChildScrollView(
             controller: _scrollController,
             child: Container(
@@ -1432,7 +1215,7 @@ class _LoginWithLogoState extends State<StartMCQ>
                         image: AssetImage('assets/images/Vector6.png'),
                         // fit: BoxFit.fill,
                       ),
-                      /*  InkWell(
+                    /*  InkWell(
                         onTap: () {
                           Navigator.pop(context);
                           Navigator.pushNamed(
@@ -1477,82 +1260,81 @@ class _LoginWithLogoState extends State<StartMCQ>
                                 child: Container(
                                   child: Stack(children: <Widget>[
                                     Align(
-                                      alignment: Alignment.center,
-                                      child: CircularCountDownTimer(
-                                        // Countdown duration in Seconds.
-                                        duration: _duration,
+                                        alignment: Alignment.center,
+                                        child: CircularCountDownTimer(
+                                          // Countdown duration in Seconds.
+                                          duration: _duration,
 
-                                        // Countdown initial elapsed Duration in Seconds.
-                                        initialDuration: 0,
+                                          // Countdown initial elapsed Duration in Seconds.
+                                          initialDuration: 0,
 
-                                        // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
-                                        controller: _controller,
+                                          // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
+                                          controller: _controller,
 
-                                        // Width of the Countdown Widget.
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4,
+                                          // Width of the Countdown Widget.
+                                          width:
+                                              MediaQuery.of(context).size.width / 4,
 
-                                        // Height of the Countdown Widget.
-                                        height:
-                                            MediaQuery.of(context).size.height /
-                                                4,
+                                          // Height of the Countdown Widget.
+                                          height:
+                                              MediaQuery.of(context).size.height /
+                                                  4,
 
-                                        // Ring Color for Countdown Widget.
-                                        ringColor: Colors.grey[300],
+                                          // Ring Color for Countdown Widget.
+                                          ringColor: Colors.grey[300],
 
-                                        // Ring Gradient for Countdown Widget.
-                                        ringGradient: null,
+                                          // Ring Gradient for Countdown Widget.
+                                          ringGradient: null,
 
-                                        // Filling Color for Countdown Widget.
-                                        fillColor: Color(0xff017EFF),
+                                          // Filling Color for Countdown Widget.
+                                          fillColor: Color(0xff017EFF),
 
-                                        // Filling Gradient for Countdown Widget.
-                                        fillGradient: null,
+                                          // Filling Gradient for Countdown Widget.
+                                          fillGradient: null,
 
-                                        // Background Color for Countdown Widget.
-                                        backgroundColor: Colors.white,
+                                          // Background Color for Countdown Widget.
+                                          backgroundColor: Colors.white,
 
-                                        // Background Gradient for Countdown Widget.
-                                        backgroundGradient: null,
+                                          // Background Gradient for Countdown Widget.
+                                          backgroundGradient: null,
 
-                                        // Border Thickness of the Countdown Ring.
-                                        strokeWidth: 10.0,
+                                          // Border Thickness of the Countdown Ring.
+                                          strokeWidth: 10.0,
 
-                                        // Begin and end contours with a flat edge and no extension.
-                                        strokeCap: StrokeCap.round,
+                                          // Begin and end contours with a flat edge and no extension.
+                                          strokeCap: StrokeCap.round,
 
-                                        // Text Style for Countdown Text.
-                                        textStyle: TextStyle(
-                                            fontSize: 33.0,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold),
+                                          // Text Style for Countdown Text.
+                                          textStyle: TextStyle(
+                                              fontSize: 33.0,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
 
-                                        // Format for the Countdown Text.
-                                        textFormat: CountdownTextFormat.MM_SS,
+                                          // Format for the Countdown Text.
+                                          textFormat: CountdownTextFormat.MM_SS,
 
-                                        // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
-                                        isReverse: true,
+                                          // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
+                                          isReverse: true,
 
-                                        // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
-                                        isReverseAnimation: true,
+                                          // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
+                                          isReverseAnimation: true,
 
-                                        // Handles visibility of the Countdown Text.
-                                        isTimerTextShown: true,
+                                          // Handles visibility of the Countdown Text.
+                                          isTimerTextShown: true,
 
-                                        // Handles the timer start.
-                                        autoStart: false,
+                                          // Handles the timer start.
+                                          autoStart: false,
 
-                                        // This Callback will execute when the Countdown Starts.
-                                        onStart: () {},
+                                          // This Callback will execute when the Countdown Starts.
+                                          onStart: () {},
 
-                                        // This Callback will execute when the Countdown Ends.
-                                        onComplete: () {
-                                          // Here, do whatever you want
-                                          print('Countdown Ended');
-                                        },
+                                          // This Callback will execute when the Countdown Ends.
+                                          onComplete: () {
+                                            // Here, do whatever you want
+                                            print('Countdown Ended');
+                                          },
+                                        ),
                                       ),
-                                    ),
 
                                     //   const SizedBox(width: 20.0),
                                   ]),
@@ -1579,8 +1361,8 @@ class _LoginWithLogoState extends State<StartMCQ>
 
   onNextClick(int itemIndex) {
     setState(() {
-      previousClicked[itemIndex] = false;
-      optionsClicked[itemIndex] = false;
+      previousClicked[itemIndex]=false;
+      optionsClicked[itemIndex]=false;
     });
     buttonCarouselController.nextPage(
         duration: Duration(milliseconds: 300), curve: Curves.linear);
@@ -1591,13 +1373,14 @@ class _LoginWithLogoState extends State<StartMCQ>
 
   onPreviousClick(int itemIndex) {
     setState(() {
-      lastAns = false;
-      previousClicked[itemIndex - 1] = true;
-      if (optionsClicked[itemIndex] == true) {
-        optionsClicked[itemIndex] = true;
-      } else {
-        optionsClicked[itemIndex] = false;
+      lastAns=false;
+      previousClicked[itemIndex-1]=true;
+      if( optionsClicked[itemIndex]==true){
+        optionsClicked[itemIndex]=true;
+      }else{
+        optionsClicked[itemIndex]=false;
       }
+
     });
     buttonCarouselController.previousPage(
         duration: Duration(milliseconds: 300), curve: Curves.linear);

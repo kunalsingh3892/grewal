@@ -56,6 +56,7 @@ class _SettingsState extends State<TestList> {
     print(type);
     _getUser();
   }
+
   String api_token = "";
   _getUser() async {
     Preference().getPreferences().then((prefs) {
@@ -304,7 +305,9 @@ class _SettingsState extends State<TestList> {
                               context,
                               '/test-correct',
                               arguments: <String, String>{
-                                'test_id': snapshot.data['Response'][index]['id'].toString(),
+                                'test_id': snapshot.data['Response'][index]
+                                        ['id']
+                                    .toString(),
                                 'type': "",
                               },
                             );
@@ -313,7 +316,9 @@ class _SettingsState extends State<TestList> {
                               context,
                               '/view-performance',
                               arguments: <String, String>{
-                                'test_id': snapshot.data['Response'][index]['id'].toString(),
+                                'test_id': snapshot.data['Response'][index]
+                                        ['id']
+                                    .toString(),
                                 'type': "",
                               },
                             );
@@ -388,7 +393,8 @@ class _SettingsState extends State<TestList> {
                                               Expanded(
                                                 child: Text(
                                                     snapshot.data['Response']
-                                                        [index]['name'],
+                                                            [index]['name']
+                                                        .toString(),
                                                     maxLines: 2,
                                                     softWrap: true,
                                                     overflow:
@@ -400,7 +406,8 @@ class _SettingsState extends State<TestList> {
                                           Container(
                                             child: Text(
                                                 snapshot.data['Response'][index]
-                                                    ['date'],
+                                                        ['date']
+                                                    .toString(),
                                                 maxLines: 1,
                                                 softWrap: true,
                                                 overflow: TextOverflow.ellipsis,
@@ -465,20 +472,21 @@ class _SettingsState extends State<TestList> {
         } else {
           return Center(
               child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: SpinKitFadingCube(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
-                        ),
-                      );
-                    },
-                    size: 30.0,
-                  ),
-                ),
-              ));
+            alignment: Alignment.center,
+            child: Container(
+              child: SpinKitFadingCube(
+                itemBuilder: (_, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color:
+                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+                    ),
+                  );
+                },
+                size: 30.0,
+              ),
+            ),
+          ));
         }
       },
     );
@@ -542,117 +550,110 @@ class _SettingsState extends State<TestList> {
           ),
           backgroundColor: Colors.transparent,
         ),
-
-        floatingActionButton:  FloatingActionButton.extended(
-                onPressed: () {
-                  if(type=="outside")
-                  {
-                    if (total_test_quetion == "0") {
-                      Navigator.pushNamed(
-                        context,
-                        '/chapter-select',
-                        arguments: <String, String>{
-                          'chapter_id': chapter_id.toString(),
-                          'chapter_name': chapter_name.toString(),
-                          'type': type
-                        },
-                      );
-                    }
-                    else if (total_test_quetion == "1")
-                    {
-                      if (payment == "0") {
-                        Navigator.pushNamed(
-                          context,
-                          '/plan',
-                          arguments: <String, String>{
-                            'order_id': order_id.toString(),
-                            'signupid': user_id.toString(),
-                            'mobile': _mobile,
-                            'email': email_id,
-                            'out': 'in'
-                          },
-                        );
-                      }
-                      else {
-                        Navigator.pushNamed(
-                          context,
-                          '/chapter-select',
-                          arguments: <String, String>{
-                            'chapter_id': chapter_id.toString(),
-                            'chapter_name': chapter_name.toString(),
-                            'type': type
-                          },
-                        );
-                      }
-                    }
-                    else {
-                      Navigator.pushNamed(
-                        context,
-                        '/chapter-select',
-                        arguments: <String, String>{
-                          'chapter_id': chapter_id.toString(),
-                          'chapter_name': chapter_name.toString(),
-                          'type': type
-                        },
-                      );
-                    }
-                  }
-                  else if(type=="inside"){
-                    if (total_test_quetion == "0") {
-                      Navigator.pushNamed(
-                        context,
-                        '/create-mcq',
-                        arguments: <String, String>{
-                          'chapter_id': chapter_id.toString(),
-                          'chapter_name': chapter_name.toString(),
-                          'type': type
-                        },
-                      );
-                    } else if (total_test_quetion == "1") {
-                      if (payment == "0") {
-                        Navigator.pushNamed(
-                          context,
-                          '/plan',
-                          arguments: <String, String>{
-                            'order_id': order_id.toString(),
-                            'signupid': user_id.toString(),
-                            'mobile': _mobile,
-                            'email': email_id,
-                            'out': 'in'
-                          },
-                        );
-                      } else {
-                        Navigator.pushNamed(
-                          context,
-                          '/create-mcq',
-                          arguments: <String, String>{
-                            'chapter_id': chapter_id.toString(),
-                            'chapter_name': chapter_name.toString(),
-                            'type': type
-                          },
-                        );
-                      }
-                    } else {
-                      Navigator.pushNamed(
-                        context,
-                        '/create-mcq',
-                        arguments: <String, String>{
-                          'chapter_id': chapter_id.toString(),
-                          'chapter_name': chapter_name.toString(),
-                          'type': type
-                        },
-                      );
-                    }
-                  }
-                },
-          backgroundColor:Color(0xff017EFF),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            if (type == "outside") {
+              if (total_test_quetion == "0") {
+                Navigator.pushNamed(
+                  context,
+                  '/chapter-select',
+                  arguments: <String, String>{
+                    'chapter_id': chapter_id.toString(),
+                    'chapter_name': chapter_name.toString(),
+                    'type': type
+                  },
+                );
+              } else if (total_test_quetion == "1") {
+                if (payment == "0") {
+                  Navigator.pushNamed(
+                    context,
+                    '/plan',
+                    arguments: <String, String>{
+                      'order_id': order_id.toString(),
+                      'signupid': user_id.toString(),
+                      'mobile': _mobile,
+                      'email': email_id,
+                      'out': 'in'
+                    },
+                  );
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    '/chapter-select',
+                    arguments: <String, String>{
+                      'chapter_id': chapter_id.toString(),
+                      'chapter_name': chapter_name.toString(),
+                      'type': type
+                    },
+                  );
+                }
+              } else {
+                Navigator.pushNamed(
+                  context,
+                  '/chapter-select',
+                  arguments: <String, String>{
+                    'chapter_id': chapter_id.toString(),
+                    'chapter_name': chapter_name.toString(),
+                    'type': type
+                  },
+                );
+              }
+            } else if (type == "inside") {
+              if (total_test_quetion == "0") {
+                Navigator.pushNamed(
+                  context,
+                  '/create-mcq',
+                  arguments: <String, String>{
+                    'chapter_id': chapter_id.toString(),
+                    'chapter_name': chapter_name.toString(),
+                    'type': type
+                  },
+                );
+              } else if (total_test_quetion == "1") {
+                if (payment == "0") {
+                  Navigator.pushNamed(
+                    context,
+                    '/plan',
+                    arguments: <String, String>{
+                      'order_id': order_id.toString(),
+                      'signupid': user_id.toString(),
+                      'mobile': _mobile,
+                      'email': email_id,
+                      'out': 'in'
+                    },
+                  );
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    '/create-mcq',
+                    arguments: <String, String>{
+                      'chapter_id': chapter_id.toString(),
+                      'chapter_name': chapter_name.toString(),
+                      'type': type
+                    },
+                  );
+                }
+              } else {
+                Navigator.pushNamed(
+                  context,
+                  '/create-mcq',
+                  arguments: <String, String>{
+                    'chapter_id': chapter_id.toString(),
+                    'chapter_name': chapter_name.toString(),
+                    'type': type
+                  },
+                );
+              }
+            }
+          },
+          backgroundColor: Color(0xff017EFF),
           label: Text("Create"),
-                icon: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              ),
+          icon: Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 24,
+          ),
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         body: ModalProgressHUD(
           inAsyncCall: isLoading,
@@ -667,7 +668,7 @@ class _SettingsState extends State<TestList> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                   /* Container(
+                    /* Container(
                       padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                       margin: EdgeInsets.only(bottom: 10),
                       child: Row(children: <Widget>[
@@ -734,7 +735,7 @@ class _SettingsState extends State<TestList> {
                             ),
                           ),
                         ),
-                        *//* SizedBox(
+                        */ /* SizedBox(
                           height: 10.0,
                         ),
                         Container(
@@ -746,7 +747,7 @@ class _SettingsState extends State<TestList> {
                               height: 15,
                               width: 15,
                               fit: BoxFit.fill),
-                        ),*//*
+                        ),*/ /*
                       ]),
                     ),*/
                     Expanded(

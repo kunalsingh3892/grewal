@@ -47,10 +47,12 @@ class _SettingsState extends State<SubjectiveTestListGiven> {
         user_id = prefs.getString('user_id').toString();
       });
       MCQLevelTestAPI()
-          .getSubjectiveTestList(prefs.getString('user_id').toString())
+          .getSubjectiveTestList(
+              prefs.getString('user_id').toString(), chapter_id)
           .then((value) {
         if (value.length > 0) {
           setState(() {
+            data.clear();
             data.addAll(value);
             isLoading = false;
           });
@@ -67,9 +69,12 @@ class _SettingsState extends State<SubjectiveTestListGiven> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    print(json.encode(widget.argument));
     var encodedJson = json.encode(widget.argument);
     var data = json.decode(encodedJson);
     chapter_id = data['chapter_id'];
+    print(chapter_id);
     _getUser();
   }
 
@@ -155,35 +160,55 @@ class _SettingsState extends State<SubjectiveTestListGiven> {
                             .map((e) => ListTile(
                                   title: Text(e['name'].toString()),
                                   subtitle: Text(e['created_at'].toString()),
-                                  trailing: IconButton(
-                                      onPressed: () {
-                                        ProgressBarLoading()
-                                            .showLoaderDialog(context);
-                                        MCQLevelTestAPI()
-                                            .getTotalQuestionCountofTest(
-                                                user_id, e['id'].toString())
-                                            .then((value) {
-                                          Navigator.pop(context);
-                                          if (value > 0) {
-                                            Navigator.pushNamed(
-                                              context,
-                                              '/view-test',
-                                              arguments: <String, String>{
-                                                'test_id': e['id'].toString(),
-                                                'total_question':
-                                                    value.toString()
-                                              },
-                                            );
-                                          } else {
-                                            Fluttertoast.showToast(
-                                                msg: "Test have no questions");
-                                          }
-                                        });
-                                      },
-                                      icon: Icon(
-                                        Icons.visibility,
-                                        color: Colors.green,
-                                      )),
+                                  trailing: e['is_taken'] == 1
+                                      ? IconButton(
+                                          onPressed: () {
+                                            ProgressBarLoading()
+                                                .showLoaderDialog(context);
+                                            MCQLevelTestAPI()
+                                                .getTotalQuestionCountofTest(
+                                                    user_id, e['id'].toString())
+                                                .then((value) {
+                                              Navigator.pop(context);
+                                              if (value > 0) {
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  '/view-test-new',
+                                                  arguments: <String, String>{
+                                                    'test_id':
+                                                        e['id'].toString(),
+                                                    'total_question':
+                                                        value.toString()
+                                                  },
+                                                );
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "Test have no questions");
+                                              }
+                                            });
+                                          },
+                                          icon: Icon(
+                                            Icons.visibility,
+                                            color: Colors.green,
+                                          ))
+                                      : TextButton(
+                                          onPressed: () {
+                                            Navigator.pushNamed(context,
+                                                '/start-subjective-test',
+                                                arguments: {
+                                                  "ErrorCode": 0,
+                                                  "ErrorMessage": "Success",
+                                                  "Response": {
+                                                    "testId": e['id'],
+                                                    "TestQuestionId":
+                                                        e['test_question_id']
+                                                  },
+                                                  "chapter_id":
+                                                      e['chapter'].toString()
+                                                });
+                                          },
+                                          child: Text("Re-Attempt")),
                                 ))
                             .toList(),
                       ),

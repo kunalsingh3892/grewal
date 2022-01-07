@@ -4,16 +4,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grewal/api/data_list.dart';
 import 'package:grewal/components/color_constants.dart';
 import 'package:grewal/services/shared_preferences.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:http/http.dart' as http;
+import 'package:rflutter_alert/rflutter_alert.dart';
 import '../constants.dart';
 
 class ChapterList extends StatefulWidget {
   final String modal;
-
-  ChapterList(this.modal);
+  final Map term;
+  ChapterList(this.modal, this.term);
   @override
   _SettingsState createState() => _SettingsState();
 }
@@ -42,10 +44,20 @@ class _SettingsState extends State<ChapterList> {
   String email_id = '';
   String order_id = "";
   String api_token = "";
+  String term = "";
+  String term_id = "";
   @override
   void initState() {
     super.initState();
-    _getUser();
+
+    setState(() {
+      if (widget.term.containsKey("id")) {
+        print("if");
+        term = widget.term['term'].toString();
+        term_id = widget.term['id'].toString();
+        _getUser(term_id.toString());
+      }
+    });
   }
 
   Widget _networkImage1(url) {
@@ -67,7 +79,7 @@ class _SettingsState extends State<ChapterList> {
     );
   }
 
-  _getUser() async {
+  _getUser(terms_ids) async {
     Preference().getPreferences().then((prefs) {
       setState(() {
         email_id = prefs.getString('email_id').toString();
@@ -80,7 +92,7 @@ class _SettingsState extends State<ChapterList> {
         total_test_quetion = prefs.getString('total_test').toString();
         payment = prefs.getString('payment').toString();
         api_token = prefs.getString('api_token').toString();
-        _chapterData = _getChapterData();
+        _chapterData = _getChapterData(terms_ids);
       });
     });
   }
@@ -92,7 +104,7 @@ class _SettingsState extends State<ChapterList> {
   }
 
   List<bool> showExpand = new List();
-  Future _getChapterData() async {
+  Future _getChapterData(String terms_ids) async {
     _searchResult.clear();
     _userDetails.clear();
     completeController.text = "";
@@ -106,15 +118,16 @@ class _SettingsState extends State<ChapterList> {
       body: {
         "board_id": board_id,
         "class_id": class_id,
-        "subject_id": "8",
+        "subject_id": terms_ids,
         "student_id": user_id
       },
       headers: headers,
     );
+    print(response.body);
     print({
       "board_id": board_id,
       "class_id": class_id,
-      "subject_id": "8",
+      "subject_id": term_id.toString(),
       "student_id": user_id
     });
     if (response.statusCode == 200) {
@@ -342,8 +355,10 @@ class _SettingsState extends State<ChapterList> {
                                               Expanded(
                                                 child: InkWell(
                                                   onTap: () {
-                                                    Navigator.pushNamed(context,
-                                                        '/mcq-level-testing',
+                                                    if (term == "1") {
+                                                      Navigator.pushNamed(
+                                                        context,
+                                                        '/test-list',
                                                         arguments: <String,
                                                             String>{
                                                           'chapter_id':
@@ -351,32 +366,27 @@ class _SettingsState extends State<ChapterList> {
                                                                       index]
                                                                   .id
                                                                   .toString(),
-                                                        });
-                                                    // Navigator.pushNamed(
-                                                    //   context,
-                                                    //   '/test-list',
-                                                    //   arguments: <String,
-                                                    //       String>{
-                                                    //     'chapter_id':
-                                                    //         _searchResult[index]
-                                                    //             .id
-                                                    //             .toString(),
-                                                    //     'chapter_name':
-                                                    //         _searchResult[index]
-                                                    //             .chapter_name
-                                                    //             .toString(),
-                                                    //     'type': "inside"
-                                                    //   },
-                                                    // );
-                                                    // Navigator.pushNamed(context,
-                                                    //     '/mcq-level-testing',
-                                                    //     arguments: {
-                                                    //       "chapter_id":
-                                                    //           _searchResult[
-                                                    //                   index]
-                                                    //               .id
-                                                    //               .toString()
-                                                    //     });
+                                                          'chapter_name':
+                                                              _searchResult[
+                                                                      index]
+                                                                  .chapter_name
+                                                                  .toString(),
+                                                          'type': "inside"
+                                                        },
+                                                      );
+                                                    } else if (term == "2") {
+                                                      Navigator.pushNamed(
+                                                          context,
+                                                          '/mcq-level-testing',
+                                                          arguments: <String,
+                                                              String>{
+                                                            'chapter_id':
+                                                                _searchResult[
+                                                                        index]
+                                                                    .id
+                                                                    .toString(),
+                                                          });
+                                                    }
                                                   },
                                                   child: _buildWikiCategory(
                                                       "assets/images/video_icon.png",
@@ -395,68 +405,36 @@ class _SettingsState extends State<ChapterList> {
                                               right: 15,
                                               bottom: 5,
                                               top: 5),
-                                          child: Row(
-                                            children: <Widget>[
-                                              //  const SizedBox(width: 16.0),
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    Navigator.pushNamed(
-                                                      context,
-                                                      '/ticket-list',
-                                                      arguments: <String,
-                                                          String>{
-                                                        'chapter_id':
-                                                            _searchResult[index]
-                                                                .id
-                                                                .toString(),
-                                                      },
-                                                    );
-                                                  },
-                                                  child: _buildWikiCategory(
-                                                      "assets/images/video_icon.png",
-                                                      "Ask your Queries",
-                                                      Color(0xff38CD8B),
-                                                      Color(0xffE9FFF5)),
-                                                ),
-                                              ),
-
-                                              const SizedBox(width: 16.0),
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    // Navigator.pushNamed(
-                                                    //   context,
-                                                    //   '/subjective_test',
-                                                    //   arguments: <String,
-                                                    //       String>{
-                                                    //     'chapter_id':
-                                                    //         _searchResult[index]
-                                                    //             .id
-                                                    //             .toString(),
-                                                    //   },
-                                                    // );
-                                                    Navigator.pushNamed(
-                                                      context,
-                                                      '/start-subjective-list',
-                                                      arguments: <String,
-                                                          String>{
-                                                        'chapter_id': snapshot
-                                                            .data['Response']
-                                                                [index]['id']
-                                                            .toString(),
-                                                      },
-                                                    );
-                                                  },
-                                                  child: _buildWikiCategory(
-                                                      "assets/images/support.png",
-                                                      "Subjective Questions",
-                                                      Color(0xff38CD8B),
-                                                      Color(0xffE9FFF5)),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                          child: term == "2"
+                                              ? Row(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          Navigator.pushNamed(
+                                                            context,
+                                                            '/start-subjective-list',
+                                                            arguments: <String,
+                                                                String>{
+                                                              'chapter_id': snapshot
+                                                                  .data[
+                                                                      'Response']
+                                                                      [index]
+                                                                      ['id']
+                                                                  .toString(),
+                                                            },
+                                                          );
+                                                        },
+                                                        child: _buildWikiCategory(
+                                                            "assets/images/support.png",
+                                                            "Subjective Questions",
+                                                            Color(0xff34DEDE),
+                                                            Color(0xffF0FFFF)),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              : SizedBox(),
                                         ),
                                         /* const SizedBox(height: 10.0),
                               Container(
@@ -692,34 +670,51 @@ class _SettingsState extends State<ChapterList> {
                                               Expanded(
                                                 child: InkWell(
                                                   onTap: () {
-                                                    // Navigator.pushNamed(
-                                                    //   context,
-                                                    //   '/test-list',
-                                                    //   arguments: <String,
-                                                    //       String>{
-                                                    //     'chapter_id': snapshot
-                                                    //         .data['Response']
-                                                    //             [index]['id']
-                                                    //         .toString(),
-                                                    //     'chapter_name': snapshot
-                                                    //         .data['Response']
-                                                    //             [index]
-                                                    //             ['chapter_name']
-                                                    //         .toString(),
-                                                    //     'type': "inside"
-                                                    //   },
-                                                    // );
-                                                    Navigator.pushNamed(
-                                                      context,
-                                                      '/mcq-level-testing',
-                                                      arguments: <String,
-                                                          String>{
+                                                    if (term == "1") {
+                                                      print(jsonEncode({
                                                         'chapter_id': snapshot
                                                             .data['Response']
                                                                 [index]['id']
                                                             .toString(),
-                                                      },
-                                                    );
+                                                        'chapter_name': snapshot
+                                                            .data['Response']
+                                                                [index]
+                                                                ['chapter_name']
+                                                            .toString(),
+                                                        'type': "inside"
+                                                      }));
+                                                      Navigator.pushNamed(
+                                                        context,
+                                                        '/test-list',
+                                                        arguments: <String,
+                                                            String>{
+                                                          'chapter_id': snapshot
+                                                              .data['Response']
+                                                                  [index]['id']
+                                                              .toString(),
+                                                          'chapter_name': snapshot
+                                                              .data['Response']
+                                                                  [index][
+                                                                  'chapter_name']
+                                                              .toString(),
+                                                          'type': "inside"
+                                                        },
+                                                      );
+                                                    } else if (term == "2") {
+                                                      Navigator.pushNamed(
+                                                        context,
+                                                        '/mcq-level-testing',
+                                                        arguments: <String,
+                                                            String>{
+                                                          'chapter_id': snapshot
+                                                              .data['Response']
+                                                                  [index]['id']
+                                                              .toString(),
+                                                          'term':
+                                                              term.toString()
+                                                        },
+                                                      );
+                                                    }
                                                   },
                                                   child: _buildWikiCategory(
                                                       "assets/images/mcq.png",
@@ -738,66 +733,36 @@ class _SettingsState extends State<ChapterList> {
                                               right: 15,
                                               bottom: 5,
                                               top: 5),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    Navigator.pushNamed(
-                                                      context,
-                                                      '/ticket-list',
-                                                      arguments: <String,
-                                                          String>{
-                                                        'chapter_id': snapshot
-                                                            .data['Response']
-                                                                [index]['id']
-                                                            .toString(),
-                                                      },
-                                                    );
-                                                  },
-                                                  child: _buildWikiCategory(
-                                                      "assets/images/support.png",
-                                                      "Ask your Queries",
-                                                      Color(0xff38CD8B),
-                                                      Color(0xffE9FFF5)),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 16.0),
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    // Navigator.pushNamed(
-                                                    //   context,
-                                                    //   '/subjective_test',
-                                                    //   arguments: <String,
-                                                    //       String>{
-                                                    //     'chapter_id': snapshot
-                                                    //         .data['Response']
-                                                    //             [index]['id']
-                                                    //         .toString(),
-                                                    //   },
-                                                    // );
-                                                    Navigator.pushNamed(
-                                                      context,
-                                                      '/start-subjective-list',
-                                                      arguments: <String,
-                                                          String>{
-                                                        'chapter_id': snapshot
-                                                            .data['Response']
-                                                                [index]['id']
-                                                            .toString(),
-                                                      },
-                                                    );
-                                                  },
-                                                  child: _buildWikiCategory(
-                                                      "assets/images/support.png",
-                                                      "Subjective Questions",
-                                                      Color(0xff38CD8B),
-                                                      Color(0xffE9FFF5)),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                          child: term == "2"
+                                              ? Row(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          Navigator.pushNamed(
+                                                            context,
+                                                            '/start-subjective-list',
+                                                            arguments: <String,
+                                                                String>{
+                                                              'chapter_id': snapshot
+                                                                  .data[
+                                                                      'Response']
+                                                                      [index]
+                                                                      ['id']
+                                                                  .toString(),
+                                                            },
+                                                          );
+                                                        },
+                                                        child: _buildWikiCategory(
+                                                            "assets/images/support.png",
+                                                            "Subjective Questions",
+                                                            Color(0xff34DEDE),
+                                                            Color(0xffF0FFFF)),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              : SizedBox(),
                                         ),
                                         /* const SizedBox(height: 10.0),
                               Container(

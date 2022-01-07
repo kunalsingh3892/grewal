@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grewal/api/data_list.dart';
 import 'package:grewal/components/general.dart';
 import 'package:grewal/components/tab_item.dart';
 import 'package:grewal/screens/support_list.dart';
@@ -44,8 +45,9 @@ class _MainScreenState extends State<Dashboard> {
   String class_id = "";
   String board_id = "";
   String api_token = "";
+  List subjects_list = [];
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
   AndroidNotificationChannel channel;
   void initState() {
     super.initState();
@@ -59,28 +61,39 @@ class _MainScreenState extends State<Dashboard> {
     _requestPermissions();
 
     _getUser();
+    DataListOfSubjects().getSubjectsList().then((value) {
+      if (value.length > 0) {
+        setState(() {
+          subjects_list.clear();
+          subjects_list.addAll(value);
+        });
+      }
+    });
   }
+
   void _requestPermissions() {
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>()
+            IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+          alert: true,
+          badge: true,
+          sound: true,
+        );
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-        MacOSFlutterLocalNotificationsPlugin>()
+            MacOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+          alert: true,
+          badge: true,
+          sound: true,
+        );
   }
+
   Future<void> secureScreen() async {
     await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   }
+
   _getUser() async {
     Preference().getPreferences().then((prefs) {
       setState(() {
@@ -99,6 +112,7 @@ class _MainScreenState extends State<Dashboard> {
       });
     });
   }
+
   int total_notification = 0;
   Future _homeData() async {
     Map<String, String> headers = {
@@ -138,7 +152,6 @@ class _MainScreenState extends State<Dashboard> {
   }
 
   showNotification() async {
-
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage message) {
@@ -150,7 +163,7 @@ class _MainScreenState extends State<Dashboard> {
       }
     });
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification notification = message.notification;
       var data = message.data;
 
@@ -161,126 +174,31 @@ class _MainScreenState extends State<Dashboard> {
         print(data['moredata']);
         print(data['bigPicture']);
 
-      final ByteArrayAndroidBitmap bigPicture = ByteArrayAndroidBitmap(
-      await _getByteArrayFromUrl(data['bigPicture']));
-
-      final BigPictureStyleInformation bigPictureStyleInformation =
-      BigPictureStyleInformation(
-          bigPicture,
-          largeIcon: DrawableResourceAndroidBitmap("ic_launcher"),
-      contentTitle: notification.title,
-      htmlFormatContentTitle: true,
-      summaryText: notification.body,
-      htmlFormatSummaryText: true);
-      final AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails( channel.id,
-      channel.name,
-      channel.description,
-      icon: '@mipmap/ic_launcher',
-
-      fullScreenIntent: true,
-     /* importance: Importance.max,
-      priority: Priority.high,*/
-      ongoing: false,
-      styleInformation: bigPictureStyleInformation);
-      final NotificationDetails platformChannelSpecifics =
-      NotificationDetails(android: androidPlatformChannelSpecifics);
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-      platformChannelSpecifics,
-
-          payload:""
-
-        );
-      if(data['moredata']=="payment") {
-        Navigator.pushNamed(
-          context,
-          '/plan',
-          arguments: <String, String>{
-            'order_id': order_id.toString(),
-            'signupid': user_id.toString(),
-            'mobile': mobile_no,
-            'email': email_id,
-            'out': 'in'
-          },
-        );
-      }
-      else if(data['moredata']=="model test paper"){
-        Navigator.pushNamed(
-          context,
-          '/mts',
-        );
-      }
-      else if(data['moredata']=="test"){
-        Navigator.pushNamed(
-          context,
-          '/test-list',
-          arguments: <String, String>{
-            'chapter_id': "",
-            'chapter_name': "",
-            'type': "outside"
-          },
-        );
-      }
-      else if(data['moredata']=="institute"){
-        Navigator.pushNamed(
-          context,
-          '/institute-test-list',
-
-        );
-      }
-      else{
-        Navigator.pushNamed(context, '/dashboard');
-      }
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-      RemoteNotification notification = message.notification;
-      var data = message.data;
-      print(data);
-        print("wffewf");
-        print(notification.body);
-
-        print(data['moredata']);
-        print(data['bigPicture']);
-
         final ByteArrayAndroidBitmap bigPicture = ByteArrayAndroidBitmap(
             await _getByteArrayFromUrl(data['bigPicture']));
+
         final BigPictureStyleInformation bigPictureStyleInformation =
-        BigPictureStyleInformation(
-            bigPicture,
-            largeIcon: DrawableResourceAndroidBitmap("ic_launcher"),
-            contentTitle: notification.title,
-            htmlFormatContentTitle: true,
-            summaryText: notification.body,
-            htmlFormatSummaryText: true);
+            BigPictureStyleInformation(bigPicture,
+                largeIcon: DrawableResourceAndroidBitmap("ic_launcher"),
+                contentTitle: notification.title,
+                htmlFormatContentTitle: true,
+                summaryText: notification.body,
+                htmlFormatSummaryText: true);
         final AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails( channel.id,
-            channel.name,
-            channel.description,
-            icon: '@mipmap/ic_launcher',
-
-            fullScreenIntent: true,
-           // importance: Importance.max,
-           // priority: Priority.high,
-            ongoing: false,
-            styleInformation: bigPictureStyleInformation);
+            AndroidNotificationDetails(
+                channel.id, channel.name, channel.description,
+                icon: '@mipmap/ic_launcher',
+                fullScreenIntent: true,
+                /* importance: Importance.max,
+      priority: Priority.high,*/
+                ongoing: false,
+                styleInformation: bigPictureStyleInformation);
         final NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            platformChannelSpecifics
-          ,
-
-            payload:""
-
-        );
-        if(data['moredata']=="payment") {
+            NotificationDetails(android: androidPlatformChannelSpecifics);
+        flutterLocalNotificationsPlugin.show(notification.hashCode,
+            notification.title, notification.body, platformChannelSpecifics,
+            payload: "");
+        if (data['moredata'] == "payment") {
           Navigator.pushNamed(
             context,
             '/plan',
@@ -292,14 +210,12 @@ class _MainScreenState extends State<Dashboard> {
               'out': 'in'
             },
           );
-        }
-        else if(data['moredata']=="model test paper"){
+        } else if (data['moredata'] == "model test paper") {
           Navigator.pushNamed(
             context,
             '/mts',
           );
-        }
-        else if(data['moredata']=="test"){
+        } else if (data['moredata'] == "test") {
           Navigator.pushNamed(
             context,
             '/test-list',
@@ -309,11 +225,80 @@ class _MainScreenState extends State<Dashboard> {
               'type': "outside"
             },
           );
-        }
-        else{
+        } else if (data['moredata'] == "institute") {
+          Navigator.pushNamed(
+            context,
+            '/institute-test-list',
+          );
+        } else {
           Navigator.pushNamed(context, '/dashboard');
         }
+      }
+    });
 
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+      RemoteNotification notification = message.notification;
+      var data = message.data;
+      print(data);
+      print("wffewf");
+      print(notification.body);
+
+      print(data['moredata']);
+      print(data['bigPicture']);
+
+      final ByteArrayAndroidBitmap bigPicture = ByteArrayAndroidBitmap(
+          await _getByteArrayFromUrl(data['bigPicture']));
+      final BigPictureStyleInformation bigPictureStyleInformation =
+          BigPictureStyleInformation(bigPicture,
+              largeIcon: DrawableResourceAndroidBitmap("ic_launcher"),
+              contentTitle: notification.title,
+              htmlFormatContentTitle: true,
+              summaryText: notification.body,
+              htmlFormatSummaryText: true);
+      final AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+              channel.id, channel.name, channel.description,
+              icon: '@mipmap/ic_launcher',
+              fullScreenIntent: true,
+              // importance: Importance.max,
+              // priority: Priority.high,
+              ongoing: false,
+              styleInformation: bigPictureStyleInformation);
+      final NotificationDetails platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+      flutterLocalNotificationsPlugin.show(notification.hashCode,
+          notification.title, notification.body, platformChannelSpecifics,
+          payload: "");
+      if (data['moredata'] == "payment") {
+        Navigator.pushNamed(
+          context,
+          '/plan',
+          arguments: <String, String>{
+            'order_id': order_id.toString(),
+            'signupid': user_id.toString(),
+            'mobile': mobile_no,
+            'email': email_id,
+            'out': 'in'
+          },
+        );
+      } else if (data['moredata'] == "model test paper") {
+        Navigator.pushNamed(
+          context,
+          '/mts',
+        );
+      } else if (data['moredata'] == "test") {
+        Navigator.pushNamed(
+          context,
+          '/test-list',
+          arguments: <String, String>{
+            'chapter_id': "",
+            'chapter_name': "",
+            'type': "outside"
+          },
+        );
+      } else {
+        Navigator.pushNamed(context, '/dashboard');
+      }
     });
   }
 
@@ -407,6 +392,7 @@ class _MainScreenState extends State<Dashboard> {
       ),
     );
   }
+
   Widget _networkImage1(url) {
     return Container(
       margin: EdgeInsets.only(
@@ -422,7 +408,6 @@ class _MainScreenState extends State<Dashboard> {
           image: NetworkImage(profile_image),
           fit: BoxFit.cover,
         ),
-
       ),
     );
   }
@@ -466,48 +451,38 @@ class _MainScreenState extends State<Dashboard> {
                     image: NetworkImage(profile_image),
                     fit: BoxFit.cover,
                   ),
-
                 ),
               ),
             ),
             SizedBox(
               height: 5.0,
             ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-
-                children: <Widget>[
-             Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Hello, " + name,
-                      maxLines: 2,
-                      softWrap: true,
-                      overflow:
-                      TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xff2E2A4A),
-                      ),
-                    ),
-
+            Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Hello, " + name,
+                  maxLines: 2,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xff2E2A4A),
+                  ),
+                ),
               ),
-
               SizedBox(
                 width: 5.0,
               ),
-
               Align(
                 alignment: Alignment.topLeft,
                 child: Image(
-                      image: AssetImage("assets/images/hand.png"),
-                      height: 20.0,
-                      width: 20.0,
-                    ),
+                  image: AssetImage("assets/images/hand.png"),
+                  height: 20.0,
+                  width: 20.0,
+                ),
               ),
-
-
             ]),
             SizedBox(
               height: 5.0,
@@ -530,20 +505,22 @@ class _MainScreenState extends State<Dashboard> {
       fontSize: 16, fontWeight: FontWeight.w400, color: Color(0xff2E2A4A));
 
   _launchCaller(String s) async {
-    var url = "tel:"+s;
+    var url = "tel:" + s;
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
     }
   }
+
   Future<void> whatsAppOpen(String s) async {
-    var whatsappUrl = "whatsapp://send?phone=+91"+s;
+    var whatsappUrl = "whatsapp://send?phone=+91" + s;
     await canLaunch(whatsappUrl)
         ? launch(whatsappUrl)
         : showAlertDialog(
-        context, ALERT_DIALOG_TITLE, "There is no whatsapp installed");
+            context, ALERT_DIALOG_TITLE, "There is no whatsapp installed");
   }
+
   Future<void> _launchInBrowser(String url) async {
     if (await canLaunch(url)) {
       await launch(
@@ -557,15 +534,12 @@ class _MainScreenState extends State<Dashboard> {
     }
   }
 
-
   Widget buildDrawerItem() {
     return Flexible(
       child: Container(
         color: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: 10.0),
-        child:
-
-        SingleChildScrollView(
+        child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -576,21 +550,16 @@ class _MainScreenState extends State<Dashboard> {
                     if (item.title == "Home") {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, '/dashboard');
-                    }
-                    else if (item.title == "Profile") {
+                    } else if (item.title == "Profile") {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, '/update-profile');
-                    }
-
-                    else if (item.title == "Performance") {
+                    } else if (item.title == "Performance") {
                       Navigator.pop(context);
                       Navigator.pushNamed(
                         context,
                         '/overall-performance',
                       );
-
-                    }
-                    else if (item.title == "MCQs") {
+                    } else if (item.title == "MCQs") {
                       Navigator.pop(context);
                       Navigator.pushNamed(
                         context,
@@ -616,7 +585,6 @@ class _MainScreenState extends State<Dashboard> {
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/privacy-policy');
                 },
-
                 child: ListTile(
                   leading: Text(
                     "Privacy Policy",
@@ -629,7 +597,6 @@ class _MainScreenState extends State<Dashboard> {
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/refund-policies');
                 },
-
                 child: ListTile(
                   leading: Text(
                     "Refund Policy",
@@ -642,7 +609,6 @@ class _MainScreenState extends State<Dashboard> {
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/t-c');
                 },
-
                 child: ListTile(
                   leading: Text(
                     "Terms and Conditions",
@@ -652,10 +618,8 @@ class _MainScreenState extends State<Dashboard> {
               ),
               InkWell(
                 onTap: () {
-
-                    Navigator.pop(context);
-                    Navigator.pushNamed(context, '/work-flow');
-
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/work-flow');
                 },
                 child: ListTile(
                   leading: Text(
@@ -667,9 +631,20 @@ class _MainScreenState extends State<Dashboard> {
               InkWell(
                 onTap: () {
                   Navigator.pop(context);
+                  Navigator.pushNamed(context, '/support-list');
+                },
+                child: ListTile(
+                  leading: Text(
+                    "Any Issues",
+                    style: normalText6,
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
                   Navigator.pushNamed(context, '/settings');
                 },
-
                 child: ListTile(
                   leading: Text(
                     "Settings",
@@ -684,9 +659,8 @@ class _MainScreenState extends State<Dashboard> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     InkWell(
-                      onTap: (){
+                      onTap: () {
                         _launchCaller("9560102856");
-
                       },
                       child: Image(
                         image: AssetImage("assets/images/telephone.png"),
@@ -698,7 +672,7 @@ class _MainScreenState extends State<Dashboard> {
                       width: 10,
                     ),
                     InkWell(
-                      onTap: (){
+                      onTap: () {
                         whatsAppOpen("9560102856");
                       },
                       child: Image(
@@ -707,64 +681,13 @@ class _MainScreenState extends State<Dashboard> {
                         width: 35,
                       ),
                     ),
-
                   ],
                 ),
               ),
               SizedBox(
                 height: 20,
               ),
-              Container(
-                padding: EdgeInsets.only(left: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    InkWell(
-                      onTap: (){
-                        _launchInBrowser("https://www.facebook.com/Grewal-Academy-218288866835782/");
 
-                      },
-                      child: Image(
-                        image: AssetImage("assets/images/facebook.png"),
-                        height: 35.0,
-                        width: 35,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    InkWell(
-                      onTap: (){
-                        _launchInBrowser("https://www.youtube.com/channel/UCJnneibYlAUKBH6SiLa1Z9Q");
-
-                      },
-                      child: Image(
-                        image: AssetImage("assets/images/youtube.png"),
-                        height: 35.0,
-                        width: 35,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-
-                    InkWell(
-                      onTap: (){
-                        _launchInBrowser("https://www.instagram.com/invites/contact/?i=1wacb3ps73z2r&utm_content=mnnvbxj");
-
-                      },
-                      child: Image(
-                        image: AssetImage("assets/images/instagram.png"),
-                        height: 35.0,
-                        width: 35,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
               Container(
                 margin: EdgeInsets.only(bottom: 60),
                 child: InkWell(
@@ -789,9 +712,6 @@ class _MainScreenState extends State<Dashboard> {
             ],
           ),
         ),
-
-
-
       ),
     );
   }
@@ -805,12 +725,13 @@ class _MainScreenState extends State<Dashboard> {
       return Container(
         child: Text("My Profile", style: normalText5),
       );
-    } else if (selectedPosition == 2) {
-      return Container(
-        child: Text("List of Chapters", style: normalText5),
-      );
     }
-    else if (selectedPosition == 3) {
+    // else if (selectedPosition == 2) {
+    //   return Container(
+    //     child: Text("List of Chapters", style: normalText5),
+    //   );
+    // }
+    else if (selectedPosition == 2) {
       return Container(
         child: Text("Support", style: normalText5),
       );
@@ -832,124 +753,111 @@ class _MainScreenState extends State<Dashboard> {
             ],
           ),
         ),
-        appBar:institute_id!="0"?AppBar(
-          elevation: 0.0,
-          leading: InkWell(
-            child: Row(children: <Widget>[
-              IconButton(
-                icon: Image(
-                  image: AssetImage("assets/images/list_icon.png"),
-                  height: 25.0,
-                  width: 25.0,
-                ),
-                onPressed: () {
-                  _scaffoldKey.currentState.openDrawer();
-                },
-              ),
-            ]),
-          ),
-          centerTitle: true,
-          title: _name(),
-          flexibleSpace: Container(
-            height: 100,
-            color: Color(0xffffffff),
-          ),
-          actions: <Widget>[
-            total_notification != 0
-                ? InkWell(
-              onTap: () {
-                Navigator.pushNamed(
-                    context,
-                    '/notifications');
-              },
-              child: Badge(
-                  padding:
-                  EdgeInsets.all(5),
-                  badgeColor:
-                  Color(0xff017EFF),
-                  position: BadgePosition
-                      .topEnd(
-                      top: 1, end: 8),
-                  animationDuration:
-                  Duration(
-                      milliseconds:
-                      300),
-                  animationType:
-                  BadgeAnimationType
-                      .fade,
-                  badgeContent: Text(
-                    total_notification
-                        .toString(),
-                    style: TextStyle(
-                        color:
-                        Colors.white,
-                        fontSize: 13),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.notifications,
-                      color:Color(0xff2E2A4A),
-                      size: 24,
+        appBar: institute_id != "0"
+            ? AppBar(
+                elevation: 0.0,
+                leading: InkWell(
+                  child: Row(children: <Widget>[
+                    IconButton(
+                      icon: Image(
+                        image: AssetImage("assets/images/list_icon.png"),
+                        height: 25.0,
+                        width: 25.0,
+                      ),
+                      onPressed: () {
+                        _scaffoldKey.currentState.openDrawer();
+                      },
                     ),
-                  )),
-            )
-                : IconButton(
-              icon: const Icon(
-                Icons.notifications,
-                color: Color(0xff2E2A4A),
-                size: 24,
-              ),
-              onPressed: () {
-                Navigator.pushNamed(
-                    context,
-                    '/notifications');
-              },
-            ),
-          ],
-          iconTheme: IconThemeData(
-            color: Colors.white, //change your color here
-          ),
-          backgroundColor: Colors.transparent,
-        ): selectedPosition!=0?AppBar(
-          elevation: 0.0,
-          leading: InkWell(
-            child: Row(children: <Widget>[
-              IconButton(
-                icon: Image(
-                  image: AssetImage("assets/images/list_icon.png"),
-                  height: 25.0,
-                  width: 25.0,
+                  ]),
                 ),
-                onPressed: () {
-                  _scaffoldKey.currentState.openDrawer();
-                },
-              ),
-            ]),
-          ),
-          centerTitle: true,
-          title: _name(),
-          flexibleSpace: Container(
-            height: 100,
-            color: Color(0xffffffff),
-          ),
-          actions: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 30,
-                child: _networkImage1(
-                  profile_image,
+                centerTitle: true,
+                title: _name(),
+                flexibleSpace: Container(
+                  height: 100,
+                  // color: Color(0xffffffff),
                 ),
-              ),
-            ),
-          ],
-          iconTheme: IconThemeData(
-            color: Colors.white, //change your color here
-          ),
-          backgroundColor: Colors.transparent,
-        ):null,
-       /* floatingActionButton: FloatingActionButton(
+                actions: <Widget>[
+                  total_notification != 0
+                      ? InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/notifications');
+                          },
+                          child: Badge(
+                            padding: EdgeInsets.all(5),
+                            badgeColor: Color(0xff017EFF),
+                            position: BadgePosition.topEnd(top: 1, end: 8),
+                            animationDuration: Duration(milliseconds: 300),
+                            animationType: BadgeAnimationType.fade,
+                            badgeContent: Text(
+                              total_notification.toString(),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                            child: Icon(
+                              Icons.notifications,
+                              color: Color(0xff2E2A4A),
+                              size: 24,
+                            ),
+                          ),
+                        )
+                      : IconButton(
+                          icon: const Icon(
+                            Icons.notifications,
+                            color: Color(0xff2E2A4A),
+                            size: 24,
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/notifications');
+                          },
+                        ),
+                ],
+                iconTheme: IconThemeData(
+                  color: Colors.white, //change your color here
+                ),
+                backgroundColor: Colors.transparent,
+              )
+            : selectedPosition != 0
+                ? AppBar(
+                    elevation: 0.0,
+                    leading: InkWell(
+                      child: Row(children: <Widget>[
+                        IconButton(
+                          icon: Image(
+                            image: AssetImage("assets/images/list_icon.png"),
+                            height: 25.0,
+                            width: 25.0,
+                          ),
+                          onPressed: () {
+                            _scaffoldKey.currentState.openDrawer();
+                          },
+                        ),
+                      ]),
+                    ),
+                    centerTitle: true,
+                    title: _name(),
+                    flexibleSpace: Container(
+                      height: 100,
+                      color: Color(0xffffffff),
+                    ),
+                    actions: <Widget>[
+                      Align(
+                        alignment: Alignment.center,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 30,
+                          child: _networkImage1(
+                            profile_image,
+                          ),
+                        ),
+                      ),
+                    ],
+                    iconTheme: IconThemeData(
+                      color: Colors.white, //change your color here
+                    ),
+                    backgroundColor: Colors.transparent,
+                  )
+                : null,
+        /* floatingActionButton: FloatingActionButton(
           onPressed: () {},
           child: Image.asset("assets/images/center_icon.png"),
         ),
@@ -963,7 +871,7 @@ class _MainScreenState extends State<Dashboard> {
   final List<Widget> _children = [
     HomePage(),
     UpdateProfile(""),
-    ChapterList(""),
+    // ChapterList("", {}),
     SupportList("")
   ];
 
@@ -980,7 +888,6 @@ class _MainScreenState extends State<Dashboard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-
               TabItem(
                 icon: "assets/images/dash_1.png",
                 dot: "•",
@@ -1001,23 +908,23 @@ class _MainScreenState extends State<Dashboard> {
                   });
                 },
               ),
+              // TabItem(
+              //   icon: "assets/images/dash_3.png",
+              //   dot: "•",
+              //   isSelected: selectedPosition == 2,
+              //   onTap: () {
+              //     setState(() {
+              //       selectedPosition = 2;
+              //     });
+              //   },
+              // ),
               TabItem(
-                icon: "assets/images/dash_3.png",
+                icon: "assets/images/chat.png",
                 dot: "•",
                 isSelected: selectedPosition == 2,
                 onTap: () {
                   setState(() {
                     selectedPosition = 2;
-                  });
-                },
-              ),
-              TabItem(
-                icon: "assets/images/chat.png",
-                dot: "•",
-                isSelected: selectedPosition == 3,
-                onTap: () {
-                  setState(() {
-                    selectedPosition = 3;
                   });
                 },
               ),

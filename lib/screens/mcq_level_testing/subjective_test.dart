@@ -4,10 +4,12 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grewal/api/create_test_api.dart';
+import 'package:grewal/components/general.dart';
 import 'package:grewal/components/progress_bar.dart';
 import 'package:grewal/services/shared_preferences.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -55,17 +57,18 @@ class _StartSubjectiveTestState extends State<StartSubjectiveTest> {
     super.initState();
     var encodedJson = json.encode(widget.argument);
     var data = json.decode(encodedJson);
-    chapter_id = data['chapter_id'];
+    chapter_id = data['chapter_id'].toString();
     Preference().getPreferences().then((prefs) {
       setState(() {
         student_id = prefs.getString('user_id').toString();
       });
-      MCQLevelTestAPI().getTopicListChapterWise(chapter_id).then((value) {
+      MCQLevelTestAPI()
+          .getTopicListChapterWise(chapter_id, student_id)
+          .then((value) {
         if (value.length > 0) {
           setState(() {
             value.forEach((element) {
-              if (element['totaldetails'] > 0) {
-                print(element['totaldetails']);
+              if (element['totaldetails'].toString() != "0 out of 0") {
                 topicsList.add(element);
               }
             });
@@ -128,108 +131,197 @@ class _StartSubjectiveTestState extends State<StartSubjectiveTest> {
                   flex: 4,
                   child: Column(
                     children: [
+                      // Container(
+                      //   width: MediaQuery.of(context).size.width,
+                      //   child: ElevatedButton(
+                      //       onPressed: () {
+                      //         showDialog(
+                      //             context: context,
+                      //             builder: (context) => AlertDialog(
+                      //                   title: Text("Tap to Select"),
+                      //                   content: Table(
+                      //                     columnWidths: const <int,
+                      //                         TableColumnWidth>{
+                      //                       0: FlexColumnWidth(),
+                      //                       1: FlexColumnWidth()
+                      //                     },
+                      //                     border: TableBorder.all(),
+                      //                     children: topicsList.map((e) {
+
+                      //                         return TableRow(children: [
+                      //                           TableCell(
+                      //                               child: Padding(
+                      //                             padding:
+                      //                                 const EdgeInsets.all(8.0),
+                      //                             child: Text(
+                      //                                 e['name'].toString()),
+                      //                           )),
+                      //                           TableCell(
+                      //                               child: Padding(
+                      //                             padding:
+                      //                                 const EdgeInsets.all(8.0),
+                      //                             child: Text(e['totaldetails']
+                      //                                 .toString()),
+                      //                           ))
+                      //                         ]);
+
+                      //                     }).toList(),
+                      //                   ),
+                      //                 ));
+                      //       },
+                      //       child: Text("Select Topics")),
+                      // ),
+
                       DropdownButtonFormField(
                           validator: (value) =>
                               value == null ? "Required" : null,
+                          isDense: true,
                           decoration: InputDecoration(
-                            // contentPadding: EdgeInsets.all(5),
+                            contentPadding: EdgeInsets.all(10),
                             border: OutlineInputBorder(),
                             labelText: 'Select Topics',
+                            isDense: true,
                           ),
                           isExpanded: true,
+                          elevation: 8,
                           items: topicsList.map((e) {
                             return DropdownMenuItem(
-                              child: Container(
-                                child: ListTile(
-                                  style: ListTileStyle.list,
-                                  title: Text(
-                                    e['name'].toString(),
+                              child: SingleChildScrollView(
+                                child: Card(
+                                  elevation: 8,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          e['name'].toString().toUpperCase(),
+                                        ),
+                                        Text(
+                                          "No. of Questions : " +
+                                              e['totaldetails'].toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.black),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  subtitle: Text(
-                                      "Subjective : " +
-                                          e['totaldetails'].toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black)),
                                 ),
                               ),
+                              // child: ListTile(
+
+                              //   style: ListTileStyle.list,
+                              //   title: Text(
+                              //     e['name'].toString(),
+                              //   ),
+                              //   isThreeLine: true,
+                              //   subtitle: Text(
+                              //     "No. of Questions : " +
+                              //         e['totaldetails'].toString(),
+                              //     overflow: TextOverflow.ellipsis,
+                              //     style: TextStyle(
+                              //         fontWeight: FontWeight.bold,
+                              //         fontSize: 16,
+                              //         color: Colors.black),
+                              //   ),
+                              // ),
                               value: e,
                             );
                           }).toList(),
                           onChanged: (val) {
                             setState(() {
                               topicSelect = true;
-
+                              print(int.parse(val['totaldetails']
+                                  .toString()
+                                  .substring(
+                                      0,
+                                      val['totaldetails']
+                                          .toString()
+                                          .indexOf(" "))));
                               selectedTopicIndex = topicsList.indexOf(val);
                               currentSelectedTopicLen.clear();
                               currentSelectedTopicLen.addAll(
                                   new List<int>.generate(
-                                      int.parse(val['totaldetails'].toString()),
+                                      int.parse(val['totaldetails']
+                                          .toString()
+                                          .substring(
+                                              0,
+                                              val['totaldetails']
+                                                  .toString()
+                                                  .indexOf(" "))),
                                       (i) => i + 1));
                             });
                           }),
                       SizedBox(
-                        height: 10,
+                        height: 15,
                       ),
                       topicSelect
                           ? currentSelectedTopicLen.length == 0
                               ? Text(
                                   "No. of Question is 0. Please select another topic.")
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child: DropdownButtonFormField(
-                                          autofocus: true,
-                                          decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.all(14),
-                                            border: OutlineInputBorder(),
-                                            labelText: 'Select Que',
-                                          ),
-                                          isExpanded: true,
-                                          value: 1,
-                                          items: currentSelectedTopicLen
-                                              .map((en) => DropdownMenuItem(
-                                                    child: Text(en.toString()),
-                                                    value: en,
-                                                  ))
-                                              .toList(),
-                                          onChanged: (val) {
-                                            setState(() {
-                                              noOfQuestionSelected = val;
-                                            });
-                                          }),
-                                    ),
-                                    Expanded(
+                              : Container(
+                                  color: Colors.white,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
                                         flex: 1,
-                                        child: Text(
-                                          "  /  " +
-                                              currentSelectedTopicLen.length
-                                                  .toString(),
-                                          style: normalText6,
-                                        )),
-                                    Expanded(
-                                        flex: 1,
-                                        child: ElevatedButton(
-                                          child: Text("ADD"),
-                                          onPressed: () {
-                                            setState(() {
-                                              topicsList[selectedTopicIndex]
-                                                      ['selected_question'] =
-                                                  noOfQuestionSelected
-                                                      .toString();
-                                              selectedTopicsArray.add(
-                                                  topicsList[
-                                                      selectedTopicIndex]);
-                                              noOfQuestionSelected = 1;
-                                              currentSelectedTopicLen.clear();
-                                              topicSelect = false;
-                                            });
-                                            countTotalQuestionSelected();
-                                          },
-                                        ))
-                                  ],
+                                        child: DropdownButtonFormField(
+                                            autofocus: true,
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.all(14),
+                                              border: OutlineInputBorder(),
+                                              labelText: 'Select Que',
+                                            ),
+                                            isExpanded: true,
+                                            value: 1,
+                                            items: currentSelectedTopicLen
+                                                .map((en) => DropdownMenuItem(
+                                                      child:
+                                                          Text(en.toString()),
+                                                      value: en,
+                                                    ))
+                                                .toList(),
+                                            onChanged: (val) {
+                                              setState(() {
+                                                noOfQuestionSelected = val;
+                                              });
+                                            }),
+                                      ),
+                                      Expanded(
+                                          flex: 1,
+                                          child: Text(
+                                            "  /  " +
+                                                currentSelectedTopicLen.length
+                                                    .toString(),
+                                            style: normalText6,
+                                          )),
+                                      Expanded(
+                                          flex: 1,
+                                          child: ElevatedButton(
+                                            child: Text("ADD"),
+                                            onPressed: () {
+                                              setState(() {
+                                                topicsList[selectedTopicIndex]
+                                                        ['selected_question'] =
+                                                    noOfQuestionSelected
+                                                        .toString();
+                                                selectedTopicsArray.add(
+                                                    topicsList[
+                                                        selectedTopicIndex]);
+                                                noOfQuestionSelected = 1;
+                                                currentSelectedTopicLen.clear();
+                                                topicSelect = false;
+                                              });
+                                              countTotalQuestionSelected();
+                                            },
+                                          ))
+                                    ],
+                                  ),
                                 )
                           : SizedBox()
                     ],
@@ -260,7 +352,13 @@ class _StartSubjectiveTestState extends State<StartSubjectiveTest> {
                                         subtitle: Text(
                                             e['selected_question'].toString() +
                                                 "/" +
-                                                e['totaldetails'].toString()),
+                                                e['totaldetails']
+                                                    .toString()
+                                                    .substring(
+                                                        0,
+                                                        e['totaldetails']
+                                                            .toString()
+                                                            .indexOf(" "))),
                                         trailing: IconButton(
                                             onPressed: () {
                                               setState(() {
@@ -276,56 +374,49 @@ class _StartSubjectiveTestState extends State<StartSubjectiveTest> {
                                     ))
                                 .toList(),
                           )),
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            if (selectedTopicsArray.length == 0) {
-                              Fluttertoast.showToast(
-                                  msg: "Please select topics",
-                                  gravity: ToastGravity.CENTER);
-                            } else {
-                              int totalSelectedQuestions = 0;
-                              List selectedQuestionMap = [];
-                              selectedTopicsArray.forEach((element) {
-                                Map quesMap = {};
-                                quesMap['topicid'] =
-                                    element['topic_id'].toString();
-                                quesMap['attempt'] =
-                                    element['selected_question'].toString();
-                                selectedQuestionMap.add(quesMap);
-                                totalSelectedQuestions =
-                                    totalSelectedQuestions +
-                                        int.parse(element['selected_question']);
-                              });
-                              Map map = {};
-                              map["student_id"] = student_id.toString();
-                              map["chapter_id"] = chapter_id.toString();
-                              map["total_question"] =
-                                  totalSelectedQuestions.toString();
-                              map["topiclist"] = selectedQuestionMap;
-                              print(jsonEncode(map));
-                              ProgressBarLoading().showLoaderDialog(context);
-                              MCQLevelTestAPI()
-                                  .createSubjectiveTest(map)
-                                  .then((value) {
-                                Navigator.of(context).pop();
-                                if (value['ErrorCode'] == 0) {
-                                  value['total_qus'] =
-                                      totalSelectedQuestions.toString();
-                                  Navigator.pushNamed(
-                                      context, '/create-subjective',
-                                      arguments: value);
-                                }
-                              });
-                            }
-                          },
-                          child: Text("Start Test")),
-                    ))
               ]),
             ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.blue,
+        child: TextButton(
+            onPressed: () {
+              if (selectedTopicsArray.length == 0) {
+                Fluttertoast.showToast(
+                    msg: "Please select topics", gravity: ToastGravity.CENTER);
+              } else {
+                int totalSelectedQuestions = 0;
+                List selectedQuestionMap = [];
+                selectedTopicsArray.forEach((element) {
+                  Map quesMap = {};
+                  quesMap['topicid'] = element['topic_id'].toString();
+                  quesMap['attempt'] = element['selected_question'].toString();
+                  selectedQuestionMap.add(quesMap);
+                  totalSelectedQuestions = totalSelectedQuestions +
+                      int.parse(element['selected_question']);
+                });
+                Map map = {};
+                map["student_id"] = student_id.toString();
+                map["chapter_id"] = chapter_id.toString();
+                map["total_question"] = totalSelectedQuestions.toString();
+                map["topiclist"] = selectedQuestionMap;
+                print(jsonEncode(map));
+                ProgressBarLoading().showLoaderDialog(context);
+                MCQLevelTestAPI().createSubjectiveTest(map).then((value) {
+                  Navigator.of(context).pop();
+                  if (value['ErrorCode'] == 0) {
+                    value['total_qus'] = totalSelectedQuestions.toString();
+                    value['chapter_id'] = chapter_id.toString();
+                    Navigator.pushNamed(context, '/create-subjective',
+                        arguments: value);
+                  }
+                });
+              }
+            },
+            child: Text(
+              "Start Test",
+              style: TextStyle(color: Colors.white),
+            )),
+      ),
     );
   }
 }

@@ -21,8 +21,6 @@ import 'dart:math' as math;
 import '../constants.dart';
 
 class OverAllPerformance extends StatefulWidget {
-
-
   @override
   State<StatefulWidget> createState() => _SettingsState();
 }
@@ -95,8 +93,6 @@ class _SettingsState extends State<OverAllPerformance> {
     });
   }
 
-
-
   TooltipBehavior _tooltipBehavior;
 
   Future _getPerformanceData() async {
@@ -107,69 +103,65 @@ class _SettingsState extends State<OverAllPerformance> {
     };
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/questiontypeperformance"),
-      body: {
-        "user_id": user_id
-      },
+      body: {"user_id": user_id},
       headers: headers,
     );
-    print({
-      "user_id": user_id
-    });
+    print({"user_id": user_id});
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      if(data['question_type'].length!=0) {
+      if (data['question_type'].length != 0) {
         setState(() {
           if (data['question_type'].length == 3) {
             chartData = [
-              ChartData(data['question_type'][0]['questiontype_name'],
+              ChartData(
+                  data['question_type'][0]['questiontype_name'],
                   double.parse(data['question_type'][0]['total_percentage']),
                   data['question_type'][0]['total_question'].toString(),
                   data['question_type'][0]['question_type_id'].toString(),
                   Color(0xff017EFF)),
-              ChartData(data['question_type'][1]['questiontype_name'],
+              ChartData(
+                  data['question_type'][1]['questiontype_name'],
                   double.parse(data['question_type'][1]['total_percentage']),
                   data['question_type'][1]['total_question'].toString(),
                   data['question_type'][1]['question_type_id'].toString(),
                   Color(0xffFFC700)),
-              ChartData(data['question_type'][2]['questiontype_name'],
+              ChartData(
+                  data['question_type'][2]['questiontype_name'],
                   double.parse(data['question_type'][2]['total_percentage']),
                   data['question_type'][2]['total_question'].toString(),
                   data['question_type'][2]['question_type_id'].toString(),
                   Color(0xff4CE364)),
             ];
-          }
-
-          else if (data['question_type'].length == 2) {
+          } else if (data['question_type'].length == 2) {
             chartData = [
-              ChartData(data['question_type'][0]['questiontype_name'],
+              ChartData(
+                  data['question_type'][0]['questiontype_name'],
                   double.parse(data['question_type'][0]['total_percentage']),
                   data['question_type'][0]['total_question'].toString(),
                   data['question_type'][0]['question_type_id'].toString(),
                   Color(0xff017EFF)),
-              ChartData(data['question_type'][1]['questiontype_name'],
+              ChartData(
+                  data['question_type'][1]['questiontype_name'],
                   double.parse(data['question_type'][1]['total_percentage']),
                   data['question_type'][1]['total_question'].toString(),
                   data['question_type'][1]['question_type_id'].toString(),
                   Color(0xffFFC700)),
-
             ];
-          }
-          else{
+          } else {
             chartData = [
-              ChartData(data['question_type'][0]['questiontype_name'],
+              ChartData(
+                  data['question_type'][0]['questiontype_name'],
                   double.parse(data['question_type'][0]['total_percentage']),
                   data['question_type'][0]['total_question'].toString(),
                   data['question_type'][0]['question_type_id'].toString(),
                   Color(0xff017EFF)),
-
             ];
           }
         });
       }
 
       return data;
-    }
-    else {
+    } else {
       throw Exception('Something went wrong');
     }
   }
@@ -208,7 +200,7 @@ class _SettingsState extends State<OverAllPerformance> {
           child: InkWell(
             child: Container(
                 padding:
-                EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
+                    EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
                 alignment: Alignment.center,
                 child: Container(
                     child: AutoSizeText(
@@ -236,368 +228,365 @@ class _SettingsState extends State<OverAllPerformance> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data['question_type'].length != 0) {
-            return
-               SingleChildScrollView(
-                 child: Column(
-                   children: [
-                     Container(
-                        width: deviceSize.width,
-                        height: deviceSize.height*0.50,
-                        decoration: new BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: new BorderRadius.only(
-                                topLeft: const Radius.circular(20.0),
-                                bottomLeft: const Radius.circular(20.0),
-                                bottomRight: const Radius.circular(20.0),
-                                topRight: const Radius.circular(20.0))),
-                        margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                        padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 20),
-                        child: ListView(
-                            children: [
-                              Column(children: [
-                            Container(
-                              child: Text("Question Wise Analysis", style: normalText6),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-
-                            Container(
-                              child: SfCircularChart(
-                                  tooltipBehavior: _tooltipBehavior,
-
-
-                                  legend: Legend(isVisible: true,position:LegendPosition.bottom,height: "150",padding:20,
-                                    orientation: LegendItemOrientation.vertical,textStyle:normalText5),
-                                  series: <CircularSeries>[
-
-                                  DoughnutSeries<ChartData, String>(
-                                    animationDuration: 2000,
-                                    enableSmartLabels: true,
-                                    enableTooltip: true,
-                                    explode: true,
-                                    dataSource: chartData,
-                                    onPointTap: (ChartPointDetails details){
-                                      print(details.pointIndex);
-                                      if(details.pointIndex==0){
-                                        for(int i=0;i<chartData.length;i++){
-                                          if(details.pointIndex==i){
-                                            print(chartData[i].z);
-                                            Navigator.pushNamed(
-                                              context,
-                                              '/overall-performance-details',
-                                              arguments: <String, String>{
-                                                'question_id': chartData[i].z.toString(),
-
-                                              },
-                                            );
-                                          }
-                                        }
-                                      }
-                                      else if(details.pointIndex==1){
-                                        for(int i=0;i<chartData.length;i++){
-                                          if(details.pointIndex==i){
-                                            print(chartData[i].z);
-                                            Navigator.pushNamed(
-                                              context,
-                                              '/overall-performance-details',
-                                              arguments: <String, String>{
-                                                'question_id': chartData[i].z.toString(),
-
-                                              },
-                                            );
-                                          }
-                                        }
-                                      }
-                                      else if(details.pointIndex==2){
-                                        for(int i=0;i<chartData.length;i++){
-                                          if(details.pointIndex==i){
-                                            print(chartData[i].z);
-                                            Navigator.pushNamed(
-                                              context,
-                                              '/overall-performance-details',
-                                              arguments: <String, String>{
-                                                'question_id': chartData[i].z.toString(),
-
-                                              },
-                                            );
-                                          }
-                                        }
-
-                                      }
-
-                                    },
-                                  selectionBehavior: SelectionBehavior(enable:true,),
-                                    dataLabelSettings: DataLabelSettings(isVisible: true,),
-                                    dataLabelMapper: (ChartData sales, _) =>
-                                        sales.y1.toString()+ " ("+sales.y.toString()+"%"+") ",
-                                  pointColorMapper:(ChartData data,  _) => data.color,
-                                  xValueMapper: (ChartData data, _) => data.x,
-                                  yValueMapper: (ChartData data, _) => data.y,
-
-                                    radius: "100",
-                                    innerRadius: "40",
-                              )
-                                  ]
-                            ),
-
-
-                            ),
-
-                          ]),]
-                        ),
+            return SingleChildScrollView(
+              child: Column(children: [
+                Container(
+                  width: deviceSize.width,
+                  height: deviceSize.height * 0.50,
+                  decoration: new BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: new BorderRadius.only(
+                          topLeft: const Radius.circular(20.0),
+                          bottomLeft: const Radius.circular(20.0),
+                          bottomRight: const Radius.circular(20.0),
+                          topRight: const Radius.circular(20.0))),
+                  margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 20),
+                  child: ListView(children: [
+                    Column(children: [
+                      Container(
+                        child:
+                            Text("Question Wise Analysis", style: normalText6),
                       ),
-                     SizedBox(
-                       height: 15,
-                     ),
-                     Container(
-                       child: Text("Topic Wise Analysis", style: normalText15),
-                     ),
-                     SizedBox(
-                       height: 10,
-                     ),
-                     Container(
-                       child: Column(children: <Widget>[
-                         Container(
-                           child: Column(children: <Widget>[
-                             Container(
-                               margin: EdgeInsets.only(left: 12, right: 10),
-                               child: Table(
-                                 border: TableBorder.symmetric(
-                                     inside: BorderSide(
-                                       width: 0.2,
-                                       color: Color(0xff2E2A4A),
-                                     ),
-                                     outside: BorderSide(width: 0.2)),
-                                 // defaultColumnWidth: FixedColumnWidth(130),
-                                 defaultVerticalAlignment:
-                                 TableCellVerticalAlignment.middle,
-                                 columnWidths: {
-                                   0: FlexColumnWidth(300.0),
-                                   1: FlexColumnWidth(100.0),
-                                   2: FlexColumnWidth(100.0),
-                                   3: FlexColumnWidth(100.0),
-                                 },
-                                 children: [
-                                   TableRow(
-                                       decoration:
-                                       BoxDecoration(color: Color(0xff017EFF)),
-                                       children: [
-                                         Container(
-                                             padding: EdgeInsets.only(
-                                                 left: 10,
-                                                 right: 10,
-                                                 top: 8,
-                                                 bottom: 8),
-                                             alignment: Alignment.center,
-                                             child: AutoSizeText('Topic',
-                                                 textAlign: TextAlign.center,
-                                                 maxLines: 2,
-                                                 style: normalText3)),
-                                         Container(
-                                             padding: EdgeInsets.only(
-                                                 left: 10,
-                                                 right: 10,
-                                                 top: 8,
-                                                 bottom: 8),
-                                             alignment: Alignment.center,
-                                             child: AutoSizeText('W',
-                                                 textAlign: TextAlign.center,
-                                                 maxLines: 2,
-                                                 style: normalText3)),
-                                         Container(
-                                             padding: EdgeInsets.all(5),
-                                             alignment: Alignment.center,
-                                             child: AutoSizeText('R',
-                                                 textAlign: TextAlign.center,
-                                                 maxLines: 2,
-                                                 style: normalText3)),
-                                         Container(
-                                             padding: EdgeInsets.only(
-                                                 left: 10,
-                                                 right: 10,
-                                                 top: 8,
-                                                 bottom: 8),
-                                             alignment: Alignment.center,
-                                             child: AutoSizeText('Grand Total',
-                                                 textAlign: TextAlign.center,
-                                                 maxLines: 2,
-                                                 style: normalText3)),
-                                       ]),
-                                 ],
-                               ),
-                             ),
-                             Container(
-                               margin: EdgeInsets.only(left: 12, right: 10),
-                               child: Table(
-                                 border: TableBorder.symmetric(
-                                     inside: BorderSide(
-                                       width: 0.2,
-                                       color: Color(0xff2E2A4A),
-                                     ),
-                                     outside: BorderSide(
-                                       width: 0.2,
-                                       color: Color(0xff2E2A4A),
-                                     )),
-                                 defaultVerticalAlignment:
-                                 TableCellVerticalAlignment.middle,
-                                 columnWidths: {
-                                   0: FlexColumnWidth(300.0),
-                                   1: FlexColumnWidth(100.0),
-                                   2: FlexColumnWidth(100.0),
-                                   3: FlexColumnWidth(100.0),
-                                 },
-                                 children: List.generate(
-                                     snapshot.data['Response'].length,
-                                         (index) => _getDataRow1(
-                                         snapshot.data['Response'][index],
-                                         snapshot.data['Response'])),
-                               ),
-                             ),
-                               Container(
-                                          margin: EdgeInsets.only(left: 12, right: 10),
-                                          child: Table(
-                                            border: TableBorder.symmetric(
-                                                inside: BorderSide(
-                                                  width: 0.3,
-                                                  color: Color(0xff2E2A4A),
-                                                ),
-                                                outside: BorderSide(width: 0.3)),
-                                            // defaultColumnWidth: FixedColumnWidth(130),
-                                            defaultVerticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                            columnWidths: {
-                                              0: FlexColumnWidth(300.0),
-                                              1: FlexColumnWidth(100.0),
-                                              2: FlexColumnWidth(100.0),
-                                              3: FlexColumnWidth(100.0),
-                                            },
-                                            children: [
-                                              TableRow(
-                                                  decoration:
-                                                  BoxDecoration(color: Colors.white),
-                                                  children: [
-                                                    Container(
-                                                        padding: EdgeInsets.only(
-                                                            left: 10,
-                                                            right: 10,
-                                                            top: 8,
-                                                            bottom: 8),
-                                                        alignment: Alignment.center,
-                                                        child: AutoSizeText('Grand Total',
-                                                            textAlign: TextAlign.center,
-                                                            maxLines: 2,
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                color: Colors.black))),
-                                                    Container(
-                                                        padding: EdgeInsets.only(
-                                                            left: 10,
-                                                            right: 10,
-                                                            top: 8,
-                                                            bottom: 8),
-                                                        alignment: Alignment.center,
-                                                        child: AutoSizeText(
-                                                            snapshot.data[
-                                                            'total_typewrong_question']
-                                                                .toString(),
-                                                            textAlign: TextAlign.center,
-                                                            maxLines: 2,
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                color: Colors.black))),
-                                                    Container(
-                                                        padding: EdgeInsets.all(5),
-                                                        alignment: Alignment.center,
-                                                        child: AutoSizeText(
-                                                            snapshot.data[
-                                                            'total_typeright_question']
-                                                                .toString(),
-                                                            textAlign: TextAlign.center,
-                                                            maxLines: 2,
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                color: Colors.black))),
-                                                    Container(
-                                                        padding: EdgeInsets.only(
-                                                            left: 10,
-                                                            right: 10,
-                                                            top: 8,
-                                                            bottom: 8),
-                                                        alignment: Alignment.center,
-                                                        child: AutoSizeText(
-                                                            (snapshot.data[
-                                                            'total_typewrong_question'] +
-                                                                snapshot.data[
-                                                                'total_typeright_question'])
-                                                                .toString(),
-                                                            textAlign: TextAlign.center,
-                                                            maxLines: 2,
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                color: Colors.black))),
-                                                  ]),
-                                            ],
-                                          ),
-                                        ),
-                           ]),
-                         ),
-                         SizedBox(
-                           height: 15,
-                         ),
-                         Container(
-                           child: Row(
-                               mainAxisAlignment: MainAxisAlignment.center,
-                               children: <Widget>[
-                                 Text("W - Wrong", style: normalText15),
-                                 SizedBox(
-                                   width: 20.0,
-                                 ),
-                                 Text("R - Right", style: normalText15)
-                               ]),
-                         ),
-                         SizedBox(
-                           height: 50,
-                         ),
-                       ]),
-                     ),
-                   ]
-                 ),
-               );
-
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: SfCircularChart(
+                            tooltipBehavior: _tooltipBehavior,
+                            legend: Legend(
+                                isVisible: true,
+                                position: LegendPosition.bottom,
+                                height: "150",
+                                padding: 20,
+                                orientation: LegendItemOrientation.vertical,
+                                textStyle: normalText5),
+                            series: <CircularSeries>[
+                              DoughnutSeries<ChartData, String>(
+                                animationDuration: 2000,
+                                enableSmartLabels: true,
+                                enableTooltip: true,
+                                explode: true,
+                                dataSource: chartData,
+                                onPointTap: (ChartPointDetails details) {
+                                  print(details.pointIndex);
+                                  if (details.pointIndex == 0) {
+                                    for (int i = 0; i < chartData.length; i++) {
+                                      if (details.pointIndex == i) {
+                                        print(chartData[i].z);
+                                        Navigator.pushNamed(
+                                          context,
+                                          '/overall-performance-details',
+                                          arguments: <String, String>{
+                                            'question_id':
+                                                chartData[i].z.toString(),
+                                          },
+                                        );
+                                      }
+                                    }
+                                  } else if (details.pointIndex == 1) {
+                                    for (int i = 0; i < chartData.length; i++) {
+                                      if (details.pointIndex == i) {
+                                        print(chartData[i].z);
+                                        Navigator.pushNamed(
+                                          context,
+                                          '/overall-performance-details',
+                                          arguments: <String, String>{
+                                            'question_id':
+                                                chartData[i].z.toString(),
+                                          },
+                                        );
+                                      }
+                                    }
+                                  } else if (details.pointIndex == 2) {
+                                    for (int i = 0; i < chartData.length; i++) {
+                                      if (details.pointIndex == i) {
+                                        print(chartData[i].z);
+                                        Navigator.pushNamed(
+                                          context,
+                                          '/overall-performance-details',
+                                          arguments: <String, String>{
+                                            'question_id':
+                                                chartData[i].z.toString(),
+                                          },
+                                        );
+                                      }
+                                    }
+                                  }
+                                },
+                                selectionBehavior: SelectionBehavior(
+                                  enable: true,
+                                ),
+                                dataLabelSettings: DataLabelSettings(
+                                  isVisible: true,
+                                ),
+                                dataLabelMapper: (ChartData sales, _) =>
+                                    sales.y1.toString() +
+                                    " (" +
+                                    sales.y.toString() +
+                                    "%" +
+                                    ") ",
+                                pointColorMapper: (ChartData data, _) =>
+                                    data.color,
+                                xValueMapper: (ChartData data, _) => data.x,
+                                yValueMapper: (ChartData data, _) => data.y,
+                                radius: "100",
+                                innerRadius: "40",
+                              )
+                            ]),
+                      ),
+                    ]),
+                  ]),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  child: Text("Topic Wise Analysis", style: normalText15),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  child: Column(children: <Widget>[
+                    Container(
+                      child: Column(children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(left: 12, right: 10),
+                          child: Table(
+                            border: TableBorder.symmetric(
+                                inside: BorderSide(
+                                  width: 0.2,
+                                  color: Color(0xff2E2A4A),
+                                ),
+                                outside: BorderSide(width: 0.2)),
+                            // defaultColumnWidth: FixedColumnWidth(130),
+                            defaultVerticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            columnWidths: {
+                              0: FlexColumnWidth(300.0),
+                              1: FlexColumnWidth(100.0),
+                              2: FlexColumnWidth(100.0),
+                              3: FlexColumnWidth(100.0),
+                            },
+                            children: [
+                              TableRow(
+                                  decoration:
+                                      BoxDecoration(color: Color(0xff017EFF)),
+                                  children: [
+                                    Container(
+                                        padding: EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                            top: 8,
+                                            bottom: 8),
+                                        alignment: Alignment.center,
+                                        child: AutoSizeText('Topic',
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            style: normalText3)),
+                                    Container(
+                                        padding: EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                            top: 8,
+                                            bottom: 8),
+                                        alignment: Alignment.center,
+                                        child: AutoSizeText('W',
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            style: normalText3)),
+                                    Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.center,
+                                        child: AutoSizeText('R',
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            style: normalText3)),
+                                    Container(
+                                        padding: EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                            top: 8,
+                                            bottom: 8),
+                                        alignment: Alignment.center,
+                                        child: AutoSizeText('Grand Total',
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            style: normalText3)),
+                                  ]),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 12, right: 10),
+                          child: Table(
+                            border: TableBorder.symmetric(
+                                inside: BorderSide(
+                                  width: 0.2,
+                                  color: Color(0xff2E2A4A),
+                                ),
+                                outside: BorderSide(
+                                  width: 0.2,
+                                  color: Color(0xff2E2A4A),
+                                )),
+                            defaultVerticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            columnWidths: {
+                              0: FlexColumnWidth(300.0),
+                              1: FlexColumnWidth(100.0),
+                              2: FlexColumnWidth(100.0),
+                              3: FlexColumnWidth(100.0),
+                            },
+                            children: List.generate(
+                                snapshot.data['Response'].length,
+                                (index) => _getDataRow1(
+                                    snapshot.data['Response'][index],
+                                    snapshot.data['Response'])),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 12, right: 10),
+                          child: Table(
+                            border: TableBorder.symmetric(
+                                inside: BorderSide(
+                                  width: 0.3,
+                                  color: Color(0xff2E2A4A),
+                                ),
+                                outside: BorderSide(width: 0.3)),
+                            // defaultColumnWidth: FixedColumnWidth(130),
+                            defaultVerticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            columnWidths: {
+                              0: FlexColumnWidth(300.0),
+                              1: FlexColumnWidth(100.0),
+                              2: FlexColumnWidth(100.0),
+                              3: FlexColumnWidth(100.0),
+                            },
+                            children: [
+                              TableRow(
+                                  decoration:
+                                      BoxDecoration(color: Colors.white),
+                                  children: [
+                                    Container(
+                                        padding: EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                            top: 8,
+                                            bottom: 8),
+                                        alignment: Alignment.center,
+                                        child: AutoSizeText('Grand Total',
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black))),
+                                    Container(
+                                        padding: EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                            top: 8,
+                                            bottom: 8),
+                                        alignment: Alignment.center,
+                                        child: AutoSizeText(
+                                            snapshot.data[
+                                                    'total_typewrong_question']
+                                                .toString(),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black))),
+                                    Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.center,
+                                        child: AutoSizeText(
+                                            snapshot.data[
+                                                    'total_typeright_question']
+                                                .toString(),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black))),
+                                    Container(
+                                        padding: EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                            top: 8,
+                                            bottom: 8),
+                                        alignment: Alignment.center,
+                                        child: AutoSizeText(
+                                            (snapshot.data[
+                                                        'total_typewrong_question'] +
+                                                    snapshot.data[
+                                                        'total_typeright_question'])
+                                                .toString(),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black))),
+                                  ]),
+                            ],
+                          ),
+                        ),
+                      ]),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("W - Wrong", style: normalText15),
+                            SizedBox(
+                              width: 20.0,
+                            ),
+                            Text("R - Right", style: normalText15)
+                          ]),
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                  ]),
+                ),
+              ]),
+            );
           } else {
             return _emptyOrders();
           }
         } else {
           return Center(
               child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: SpinKitFadingCube(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
-                        ),
-                      );
-                    },
-                    size: 30.0,
-                  ),
-                ),
-              ));
+            alignment: Alignment.center,
+            child: Container(
+              child: SpinKitFadingCube(
+                itemBuilder: (_, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color:
+                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+                    ),
+                  );
+                },
+                size: 30.0,
+              ),
+            ),
+          ));
         }
       },
     );
   }
 
-
   Widget _emptyOrders() {
     return Center(
       child: Container(
           child: Text(
-            'NO RECORDS FOUND!',
-            style: TextStyle(fontSize: 20, letterSpacing: 1, color: Colors.white),
-          )),
+        'NO RECORDS FOUND!',
+        style: TextStyle(fontSize: 20, letterSpacing: 1, color: Colors.white),
+      )),
     );
   }
 
@@ -630,7 +619,7 @@ class _SettingsState extends State<OverAllPerformance> {
         return false;
       },
       child: Scaffold(
-        backgroundColor:Color(0xff2E2A4A),
+        backgroundColor: Color(0xff2E2A4A),
         appBar: AppBar(
           elevation: 0.0,
           leading: InkWell(
@@ -676,7 +665,7 @@ class _SettingsState extends State<OverAllPerformance> {
         ),
         body: Container(
           color: Color(0xff2E2A4A),
-          child:  Container(
+          child: Container(
             padding: EdgeInsets.only(bottom: 5),
             child: chapterList(deviceSize),
           ),
@@ -686,12 +675,12 @@ class _SettingsState extends State<OverAllPerformance> {
   }
 
   Container buildCircle(
-      Color color,
-      String s,
-      double d, {
-        double width = 100,
-        double height = 100,
-      }) {
+    Color color,
+    String s,
+    double d, {
+    double width = 100,
+    double height = 100,
+  }) {
     return Container(
       alignment: Alignment.center,
       width: width,
@@ -729,10 +718,8 @@ class _SettingsState extends State<OverAllPerformance> {
   }
 }
 
-
-
 class ChartData {
-  ChartData(this.x, this.y,this.y1,this.z, [this.color]);
+  ChartData(this.x, this.y, this.y1, this.z, [this.color]);
   final String x;
   final double y;
   final String y1;
