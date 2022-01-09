@@ -56,6 +56,7 @@ class _LoginWithLogoState extends State<ViewMCQ2> {
 
   List<XMLJSON> xmlList = new List();
   String total_question = "";
+  String payment2 = "0";
   @override
   void initState() {
     super.initState();
@@ -77,6 +78,7 @@ class _LoginWithLogoState extends State<ViewMCQ2> {
         class_id = prefs.getString('class_id').toString();
         board_id = prefs.getString('board_id').toString();
         api_token = prefs.getString('api_token').toString();
+        payment2 = prefs.getString("payment2").toString();
         _quiz = _getTestData();
       });
     });
@@ -179,9 +181,15 @@ class _LoginWithLogoState extends State<ViewMCQ2> {
                                       ),
                                       InkWell(
                                         onTap: () {
-                                          Navigator.pop(context);
-                                          Navigator.pushNamed(
-                                              context, '/dashboard');
+                                          if (payment2 == "0") {
+                                            print("pay0if");
+                                            Navigator.pop(context);
+                                            Navigator.pushNamed(
+                                                context, '/dashboard');
+                                          } else {
+                                            print("payed2");
+                                            Navigator.pop(context);
+                                          }
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.only(

@@ -139,10 +139,12 @@ class _LoginWithLogoState extends State<StartMCQ2>
       }
       data['Response'] = temp;
       finalMap["TestQuestionId"] = a['Response']["TestQuestionId"];
-      finalMap["set_id"] = a['Response']["set_id"];
+      finalMap["set_id"] = set_id.toString();
       finalMap["chapter_id"] = chapter_id.toString();
       if (re_attempt) {
         finalMap["test_id"] = test_id.toString();
+      } else {
+        finalMap["test_id"] = "";
       }
       finalMap["user_id"] = user_id.toString();
 

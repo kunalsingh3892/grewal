@@ -70,8 +70,10 @@ class _MyPlanState extends State<MyPlan> {
   bool dis_show = false;
   String api_token = "";
   List subPlansList = [];
-  String payment_status = "0";
-  String payment_status2 = "0";
+  bool payment_status;
+  bool payment_status2;
+  List details = [];
+  bool coupenApplied = false;
   @override
   void initState() {
     super.initState();
@@ -89,25 +91,43 @@ class _MyPlanState extends State<MyPlan> {
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     Preference().getPreferences().then((prefs) {
       setState(() {
-        payment_status = prefs.getString('payment_status').toString();
-        payment_status2 = prefs.getString('payment_status2').toString();
+        payment_status = prefs.getBool('payment_status');
+        payment_status2 = prefs.getBool('payment_status2');
+        print(payment_status);
+        print(payment_status2);
       });
     });
     PaymentPlansAPI().getSubcriptionPlanNew().then((value) {
       if (value.length > 0) {
         setState(() {
           subPlansList.clear();
-          value.forEach((element) {
-            if (value.indexOf(element) == 0 && payment_status == "0") {
-              element['selected'] = false;
-              subPlansList.add(element);
-            } else if (value.indexOf(element) == 1 && payment_status2 == "0") {
-              element['selected'] = false;
-              subPlansList.add(element);
-            }
-          });
 
-          print(subPlansList);
+          if (out == "out") {
+            value.forEach((element) {
+              if (value.indexOf(element) == 0) {
+                element['selected'] = false;
+                element['cutPlanInd'] = "500";
+                subPlansList.add(element);
+              } else if (value.indexOf(element) == 1) {
+                element['selected'] = false;
+                element['cutPlanInd'] = "800";
+                subPlansList.add(element);
+              }
+            });
+          } else {
+            value.forEach((element) {
+              if (value.indexOf(element) == 0 && !payment_status) {
+                element['selected'] = false;
+                element['cutPlanInd'] = "500";
+                subPlansList.add(element);
+              } else if (value.indexOf(element) == 1 && !payment_status2) {
+                element['selected'] = false;
+                element['cutPlanInd'] = "800";
+                subPlansList.add(element);
+              }
+            });
+          }
+
           isLoadingForPlan = false;
         });
       }
@@ -180,54 +200,28 @@ class _MyPlanState extends State<MyPlan> {
     print("Success: " + response.paymentId.toString());
     print("Success: " + response.signature.toString());
 
-    // final msg = jsonEncode({
-    //   "signup_id": signupid,
-    //   "order_id": order_id,
-    //   "payment_time": currentTime.toString(),
-    //   "trancation_id": response.paymentId.toString(),
-    //   "status": "success",
-    //   "amount": amount.toString()
-    // });
-    // Map<String, String> headers = {
-    //   'Accept': 'application/json',
-    //   'Authorization': 'Bearer $api_token',
-    // };
-    // var response1 = await http.post(
-    //   new Uri.https(BASE_URL, API_PATH + "/payment_success"),
-    //   body: {
-    //     "signup_id": signupid,
-    //     "order_id": order_id,
-    //     "payment_time": currentTime.toString(),
-    //     "trancation_id": response.paymentId.toString(),
-    //     "status": "success",
-    //     "amount": amount.toString()
-    //   },
-    //   headers: headers,
-    // );
-    // print(msg);
-
-    List selectedPlansArray = [];
-    subPlansList.forEach((element) {
-      if (element['selected']) {
-        selectedPlansArray.add({
-          "term_id": element['id'].toString(),
-          "price": element['amount'].toString()
-        });
-      }
-    });
-
+    print(jsonEncode({
+      "user_id": user_id.toString(),
+      "razorpay_payment_id": response.paymentId.toString(),
+      "details": details
+    }));
     var response1 = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/payment-success"),
-      body: {
+      body: jsonEncode({
         "user_id": user_id.toString(),
         "razorpay_payment_id": response.paymentId.toString(),
-        "details": selectedPlansArray
-      },
+        "details": details
+      }),
       headers: {
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer $api_token',
       },
     );
+    print(response1.body);
+    print(response1.statusCode);
+
+    print(response1.body);
 
     if (response1.statusCode == 200) {
       var data = json.decode(response1.body);
@@ -235,17 +229,17 @@ class _MyPlanState extends State<MyPlan> {
       var errorCode = data['ErrorCode'];
       var errorMessage = data['ErrorMessage'];
       if (errorCode == 0) {
+        displayModalBottomSheet(context, response.paymentId.toString());
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('logged_in', true);
-        prefs.setString('user_id', data['Response']['id'].toString());
-        prefs.setString('name', data['Response']['name']);
-        prefs.setString('school_id', data['Response']['school_id'].toString());
-        prefs.setString('email_id', data['Response']['email']);
-        prefs.setString('mobile_no', data['Response']['mobile'].toString());
-        prefs.setString('profile_image', data['profile'].toString());
-        prefs.setString('class_id', data['Response']['class_id'].toString());
-        prefs.setString('board_id', data['Response']['board_id'].toString());
-        displayModalBottomSheet(context, response.paymentId.toString());
+        // prefs.setString('user_id', data['Response']['id'].toString());
+        // prefs.setString('name', data['Response']['name']);
+        // prefs.setString('school_id', data['Response']['school_id'].toString());
+        // prefs.setString('email_id', data['Response']['email']);
+        // prefs.setString('mobile_no', data['Response']['mobile'].toString());
+        // prefs.setString('profile_image', data['profile'].toString());
+        // prefs.setString('class_id', data['Response']['class_id'].toString());
+        // prefs.setString('board_id', data['Response']['board_id'].toString());
       } else {
         showAlertDialog(context, ALERT_DIALOG_TITLE, errorMessage);
       }
@@ -280,28 +274,21 @@ class _MyPlanState extends State<MyPlan> {
     // );
     // print(msg);
 
-    List selectedPlansArray = [];
-    subPlansList.forEach((element) {
-      if (element['selected']) {
-        selectedPlansArray.add({
-          "term_id": element['id'].toString(),
-          "price": element['amount'].toString()
-        });
-      }
-    });
-
     var response1 = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/payment-success"),
       body: {
         "user_id": user_id.toString(),
         "razorpay_payment_id": "",
-        "details": selectedPlansArray
+        "details": jsonEncode(details)
       },
       headers: {
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer $api_token',
       },
     );
+    print(response1.body);
+    print(response1.statusCode);
     if (response1.statusCode == 200) {
       var data = json.decode(response1.body);
       print(data);
@@ -336,7 +323,7 @@ class _MyPlanState extends State<MyPlan> {
           return StatefulBuilder(builder: (BuildContext context, setState) {
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              height: MediaQuery.of(context).size.height * 0.45,
+              height: MediaQuery.of(context).size.height * 0.60,
               decoration: new BoxDecoration(
                   color: Colors.white,
                   borderRadius: new BorderRadius.only(
@@ -461,8 +448,8 @@ class _MyPlanState extends State<MyPlan> {
 
   void openCheckout(num amount) async {
     var options = {
-      'key': 'rzp_live_yk3tz7r3hBjLID',
-      // 'key': 'pay_IelJ35LIPxee9w',
+      // 'key': 'rzp_live_yk3tz7r3hBjLID',
+      'key': 'rzp_test_MhKrOdDQM8C8PL',
       'amount': amount,
       "currency": "INR",
       'name': "Grewal E-Learning Services Pvt Ltd",
@@ -644,12 +631,12 @@ class _MyPlanState extends State<MyPlan> {
                                 },
                                 headers: headers,
                               );
-                              print({
+                              print(jsonEncode({
                                 "user_id": user_id.toString(),
                                 "coupon_code": nameController.text,
                                 "apply_date": _dropdownValue,
                                 "plan_id": planId.toString()
-                              });
+                              }));
                               Navigator.of(context).pop();
                               if (response1.statusCode == 200) {
                                 Navigator.of(context).pop();
@@ -661,12 +648,28 @@ class _MyPlanState extends State<MyPlan> {
                                   Fluttertoast.showToast(
                                       msg: "Coupon Applied Successfully");
                                   setState(() {
-                                    amount = data['Response']
-                                        ['finalamount_paid_amount'];
-                                    discount_amount =
-                                        data['Response']['discountamount'];
+                                    coupenApplied = true;
+                                    amount = double.parse(data['Response']
+                                            ['finalamount_paid_amount']
+                                        .toString());
+                                    discount_amount = double.parse(
+                                        data['Response']['discountamount']
+                                            .toString());
                                     nameController.text = "";
                                     dis_show = true;
+                                    details.clear();
+
+                                    List te = data['Response']['details'];
+
+                                    te.forEach((element) {
+                                      details.add({
+                                        "term_id":
+                                            element["term_id"].toString(),
+                                        "price": element["price"].toString()
+                                      });
+                                    });
+
+                                    print(details);
                                   });
 
                                   // if (data['Response']
@@ -1200,7 +1203,7 @@ class _MyPlanState extends State<MyPlan> {
                                                     currency == "INR"
                                                         ? Text(
                                                             "₹ " +
-                                                                "500"
+                                                                e["cutPlanInd"]
                                                                     .toString(),
                                                             style: normalText9,
                                                           )
@@ -1292,7 +1295,7 @@ class _MyPlanState extends State<MyPlan> {
             //         ),
             //       )
             //     : Container(),
-            const SizedBox(height: 5.0),
+            const SizedBox(height: 10.0),
             Container(
               width: MediaQuery.of(context).size.height * 0.80,
               margin: const EdgeInsets.only(right: 20.0, left: 20),
@@ -1311,12 +1314,75 @@ class _MyPlanState extends State<MyPlan> {
                       selected.add(e['selected']);
                     });
                     if (selected.contains(true)) {
-                      openCheckout(num.parse(amount.toString()) * 100);
+                      List planId = [];
+                      subPlansList.forEach((e) {
+                        if (e['selected']) {
+                          planId.add(e['id'].toString());
+                        }
+                      });
+                      print(planId.join(",").toString() + " plan id");
+                      print(coupenApplied);
+                      if (!coupenApplied) {
+                        print("insude");
+                        Map<String, String> headers = {
+                          'Accept': 'application/json',
+                          'Authorization': 'Bearer $api_token',
+                        };
+                        var res = await http.post(
+                          new Uri.https(BASE_URL, API_PATH + "/applycouponnew"),
+                          body: {
+                            "user_id": user_id.toString(),
+                            "coupon_code": "",
+                            "apply_date": _dropdownValue,
+                            "plan_id": planId.join(",").toString()
+                          },
+                          headers: headers,
+                        );
+
+                        print(jsonEncode({
+                          "user_id": user_id.toString(),
+                          "coupon_code": "",
+                          "apply_date": _dropdownValue,
+                          "plan_id": planId.join(",").toString()
+                        }));
+                        print(res.body);
+                        if (jsonDecode(res.body)['ErrorCode'] == 0) {
+                          print("if");
+                          setState(() {
+                            amount = double.parse(
+                                jsonDecode(res.body)['Response']
+                                        ['finalamount_paid_amount']
+                                    .toString());
+                            discount_amount = double.parse(
+                                jsonDecode(res.body)['Response']
+                                        ['discountamount']
+                                    .toString());
+                            details.clear();
+
+                            List te =
+                                jsonDecode(res.body)['Response']['details'];
+
+                            te.forEach((element) {
+                              details.add({
+                                "term_id": element["term_id"].toString(),
+                                "price": element["price"].toString()
+                              });
+                            });
+
+                            print(details);
+                          });
+                        }
+                        openCheckout(num.parse(amount.toString()) * 100);
+                      } else {
+                        openCheckout(num.parse(amount.toString()) * 100);
+                      }
                     } else {
                       Fluttertoast.showToast(
                           msg: "Please select a plan",
                           gravity: ToastGravity.CENTER,
-                          toastLength: Toast.LENGTH_LONG);
+                          toastLength: Toast.LENGTH_LONG,
+                          backgroundColor: Colors.blue,
+                          textColor: Colors.white);
                     }
                     // displayModalBottomSheet(context,"");
                   },
@@ -1386,7 +1452,9 @@ class _MyPlanState extends State<MyPlan> {
                   Fluttertoast.showToast(
                       msg: "Please select a plan for applying coupon code.",
                       gravity: ToastGravity.CENTER,
-                      toastLength: Toast.LENGTH_SHORT);
+                      toastLength: Toast.LENGTH_SHORT,
+                      backgroundColor: Colors.blue,
+                      textColor: Colors.white);
                 }
               },
               child: Container(

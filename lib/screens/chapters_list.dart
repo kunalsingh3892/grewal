@@ -123,6 +123,12 @@ class _SettingsState extends State<ChapterList> {
       },
       headers: headers,
     );
+    print(jsonEncode({
+      "board_id": board_id,
+      "class_id": class_id,
+      "subject_id": terms_ids,
+      "student_id": user_id
+    }));
     print(response.body);
     print({
       "board_id": board_id,
@@ -432,6 +438,10 @@ class _SettingsState extends State<ChapterList> {
                                                             Color(0xffF0FFFF)),
                                                       ),
                                                     ),
+                                                    SizedBox(
+                                                      width: 16,
+                                                    ),
+                                                    Expanded(child: SizedBox())
                                                   ],
                                                 )
                                               : SizedBox(),
@@ -760,6 +770,10 @@ class _SettingsState extends State<ChapterList> {
                                                             Color(0xffF0FFFF)),
                                                       ),
                                                     ),
+                                                    SizedBox(
+                                                      width: 16,
+                                                    ),
+                                                    Expanded(child: SizedBox())
                                                   ],
                                                 )
                                               : SizedBox(),
@@ -830,23 +844,26 @@ class _SettingsState extends State<ChapterList> {
             return _emptyOrders();
           }
         } else {
-          return Center(
-              child: Align(
-            alignment: Alignment.center,
-            child: Container(
-              child: SpinKitFadingCube(
-                itemBuilder: (_, int index) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      color:
-                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+          return snapshot.hasError
+              ? Text("No record found")
+              : Center(
+                  child: Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    child: SpinKitFadingCube(
+                      itemBuilder: (_, int index) {
+                        return DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: index.isEven
+                                ? Color(0xff017EFF)
+                                : Color(0xffFFC700),
+                          ),
+                        );
+                      },
+                      size: 30.0,
                     ),
-                  );
-                },
-                size: 30.0,
-              ),
-            ),
-          ));
+                  ),
+                ));
         }
       },
     );

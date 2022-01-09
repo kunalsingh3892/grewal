@@ -47,19 +47,37 @@ class _ChangePageState extends State<HomePage> {
   final completeController = TextEditingController();
   bool _loading = false;
   bool isLoading = true;
-  String total_chapter = "";
-  String total_test = "";
+  // String total_chapter = "";
+  String total_test_1 = "";
+  String total_test_2 = "";
   String payment = "";
+  String payment_2 = "";
   String show_oly = "";
   String profile_percentage = "";
   String order_id = "";
-  String total_test_quetion = "0";
-  String total_right_question = "0";
-  String total_wrong_question = "0";
-  String total_skip_question = "0";
-  String institute_id = "";
+
+  // String total_test_quetion_1 = "0";
+  String total_right_question_1 = "0";
+  String total_wrong_question_1 = "0";
+  String total_skip_question_1 = "0";
+
   int total_notification = 0;
+
+  // String total_test_quetion_2 = "0";
+  String total_right_question_2 = "0";
+  String total_wrong_question_2 = "0";
+  String total_skip_question_2 = "0";
+
+  String institute_id = "";
+
+  // String total_test_questions = "0";
+  String total_tests = "0";
+  String total_right_questions = "0";
+  String total_wrong_questions = "0";
+  String total_skip_questions = "0";
+
   String totalChapterTerm1 = "";
+  String total_chapter = "0";
   String totalChapterTerm2 = "";
   int signout;
   double average = 0.0;
@@ -127,33 +145,6 @@ class _ChangePageState extends State<HomePage> {
     });
   }
 
-  goToChapterList(Map e) {
-    if (total_test == "0") {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ChapterList("yes", e)));
-    } else if (total_test == "1") {
-      if (payment == "0") {
-        Navigator.pushNamed(
-          context,
-          '/plan',
-          arguments: <String, String>{
-            'order_id': order_id.toString(),
-            'signupid': user_id.toString(),
-            'mobile': _mobile.toString(),
-            'email': email_id.toString(),
-            'out': 'in'
-          },
-        );
-      } else {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ChapterList("yes", e)));
-      }
-    } else {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ChapterList("yes", e)));
-    }
-  }
-
   Future _homeData() async {
     Map<String, String> headers = {
       'Accept': 'application/json',
@@ -178,25 +169,56 @@ class _ChangePageState extends State<HomePage> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       setState(() {
         total_chapter = data['Response']['total_chapter'].toString();
-        total_test = data['Response']['total_test'].toString();
+        total_test_1 = data['total_test'].toString();
+        total_test_2 = data['Response']['term_2']['totaltestterm_2'].toString();
+
         profile_percentage = data['Response']['profile_percentage'].toString();
+
         payment = data['Response']['payment'].toString();
+        payment_2 = data['Response']['term_2']['payment_2'].toString();
+        print(payment_2 + "h[");
+
         banner = data['Response']['banner'].toString();
-        total_test_quetion = data['total_test_quetion'].toString();
-        total_right_question = data['total_right_question'].toString();
-        total_wrong_question = data['total_wrong_question'].toString();
-        total_skip_question = data['total_skip_question'].toString();
+
+        // total_test_quetion_1 = data['total_test_quetion'].toString();
+        total_right_question_1 = data['total_right_question'].toString();
+        total_wrong_question_1 = data['total_wrong_question'].toString();
+        total_skip_question_1 = data['total_skip_questiFon'].toString();
+
         total_notification = data['totalUnread'];
+
+        // total_test_quetion_2 =
+        //     data['Response']['term_2']['total_test_question_t2'].toString();
+        total_right_question_2 =
+            data['Response']['term_2']['total_right_question_t2'].toString();
+        total_wrong_question_2 =
+            data['Response']['term_2']['total_wrong_question_t2'].toString();
+        total_skip_question_2 =
+            data['Response']['term_2']['total_skip_question_t2'].toString();
+
+        total_tests =
+            (int.parse(total_test_1) + int.parse(total_test_2)).toString();
+        total_right_questions = (int.parse(total_right_question_1) +
+                int.parse(total_right_question_1))
+            .toString();
+        total_wrong_questions = (int.parse(total_wrong_question_1) +
+                int.parse(total_wrong_question_1))
+            .toString();
+        total_skip_questions = (int.parse(total_skip_question_1) +
+                int.parse(total_skip_question_2))
+            .toString();
+
         show_oly = data['Response']['show_olympiad'].toString();
-        average = double.parse(data['average']);
+        average = double.parse(data['average'].toString());
 
         prefs.setInt('amount', data['offer_price']);
-        prefs.setInt('base_amount', int.parse(data['base_price']));
+        prefs.setInt('base_amount', int.parse(data['base_price'].toString()));
         prefs.setInt('disc_amount', data['dis_amt']);
         prefs.setString('currency', data['currency']);
 
         prefs.setString('payment', payment);
-        prefs.setString('total_test', total_test);
+        prefs.setString('payment2', payment_2);
+        prefs.setString('total_test', total_tests);
         signout = data['signout'];
         if (signout == 1) {
           prefs.clear();
@@ -454,120 +476,58 @@ class _ChangePageState extends State<HomePage> {
   }
 
   Widget upgrade() {
-    if (total_test == "0") {
-      if (payment == "0") {
-        return InkWell(
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushNamed(
-              context,
-              '/plan',
-              arguments: <String, String>{
-                'order_id': order_id.toString(),
-                'signupid': user_id.toString(),
-                'mobile': _mobile,
-                'email': email_id,
-                'out': 'in'
-              },
-            );
-          },
-          child: ListTile(
-            leading: Text(
-              "Upgrade To Premium",
-              style: normalText6,
-            ),
+    if (payment_2 == "0") {
+      return InkWell(
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(
+            context,
+            '/plan',
+            arguments: <String, String>{
+              'order_id': order_id.toString(),
+              'signupid': user_id.toString(),
+              'mobile': _mobile,
+              'email': email_id,
+              'out': 'in'
+            },
+          );
+        },
+        child: ListTile(
+          leading: Text(
+            "Upgrade To Premium",
+            style: normalText6,
           ),
-        );
-      } else {
-        return Container();
-      }
-    } else if (total_test == "1") {
-      if (payment == "0") {
-        return InkWell(
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushNamed(
-              context,
-              '/plan',
-              arguments: <String, String>{
-                'order_id': order_id.toString(),
-                'signupid': user_id.toString(),
-                'mobile': _mobile,
-                'email': email_id,
-                'out': 'in'
-              },
-            );
-          },
-          child: ListTile(
-            leading: Text(
-              "Upgrade To Premium",
-              style: normalText6,
-            ),
-          ),
-        );
-      } else {
-        return Container();
-      }
+        ),
+      );
     } else {
       return Container();
     }
   }
 
   Widget upgradeDash() {
-    if (total_test == "0") {
-      if (payment == "0") {
-        return InkWell(
-          onTap: () {
-            //  Navigator.pop(context);
-            Navigator.pushNamed(
-              context,
-              '/plan',
-              arguments: <String, String>{
-                'order_id': order_id.toString(),
-                'signupid': user_id.toString(),
-                'mobile': _mobile,
-                'email': email_id,
-                'out': 'in'
-              },
-            );
-          },
-          child: _buildWikiCategory(
-              "assets/images/upgrade.png",
-              "Upgrade To Premium",
-              "Upgrade",
-              Color(0xffffd700),
-              Color(0xfffff8dd)),
-        );
-      } else {
-        return Container();
-      }
-    } else if (total_test == "1") {
-      if (payment == "0") {
-        return InkWell(
-          onTap: () {
-            // Navigator.pop(context);
-            Navigator.pushNamed(
-              context,
-              '/plan',
-              arguments: <String, String>{
-                'order_id': order_id.toString(),
-                'signupid': user_id.toString(),
-                'mobile': _mobile,
-                'email': email_id,
-                'out': 'in'
-              },
-            );
-          },
-          child: _buildWikiCategory(
-              "assets/images/upgrade.png",
-              "Upgrade To Premium",
-              "Upgrade",
-              Color(0xffffd700),
-              Color(0xfffff8dd)),
-        );
-      } else {
-        return Container();
-      }
+    if (payment_2 == "0") {
+      return InkWell(
+        onTap: () {
+          //  Navigator.pop(context);
+          Navigator.pushNamed(
+            context,
+            '/plan',
+            arguments: <String, String>{
+              'order_id': order_id.toString(),
+              'signupid': user_id.toString(),
+              'mobile': _mobile,
+              'email': email_id,
+              'out': 'in'
+            },
+          );
+        },
+        child: _buildWikiCategory(
+            "assets/images/upgrade.png",
+            "Upgrade To Premium",
+            "Upgrade",
+            Color(0xffffd700),
+            Color(0xfffff8dd)),
+      );
     } else {
       return Container();
     }
@@ -747,68 +707,73 @@ class _ChangePageState extends State<HomePage> {
 
   Widget getSocialMediaApp() {
     double size = 10;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        InkWell(
-          onTap: () {
-            _launchInBrowser(
-                "https://www.facebook.com/Grewal-Academy-218288866835782/");
-          },
-          child: Image(
-            image: AssetImage("assets/images/facebook.png"),
-            height: 35.0,
-            width: 35,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          InkWell(
+            onTap: () {
+              _launchInBrowser(
+                  "https://www.facebook.com/Grewal-Academy-218288866835782/");
+            },
+            child: Image(
+              image: AssetImage("assets/images/facebook.png"),
+              height: 35.0,
+              width: 35,
+            ),
           ),
-        ),
-        SizedBox(
-          height: size,
-        ),
-        InkWell(
-          onTap: () {
-            _launchInBrowser(
-                "https://www.youtube.com/channel/UCJnneibYlAUKBH6SiLa1Z9Q");
-          },
-          child: Image(
-            image: AssetImage("assets/images/youtube.png"),
-            height: 35.0,
-            width: 35,
+          SizedBox(
+            width: size,
           ),
-        ),
-        SizedBox(
-          height: size,
-        ),
-        InkWell(
-          onTap: () {
-            _launchInBrowser(
-                "https://www.instagram.com/invites/contact/?i=1wacb3ps73z2r&utm_content=mnnvbxj");
-          },
-          child: Image(
-            image: AssetImage("assets/images/instagram.png"),
-            height: 35.0,
-            width: 35,
+          InkWell(
+            onTap: () {
+              _launchInBrowser(
+                  "https://www.youtube.com/channel/UCJnneibYlAUKBH6SiLa1Z9Q");
+            },
+            child: Image(
+              image: AssetImage("assets/images/youtube.png"),
+              height: 35.0,
+              width: 35,
+            ),
           ),
-        ),
-        SizedBox(
-          height: size,
-        ),
-        InkWell(
-          onTap: () {
-            whatsAppOpen("9560102856");
-          },
-          child: Image(
-            image: AssetImage("assets/images/whatsapp.png"),
-            height: 35.0,
-            width: 35,
+          SizedBox(
+            width: size,
           ),
-        ),
-      ],
+          InkWell(
+            onTap: () {
+              _launchInBrowser(
+                  "https://www.instagram.com/invites/contact/?i=1wacb3ps73z2r&utm_content=mnnvbxj");
+            },
+            child: Image(
+              image: AssetImage("assets/images/instagram.png"),
+              height: 35.0,
+              width: 35,
+            ),
+          ),
+          SizedBox(
+            width: size,
+          ),
+          InkWell(
+            onTap: () {
+              whatsAppOpen("9560102856");
+            },
+            child: Image(
+              image: AssetImage("assets/images/whatsapp.png"),
+              height: 35.0,
+              width: 35,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget show_btm() {
     if (institute_id != "0") {
-      if (payment == "0") {
+      print("firest");
+      if (payment_2 == "0") {
+        print("pay2 0");
         return Column(
           children: [
             Container(
@@ -830,7 +795,7 @@ class _ChangePageState extends State<HomePage> {
                       child: _buildWikiCategory(
                           "assets/images/tp.png",
                           "Model Test Paper",
-                          "",
+                          "To be released in\nFeb & Mar",
                           Color(0xff0488FD),
                           Color(0xffE0F1FF)),
                     ),
@@ -852,23 +817,6 @@ class _ChangePageState extends State<HomePage> {
                           Color(0xffFEEEEE)),
                     ),
                   ),
-                  // Expanded(
-                  //   child: InkWell(
-                  //     onTap: () {
-                  //       // Navigator.pop(context);
-                  //       Navigator.pushNamed(
-                  //         context,
-                  //         '/project',
-                  //       );
-                  //     },
-                  //     child: _buildWikiCategory(
-                  //         "assets/images/project.png",
-                  //         "Project",
-                  //         "Project",
-                  //         Color(0xffFFB110),
-                  //         Color(0xffFFFBEC)),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -881,25 +829,6 @@ class _ChangePageState extends State<HomePage> {
               ),
               child: Row(
                 children: <Widget>[
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        if (payment != "0") {
-                          Navigator.pushNamed(
-                            context,
-                            '/institute-test-list',
-                          );
-                        }
-                      },
-                      child: _buildWikiCategory(
-                          "assets/images/mcq.png",
-                          "Institute Test List",
-                          "Institute Test List",
-                          Color(0xffF45656),
-                          Color(0xffFEEEEE)),
-                    ),
-                  ),
-                  const SizedBox(width: 16.0),
                   Expanded(
                     child: InkWell(
                       onTap: () {
@@ -924,6 +853,8 @@ class _ChangePageState extends State<HomePage> {
                           Color(0xfffff8dd)),
                     ),
                   ),
+                  const SizedBox(width: 16.0),
+                  Expanded(child: SizedBox())
                 ],
               ),
             ),
@@ -931,6 +862,7 @@ class _ChangePageState extends State<HomePage> {
           ],
         );
       } else {
+        print("payment2 done");
         return Column(
           children: [
             Container(
@@ -952,7 +884,7 @@ class _ChangePageState extends State<HomePage> {
                       child: _buildWikiCategory(
                           "assets/images/tp.png",
                           "Model Test Paper",
-                          "",
+                          "To be released in\nFeb & Mar",
                           Color(0xff0488FD),
                           Color(0xffE0F1FF)),
                     ),
@@ -974,48 +906,28 @@ class _ChangePageState extends State<HomePage> {
                           Color(0xffFEEEEE)),
                     ),
                   ),
-                  // Expanded(
-                  //   child: InkWell(
-                  //     onTap: () {
-                  //       // Navigator.pop(context);
-                  //       Navigator.pushNamed(
-                  //         context,
-                  //         '/project',
-                  //       );
-                  //     },
-                  //     child: _buildWikiCategory(
-                  //         "assets/images/project.png",
-                  //         "Project",
-                  //         "Project",
-                  //         Color(0xffFFB110),
-                  //         Color(0xffFFFBEC)),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
-            // const SizedBox(height: 16.0),
-            // Container(
-            //   padding: EdgeInsets.only(
-            //     left: 20,
-            //     right: 20,
-            //     bottom: 5,
-            //   ),
-            //   child: Row(
-            //     children: <Widget>[
-
-            //       const SizedBox(width: 16.0),
-            //       Expanded(
-            //         child: Container(),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             const SizedBox(height: 10.0),
+            Container(
+                padding: EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  bottom: 5,
+                ),
+                child: Row(children: <Widget>[
+                  Expanded(
+                    child: upgradeDash(),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(child: SizedBox())
+                ]))
           ],
         );
       }
     } else {
+      print("else 1");
       return Column(
         children: [
           Container(
@@ -1037,52 +949,56 @@ class _ChangePageState extends State<HomePage> {
                     child: _buildWikiCategory(
                         "assets/images/tp.png",
                         "Model Test Paper",
-                        "",
+                        "To be released in\nFeb & Mar",
                         Color(0xff0488FD),
                         Color(0xffE0F1FF)),
                   ),
                 ),
                 const SizedBox(width: 16.0),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      // Navigator.pop(context);
-                      Navigator.pushNamed(
-                        context,
-                        '/project',
-                      );
-                    },
-                    child: _buildWikiCategory(
-                        "assets/images/project.png",
-                        "Project",
-                        "Project",
-                        Color(0xffFFB110),
-                        Color(0xffFFFBEC)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          Container(
-            padding: EdgeInsets.only(
-              left: 20,
-              right: 20,
-              bottom: 5,
-            ),
-            child: Row(
-              children: <Widget>[
+                // Expanded(
+                //   child: SizedBox(),
+                //   // child: InkWell(
+                //   //   onTap: () {
+                //   //     // Navigator.pop(context);
+                //   //     Navigator.pushNamed(
+                //   //       context,
+                //   //       '/project',
+                //   //     );
+                //   //   },
+                //   //   child: _buildWikiCategory(
+                //   //       "assets/images/project.png",
+                //   //       "Project",
+                //   //       "Project",
+                //   //       Color(0xffFFB110),
+                //   //       Color(0xffFFFBEC)),
+                //   // ),
+                // ),
                 Expanded(
                   child: upgradeDash(),
                 ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: Container(),
-                ),
               ],
             ),
           ),
-          const SizedBox(height: 10.0),
+          // const SizedBox(height: 16.0),
+          // Container(
+          //   padding: EdgeInsets.only(
+          //     left: 20,
+          //     right: 20,
+          //     bottom: 5,
+          //   ),
+          //   child: Row(
+          //     children: <Widget>[
+          //       Expanded(
+          //         child: upgradeDash(),
+          //       ),
+          //       const SizedBox(width: 16.0),
+          //       Expanded(
+          //         child: Container(),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // const SizedBox(height: 10.0),
         ],
       );
     }
@@ -1108,7 +1024,7 @@ class _ChangePageState extends State<HomePage> {
         ),
         body: isInternetOn
             ? isLoading
-                ? CircularPercentIndicator(radius: 10)
+                ? CircularProgressIndicator()
                 : SingleChildScrollView(
                     child: Column(children: <Widget>[
                       institute_id != "0"
@@ -1151,10 +1067,6 @@ class _ChangePageState extends State<HomePage> {
                                       Container(
                                         child: new Stack(
                                           children: <Widget>[
-                                            Positioned(
-                                              right: 2,
-                                              child: getSocialMediaApp(),
-                                            ),
                                             Align(
                                               alignment: Alignment.center,
                                               child: Container(
@@ -1236,11 +1148,11 @@ class _ChangePageState extends State<HomePage> {
                                                                 children: <
                                                                     Widget>[
                                                                   Text(
-                                                                      total_right_question,
+                                                                      total_right_questions,
                                                                       style:
                                                                           normalText11),
                                                                   Text(
-                                                                      "Correct Answers",
+                                                                      "Correct Answers1",
                                                                       style:
                                                                           normalText12),
                                                                 ]),
@@ -1257,7 +1169,7 @@ class _ChangePageState extends State<HomePage> {
                                                                 children: <
                                                                     Widget>[
                                                                   Text(
-                                                                      total_wrong_question,
+                                                                      total_wrong_questions,
                                                                       style:
                                                                           normalText11),
                                                                   Text(
@@ -1287,7 +1199,7 @@ class _ChangePageState extends State<HomePage> {
                                                                 children: <
                                                                     Widget>[
                                                                   Text(
-                                                                      total_skip_question,
+                                                                      total_skip_questions,
                                                                       style:
                                                                           normalText11),
                                                                   Text(
@@ -1308,7 +1220,7 @@ class _ChangePageState extends State<HomePage> {
                                                                 children: <
                                                                     Widget>[
                                                                   Text(
-                                                                      total_test,
+                                                                      total_tests,
                                                                       style:
                                                                           normalText11),
                                                                   Text(
@@ -1386,47 +1298,45 @@ class _ChangePageState extends State<HomePage> {
                                                                     '/notifications');
                                                               },
                                                               child: Badge(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              5),
-                                                                  badgeColor:
-                                                                      Color(
-                                                                          0xff017EFF),
-                                                                  position: BadgePosition
-                                                                      .topEnd(
-                                                                          top:
-                                                                              1,
-                                                                          end:
-                                                                              8),
-                                                                  animationDuration:
-                                                                      Duration(
-                                                                          milliseconds:
-                                                                              300),
-                                                                  animationType:
-                                                                      BadgeAnimationType
-                                                                          .fade,
-                                                                  badgeContent:
-                                                                      Text(
-                                                                    total_notification
-                                                                        .toString(),
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            13),
-                                                                  ),
-                                                                  child:
-                                                                      IconButton(
-                                                                    icon:
-                                                                        const Icon(
-                                                                      Icons
-                                                                          .notifications,
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(5),
+                                                                badgeColor: Color(
+                                                                    0xff017EFF),
+                                                                position:
+                                                                    BadgePosition
+                                                                        .topEnd(
+                                                                            top:
+                                                                                1,
+                                                                            end:
+                                                                                8),
+                                                                animationDuration:
+                                                                    Duration(
+                                                                        milliseconds:
+                                                                            300),
+                                                                animationType:
+                                                                    BadgeAnimationType
+                                                                        .fade,
+                                                                badgeContent:
+                                                                    Text(
+                                                                  total_notification
+                                                                      .toString()
+                                                                      .toString(),
+                                                                  style: TextStyle(
                                                                       color: Colors
                                                                           .white,
-                                                                      size: 24,
-                                                                    ),
-                                                                  )),
+                                                                      fontSize:
+                                                                          13),
+                                                                ),
+                                                                child:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .notifications,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  size: 24,
+                                                                ),
+                                                              ),
                                                             )
                                                           : IconButton(
                                                               icon: const Icon(
@@ -1687,7 +1597,7 @@ class _ChangePageState extends State<HomePage> {
                                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                                               crossAxisAlignment: CrossAxisAlignment.center,
                                                                               children: <Widget>[
-                                                                                Text(total_right_question, style: normalText11),
+                                                                                Text(total_right_questions, style: normalText11), // Text(((int.parse(total_right_question_1) + (int.parse(total_right_question_2))).toString()), style: normalText11),
                                                                                 Text("Correct Answers", style: normalText12),
                                                                               ]),
                                                                           SizedBox(
@@ -1698,7 +1608,7 @@ class _ChangePageState extends State<HomePage> {
                                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                                               crossAxisAlignment: CrossAxisAlignment.center,
                                                                               children: <Widget>[
-                                                                                Text(total_wrong_question, style: normalText11),
+                                                                                Text(total_wrong_questions, style: normalText11),
                                                                                 Text("Incorrect Answers", style: normalText12),
                                                                               ]),
                                                                         ]),
@@ -1719,7 +1629,7 @@ class _ChangePageState extends State<HomePage> {
                                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                                               crossAxisAlignment: CrossAxisAlignment.center,
                                                                               children: <Widget>[
-                                                                                Text(total_skip_question, style: normalText11),
+                                                                                Text(total_skip_questions, style: normalText11),
                                                                                 Text("Questions Skipped", style: normalText12),
                                                                               ]),
                                                                           SizedBox(
@@ -1730,7 +1640,7 @@ class _ChangePageState extends State<HomePage> {
                                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                                               crossAxisAlignment: CrossAxisAlignment.center,
                                                                               children: <Widget>[
-                                                                                Text(total_test, style: normalText11),
+                                                                                Text(total_tests, style: normalText11),
                                                                                 Text("Tests Attempted", style: normalText12),
                                                                               ]),
                                                                         ]),
@@ -1751,6 +1661,7 @@ class _ChangePageState extends State<HomePage> {
                       SizedBox(
                         height: 20.0,
                       ),
+                      getSocialMediaApp(),
                       Container(
                         padding: EdgeInsets.only(
                             left: 15, right: 20, bottom: 5, top: 5),
@@ -1778,13 +1689,49 @@ class _ChangePageState extends State<HomePage> {
                             Expanded(
                               child: InkWell(
                                 onTap: () {
-                                  goToChapterList(subjects_list[0]);
+                                  if (total_test_1 == "0") {
+                                    print("Zero term1");
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ChapterList(
+                                                "yes", subjects_list[0])));
+                                  } else if (total_test_1 == "1") {
+                                    print("one term1");
+                                    if (payment == "0") {
+                                      print("pay0t1");
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/plan',
+                                        arguments: <String, String>{
+                                          'order_id': order_id.toString(),
+                                          'signupid': user_id.toString(),
+                                          'mobile': _mobile.toString(),
+                                          'email': email_id.toString(),
+                                          'out': 'in'
+                                        },
+                                      );
+                                    } else {
+                                      print("pay1t1");
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ChapterList(
+                                                  "yes", subjects_list[0])));
+                                    }
+                                  } else {
+                                    print("full term1");
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ChapterList(
+                                                "yes", subjects_list[0])));
+                                  }
                                 },
                                 child: _buildWikiCategory(
                                     "assets/images/ordered_list.png",
-                                    subjects_list[0]['subject_name']
-                                        .toString()
-                                        .replaceFirst(" ", "\n"),
+                                    "Term " +
+                                        subjects_list[0]['term'].toString(),
                                     totalChapterTerm1 + " Chapters",
                                     Color(0xff567DF4),
                                     Color(0xffEEF7FE)),
@@ -1794,13 +1741,50 @@ class _ChangePageState extends State<HomePage> {
                             Expanded(
                               child: InkWell(
                                 onTap: () {
-                                  goToChapterList(subjects_list[1]);
+                                  print(payment_2);
+                                  if (total_test_2 == "0") {
+                                    print("t2 t0");
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ChapterList(
+                                                "yes", subjects_list[1])));
+                                  } else if (total_test_2 == "1") {
+                                    print("t2 t1");
+                                    if (payment_2 == "0") {
+                                      print("t2 pay0");
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/plan',
+                                        arguments: <String, String>{
+                                          'order_id': order_id.toString(),
+                                          'signupid': user_id.toString(),
+                                          'mobile': _mobile.toString(),
+                                          'email': email_id.toString(),
+                                          'out': 'in'
+                                        },
+                                      );
+                                    } else {
+                                      print("pay2 t2");
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ChapterList(
+                                                  "yes", subjects_list[1])));
+                                    }
+                                  } else {
+                                    print("t2 full");
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ChapterList(
+                                                "yes", subjects_list[1])));
+                                  }
                                 },
                                 child: _buildWikiCategory(
                                     "assets/images/ordered_list.png",
-                                    subjects_list[1]['subject_name']
-                                        .toString()
-                                        .replaceFirst(" ", "\n"),
+                                    "Term " +
+                                        subjects_list[1]['term'].toString(),
                                     totalChapterTerm2 + " Chapters",
                                     Color(0xff567DF4),
                                     Color(0xffEEF7FE)),

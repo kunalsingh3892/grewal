@@ -7,7 +7,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grewal/api/data_list.dart';
 import 'package:grewal/components/indicator.dart';
+import 'package:grewal/components/progress_bar.dart';
 import 'package:grewal/services/shared_preferences.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:http/http.dart' as http;
@@ -73,13 +75,24 @@ class _SettingsState extends State<OverAllPerformance> {
   String test_id = "";
   String profile_image = '';
   List<ChartData> chartData = [];
-
+  List subjectList = [];
+  List chaptersList = [];
+  bool isLoad1 = false;
   @override
   void initState() {
     super.initState();
 
     _tooltipBehavior = TooltipBehavior(enable: true);
     _getUser();
+
+    DataListOfSubjects().getSubjectsList().then((value) {
+      if (value.length > 0) {
+        setState(() {
+          subjectList.addAll(value);
+          print(subjectList);
+        });
+      }
+    });
   }
 
   _getUser() async {
@@ -88,14 +101,13 @@ class _SettingsState extends State<OverAllPerformance> {
         user_id = prefs.getString('user_id').toString();
         profile_image = prefs.getString('profile_image').toString();
         api_token = prefs.getString('api_token').toString();
-        _chapterData = _getPerformanceData();
       });
     });
   }
 
   TooltipBehavior _tooltipBehavior;
 
-  Future _getPerformanceData() async {
+  Future _getPerformanceData(String chapter_id) async {
     Map<String, String> headers = {
       // 'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -103,7 +115,7 @@ class _SettingsState extends State<OverAllPerformance> {
     };
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/questiontypeperformance"),
-      body: {"user_id": user_id},
+      body: {"user_id": user_id, "chapter_id": chapter_id},
       headers: headers,
     );
     print({"user_id": user_id});
@@ -223,131 +235,213 @@ class _SettingsState extends State<OverAllPerformance> {
   }
 
   Widget chapterList(Size deviceSize) {
-    return FutureBuilder(
-      future: _chapterData,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data['question_type'].length != 0) {
-            return SingleChildScrollView(
-              child: Column(children: [
-                Container(
-                  width: deviceSize.width,
-                  height: deviceSize.height * 0.50,
-                  decoration: new BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: new BorderRadius.only(
-                          topLeft: const Radius.circular(20.0),
-                          bottomLeft: const Radius.circular(20.0),
-                          bottomRight: const Radius.circular(20.0),
-                          topRight: const Radius.circular(20.0))),
-                  margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                  padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 20),
-                  child: ListView(children: [
-                    Column(children: [
-                      Container(
-                        child:
-                            Text("Question Wise Analysis", style: normalText6),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        child: SfCircularChart(
-                            tooltipBehavior: _tooltipBehavior,
-                            legend: Legend(
-                                isVisible: true,
-                                position: LegendPosition.bottom,
-                                height: "150",
-                                padding: 20,
-                                orientation: LegendItemOrientation.vertical,
-                                textStyle: normalText5),
-                            series: <CircularSeries>[
-                              DoughnutSeries<ChartData, String>(
-                                animationDuration: 2000,
-                                enableSmartLabels: true,
-                                enableTooltip: true,
-                                explode: true,
-                                dataSource: chartData,
-                                onPointTap: (ChartPointDetails details) {
-                                  print(details.pointIndex);
-                                  if (details.pointIndex == 0) {
-                                    for (int i = 0; i < chartData.length; i++) {
-                                      if (details.pointIndex == i) {
-                                        print(chartData[i].z);
-                                        Navigator.pushNamed(
-                                          context,
-                                          '/overall-performance-details',
-                                          arguments: <String, String>{
-                                            'question_id':
-                                                chartData[i].z.toString(),
-                                          },
-                                        );
-                                      }
-                                    }
-                                  } else if (details.pointIndex == 1) {
-                                    for (int i = 0; i < chartData.length; i++) {
-                                      if (details.pointIndex == i) {
-                                        print(chartData[i].z);
-                                        Navigator.pushNamed(
-                                          context,
-                                          '/overall-performance-details',
-                                          arguments: <String, String>{
-                                            'question_id':
-                                                chartData[i].z.toString(),
-                                          },
-                                        );
-                                      }
-                                    }
-                                  } else if (details.pointIndex == 2) {
-                                    for (int i = 0; i < chartData.length; i++) {
-                                      if (details.pointIndex == i) {
-                                        print(chartData[i].z);
-                                        Navigator.pushNamed(
-                                          context,
-                                          '/overall-performance-details',
-                                          arguments: <String, String>{
-                                            'question_id':
-                                                chartData[i].z.toString(),
-                                          },
-                                        );
-                                      }
-                                    }
-                                  }
-                                },
-                                selectionBehavior: SelectionBehavior(
-                                  enable: true,
-                                ),
-                                dataLabelSettings: DataLabelSettings(
-                                  isVisible: true,
-                                ),
-                                dataLabelMapper: (ChartData sales, _) =>
-                                    sales.y1.toString() +
-                                    " (" +
-                                    sales.y.toString() +
-                                    "%" +
-                                    ") ",
-                                pointColorMapper: (ChartData data, _) =>
-                                    data.color,
-                                xValueMapper: (ChartData data, _) => data.x,
-                                yValueMapper: (ChartData data, _) => data.y,
-                                radius: "100",
-                                innerRadius: "40",
-                              )
-                            ]),
-                      ),
+    return SingleChildScrollView(
+      child: Column(children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10), color: Colors.white),
+            // color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  DropdownButtonFormField(
+                      validator: (value) => value == null ? "Required" : null,
+                      isDense: true,
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(10),
+                          border: OutlineInputBorder(),
+                          labelText: 'Select Subject',
+                          isDense: true,
+                          fillColor: Colors.white,
+                          filled: true),
+                      isExpanded: true,
+                      elevation: 8,
+                      items: subjectList.map((e) {
+                        return DropdownMenuItem(
+                          child: Text(e['subject_name'].toString()),
+                          value: e,
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          isLoad1 = true;
+                        });
+                        ProgressBarLoading().showLoaderDialog(context);
+                        DataListOfSubjects()
+                            .getChapterList(val['id'].toString())
+                            .then((value) {
+                          Navigator.of(context).pop();
+                          if (value.length > 0) {
+                            setState(() {
+                              chaptersList.clear();
+                              chaptersList.addAll(value);
+                              print(chaptersList);
+                              setState(() {
+                                isLoad1 = false;
+                              });
+                            });
+                          }
+                        });
+                      }),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  isLoad1
+                      ? Text("Loading...")
+                      : DropdownButtonFormField(
+                          validator: (value) =>
+                              value == null ? "Required" : null,
+                          isDense: true,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10),
+                              border: OutlineInputBorder(),
+                              labelText: 'Select Chapter',
+                              isDense: true,
+                              fillColor: Colors.white,
+                              filled: true),
+                          isExpanded: true,
+                          elevation: 8,
+                          value: null,
+                          items: chaptersList.map((e) {
+                            return DropdownMenuItem(
+                              child: Text(e['chapter_name'].toString()),
+                              value: e,
+                            );
+                          }).toList(),
+                          onChanged: (val) {
+                            ProgressBarLoading().showLoaderDialog(context);
+                            setState(() {
+                              _chapterData =
+                                  _getPerformanceData(val['id'].toString());
+                            });
+                            Navigator.of(context).pop();
+                          }),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Container(
+          width: deviceSize.width,
+          height: deviceSize.height * 0.50,
+          decoration: new BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.only(
+                  topLeft: const Radius.circular(20.0),
+                  bottomLeft: const Radius.circular(20.0),
+                  bottomRight: const Radius.circular(20.0),
+                  topRight: const Radius.circular(20.0))),
+          margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 20),
+          child: ListView(children: [
+            Column(children: [
+              Container(
+                child: Text("Question Wise Analysis", style: normalText6),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                child: SfCircularChart(
+                    tooltipBehavior: _tooltipBehavior,
+                    legend: Legend(
+                        isVisible: true,
+                        position: LegendPosition.bottom,
+                        height: "150",
+                        padding: 20,
+                        orientation: LegendItemOrientation.vertical,
+                        textStyle: normalText5),
+                    series: <CircularSeries>[
+                      DoughnutSeries<ChartData, String>(
+                        animationDuration: 2000,
+                        enableSmartLabels: true,
+                        enableTooltip: true,
+                        explode: true,
+                        dataSource: chartData,
+                        onPointTap: (ChartPointDetails details) {
+                          print(details.pointIndex);
+                          if (details.pointIndex == 0) {
+                            for (int i = 0; i < chartData.length; i++) {
+                              if (details.pointIndex == i) {
+                                print(chartData[i].z);
+                                Navigator.pushNamed(
+                                  context,
+                                  '/overall-performance-details',
+                                  arguments: <String, String>{
+                                    'question_id': chartData[i].z.toString(),
+                                  },
+                                );
+                              }
+                            }
+                          } else if (details.pointIndex == 1) {
+                            for (int i = 0; i < chartData.length; i++) {
+                              if (details.pointIndex == i) {
+                                print(chartData[i].z);
+                                Navigator.pushNamed(
+                                  context,
+                                  '/overall-performance-details',
+                                  arguments: <String, String>{
+                                    'question_id': chartData[i].z.toString(),
+                                  },
+                                );
+                              }
+                            }
+                          } else if (details.pointIndex == 2) {
+                            for (int i = 0; i < chartData.length; i++) {
+                              if (details.pointIndex == i) {
+                                print(chartData[i].z);
+                                Navigator.pushNamed(
+                                  context,
+                                  '/overall-performance-details',
+                                  arguments: <String, String>{
+                                    'question_id': chartData[i].z.toString(),
+                                  },
+                                );
+                              }
+                            }
+                          }
+                        },
+                        selectionBehavior: SelectionBehavior(
+                          enable: true,
+                        ),
+                        dataLabelSettings: DataLabelSettings(
+                          isVisible: true,
+                        ),
+                        dataLabelMapper: (ChartData sales, _) =>
+                            sales.y1.toString() +
+                            " (" +
+                            sales.y.toString() +
+                            "%" +
+                            ") ",
+                        pointColorMapper: (ChartData data, _) => data.color,
+                        xValueMapper: (ChartData data, _) => data.x,
+                        yValueMapper: (ChartData data, _) => data.y,
+                        radius: "100",
+                        innerRadius: "40",
+                      )
                     ]),
-                  ]),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Container(
-                  child: Text("Topic Wise Analysis", style: normalText15),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
+              ),
+            ]),
+          ]),
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Container(
+          child: Text("Topic Wise Analysis", style: normalText15),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        FutureBuilder(
+          future: _chapterData,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data['question_type'].length != 0) {
+                return Container(
                   child: Column(children: <Widget>[
                     Container(
                       child: Column(children: <Widget>[
@@ -551,32 +645,24 @@ class _SettingsState extends State<OverAllPerformance> {
                       height: 50,
                     ),
                   ]),
-                ),
-              ]),
-            );
-          } else {
-            return _emptyOrders();
-          }
-        } else {
-          return Center(
-              child: Align(
-            alignment: Alignment.center,
-            child: Container(
-              child: SpinKitFadingCube(
-                itemBuilder: (_, int index) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      color:
-                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
-                    ),
-                  );
-                },
-                size: 30.0,
-              ),
-            ),
-          ));
-        }
-      },
+                );
+              } else {
+                return _emptyOrders();
+              }
+            } else {
+              return Center(
+                  child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Please select chapter",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      )));
+            }
+          },
+        )
+      ]),
     );
   }
 
@@ -640,7 +726,8 @@ class _SettingsState extends State<OverAllPerformance> {
           ),
           centerTitle: true,
           title: Container(
-            child: Text("Over All Performance", style: normalText6),
+            child: FittedBox(
+                child: Text("Over All Performance", style: normalText6)),
           ),
           flexibleSpace: Container(
             height: 100,

@@ -347,52 +347,55 @@ class _SettingsState extends State<CreateTicket> {
           ),
           backgroundColor: Colors.transparent,
         ),
-        body: ModalProgressHUD(
-          inAsyncCall: _loading,
-          progressIndicator: Center(
-              child: Align(
-            alignment: Alignment.center,
-            child: Container(
-              child: SpinKitFadingCube(
-                itemBuilder: (_, int index) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      color:
-                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
-                    ),
-                  );
-                },
-                size: 30.0,
-              ),
-            ),
-          )),
-          child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
+        body: SingleChildScrollView(
+          child: ModalProgressHUD(
+            inAsyncCall: _loading,
+            progressIndicator: Center(
+                child: Align(
+              alignment: Alignment.center,
               child: Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: deviceSize.width * 0.02,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    const SizedBox(height: 25.0),
-                    Container(
-                      child: Form(
-                        key: _formKey,
-                        autovalidateMode: _autoValidate
-                            ? AutovalidateMode.always
-                            : AutovalidateMode.disabled,
-                        child: /*isEnabled1 ? _customContent() :*/ _randomContent(),
+                child: SpinKitFadingCube(
+                  itemBuilder: (_, int index) {
+                    return DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: index.isEven
+                            ? Color(0xff017EFF)
+                            : Color(0xffFFC700),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                  ],
+                    );
+                  },
+                  size: 30.0,
                 ),
-              )),
+              ),
+            )),
+            child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Container(
+                  margin: EdgeInsets.symmetric(
+                    horizontal: deviceSize.width * 0.02,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      const SizedBox(height: 25.0),
+                      Container(
+                        child: Form(
+                          key: _formKey,
+                          autovalidateMode: _autoValidate
+                              ? AutovalidateMode.always
+                              : AutovalidateMode.disabled,
+                          child: /*isEnabled1 ? _customContent() :*/ _randomContent(),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                    ],
+                  ),
+                )),
+          ),
         ));
   }
 }

@@ -91,6 +91,8 @@ class _SettingsState extends State<ViewPerformance2> {
   String testType = "";
   bool show_pie = true;
   String reattempt = "";
+  int total_tests_given = 0;
+  String payment2 = "0";
   @override
   void initState() {
     super.initState();
@@ -118,6 +120,9 @@ class _SettingsState extends State<ViewPerformance2> {
         user_id = prefs.getString('user_id').toString();
         profile_image = prefs.getString('profile_image').toString();
         api_token = prefs.getString('api_token').toString();
+        total_tests_given = int.parse(prefs.getString('total_test').toString());
+        payment2 = prefs.getString("payment2").toString();
+        print(payment2 + "vpn");
         _chapterData = _getPerformanceData();
         _requestPermission();
       });
@@ -1164,20 +1169,28 @@ class _SettingsState extends State<ViewPerformance2> {
     Size deviceSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        if (testType == "sub") {
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
-          Navigator.pushNamed(context, '/start-subjective-list',
-              arguments: {"chapter_id": chapter_id.toString()});
-        } else if (testType == "obj") {
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
+        print(payment2 + "tes");
+        if (payment2 == "0") {
+          print("no payment");
+          Navigator.of(context).pop(false);
+          Navigator.pushNamed(context, '/dashboard');
+        } else {
+          print("payment 2 done");
+          if (testType == "sub") {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+            Navigator.pushNamed(context, '/start-subjective-list',
+                arguments: {"chapter_id": chapter_id.toString()});
+          } else if (testType == "obj") {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
 
-          Navigator.pushNamed(context, '/mcq-level-testing',
-              arguments: {"chapter_id": chapter_id.toString()});
+            Navigator.pushNamed(context, '/mcq-level-testing',
+                arguments: {"chapter_id": chapter_id.toString()});
+          }
         }
 
         return false;
@@ -1196,8 +1209,28 @@ class _SettingsState extends State<ViewPerformance2> {
                   color: Color(0xff2E2A4A),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop(false);
-                  Navigator.pushNamed(context, '/dashboard');
+                  if (payment2 == "0") {
+                    print("no payment");
+                    Navigator.of(context).pop(false);
+                    Navigator.pushNamed(context, '/dashboard');
+                  } else {
+                    print("payment 2 done");
+                    if (testType == "sub") {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      Navigator.pushNamed(context, '/start-subjective-list',
+                          arguments: {"chapter_id": chapter_id.toString()});
+                    } else if (testType == "obj") {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+
+                      Navigator.pushNamed(context, '/mcq-level-testing',
+                          arguments: {"chapter_id": chapter_id.toString()});
+                    }
+                  }
                 },
               ),
             ]),

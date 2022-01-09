@@ -20,11 +20,11 @@ class PaymentPlansAPI {
       new Uri.https(BASE_URL, API_PATH + "/subcriptionplannew"),
       headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer ' + api_token.toString(),
+        // 'Authorization': 'Bearer ' + api_token.toString(),
       },
       body: {"user_id": user_id},
     );
-
+    print(response.body);
     if (jsonDecode(response.body)['ErrorCode'] == 0) {
       return jsonDecode(response.body)['Response'];
     }

@@ -138,6 +138,10 @@ class _MainScreenState extends State<Dashboard> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       setState(() {
         total_notification = data['totalUnread'];
+        prefs.setBool(
+            'payment_status', data['Response']['payment'] == 1 ? true : false);
+        prefs.setBool('payment_status2',
+            data['Response']['term_2']['payment_2'] == 1 ? true : false);
       });
 
       return data;
