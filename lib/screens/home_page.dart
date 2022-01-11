@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -19,6 +20,7 @@ import 'package:grewal/screens/subject_list.dart';
 import 'package:grewal/screens/update_profile.dart';
 import 'package:grewal/services/shared_preferences.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:package_info/package_info.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -86,6 +88,7 @@ class _ChangePageState extends State<HomePage> {
   String total_subjects = "0";
   List subjects_list = [];
   List onlyTermsId = [];
+  String platForm = "";
   @override
   void initState() {
     super.initState();
@@ -123,6 +126,60 @@ class _ChangePageState extends State<HomePage> {
       setState(() {
         isLoading = false;
       });
+    });
+
+    versionCheck(context);
+  }
+
+  versionCheck(context) async {
+    final PackageInfo info = await PackageInfo.fromPlatform();
+    print(info.version);
+    DataListOfSubjects().getAppVersion().then((value) {
+      if (value.length > 0) {
+        int apiVer = Platform.isAndroid
+            ? int.parse(value[0]['android']
+                .toString()
+                .split("+")[0]
+                .replaceAll(".", ""))
+            : int.parse(
+                value[0]['ios'].toString().split("+")[0].replaceAll(".", ""));
+        int appVer = int.parse(info.version.replaceAll(".", ""));
+
+        if (apiVer > appVer) {
+          Alert(
+              context: context,
+              type: AlertType.info,
+              title: "New Update Available",
+              content: Text(
+                  "There is a newer version of app available please update it now."),
+              buttons: [
+                DialogButton(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    color: Colors.blue,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+                DialogButton(
+                    child: Text(
+                      "Update",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    color: Colors.blue,
+                    onPressed: () async {
+                      if (await canLaunch(PLAY_STORE_VERSION_LINK) != null) {
+                        print("yes can launch");
+                        print(PLAY_STORE_VERSION_LINK);
+                        await launch(PLAY_STORE_VERSION_LINK);
+                      } else {
+                        Fluttertoast.showToast(msg: "Version Check Failed");
+                      }
+                    }),
+              ]).show();
+        }
+      }
     });
   }
 
@@ -183,9 +240,9 @@ class _ChangePageState extends State<HomePage> {
         // total_test_quetion_1 = data['total_test_quetion'].toString();
         total_right_question_1 = data['total_right_question'].toString();
         total_wrong_question_1 = data['total_wrong_question'].toString();
-        total_skip_question_1 = data['total_skip_questiFon'].toString();
+        total_skip_question_1 = data['total_skip_question'].toString();
 
-        total_notification = data['totalUnread'];
+        total_notification = int.parse(data['totalUnread'].toString());
 
         // total_test_quetion_2 =
         //     data['Response']['term_2']['total_test_question_t2'].toString();
@@ -199,10 +256,10 @@ class _ChangePageState extends State<HomePage> {
         total_tests =
             (int.parse(total_test_1) + int.parse(total_test_2)).toString();
         total_right_questions = (int.parse(total_right_question_1) +
-                int.parse(total_right_question_1))
+                int.parse(total_right_question_2))
             .toString();
         total_wrong_questions = (int.parse(total_wrong_question_1) +
-                int.parse(total_wrong_question_1))
+                int.parse(total_wrong_question_2))
             .toString();
         total_skip_questions = (int.parse(total_skip_question_1) +
                 int.parse(total_skip_question_2))
@@ -1024,7 +1081,18 @@ class _ChangePageState extends State<HomePage> {
         ),
         body: isInternetOn
             ? isLoading
-                ? CircularProgressIndicator()
+                ? Center(
+                    child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Loading..."),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      CircularProgressIndicator(),
+                    ],
+                  ))
                 : SingleChildScrollView(
                     child: Column(children: <Widget>[
                       institute_id != "0"
@@ -2039,10 +2107,10 @@ class _ChangePageState extends State<HomePage> {
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: Color(0xffffffff),
-                                          image: DecorationImage(
-                                            image: NetworkImage(profile_image),
-                                            fit: BoxFit.cover,
-                                          ),
+                                          // image: DecorationImage(
+                                          //   image: NetworkImage(profile_image),
+                                          //   fit: BoxFit.cover,
+                                          // ),
                                         ),
                                       ),
                                     ),

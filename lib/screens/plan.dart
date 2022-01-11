@@ -448,8 +448,7 @@ class _MyPlanState extends State<MyPlan> {
 
   void openCheckout(num amount) async {
     var options = {
-      // 'key': 'rzp_live_yk3tz7r3hBjLID',
-      'key': 'rzp_test_MhKrOdDQM8C8PL',
+      'key': 'rzp_live_yk3tz7r3hBjLID',
       'amount': amount,
       "currency": "INR",
       'name': "Grewal E-Learning Services Pvt Ltd",

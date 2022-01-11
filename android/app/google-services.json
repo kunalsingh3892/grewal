@@ -29,6 +29,13 @@
             {
               "client_id": "750774149943-me8p981iql7l0cjdm69j604q41k5nk5k.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "750774149943-gpahm08huq2u3idcau1gsefagvafk5r1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.grewal.grewal"
+              }
             }
           ]
         }

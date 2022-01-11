@@ -93,21 +93,25 @@ class _SettingsState extends State<ViewPerformance2> {
   String reattempt = "";
   int total_tests_given = 0;
   String payment2 = "0";
+  String noOfBacks = "0";
   @override
   void initState() {
     super.initState();
     print("view-perof-new");
     var encodedJson = json.encode(widget.argument);
     var data = json.decode(encodedJson);
-    test_id = data['test_id'];
-    type = data['type'];
-    total_ques = data['total_ques'];
+
+    test_id = data['test_id'].toString();
+    type = data['type'].toString();
+    total_ques = data['total_ques'].toString();
     testType = data['testType'].toString();
     chapter_id = data['chapter_id'].toString();
     if (testType == "obj") {
       reattempt = data['reattempt'];
     }
+    noOfBacks = data['nob'].toString();
     print(reattempt);
+    print(noOfBacks);
     _tooltipBehavior = TooltipBehavior(enable: true);
 
     _getUser();
@@ -120,7 +124,7 @@ class _SettingsState extends State<ViewPerformance2> {
         user_id = prefs.getString('user_id').toString();
         profile_image = prefs.getString('profile_image').toString();
         api_token = prefs.getString('api_token').toString();
-        total_tests_given = int.parse(prefs.getString('total_test').toString());
+        // total_tests_given = int.parse(prefs.getString('total_test').toString());
         payment2 = prefs.getString("payment2").toString();
         print(payment2 + "vpn");
         _chapterData = _getPerformanceData();
@@ -1177,19 +1181,32 @@ class _SettingsState extends State<ViewPerformance2> {
         } else {
           print("payment 2 done");
           if (testType == "sub") {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-            Navigator.pushNamed(context, '/start-subjective-list',
-                arguments: {"chapter_id": chapter_id.toString()});
+            if (noOfBacks == "1") {
+              Navigator.of(context).pop();
+            } else {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              Navigator.pushNamed(
+                context,
+                '/start-subjective-list',
+                arguments: <String, String>{
+                  'chapter_id': chapter_id.toString(),
+                },
+              );
+            }
           } else if (testType == "obj") {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-
-            Navigator.pushNamed(context, '/mcq-level-testing',
-                arguments: {"chapter_id": chapter_id.toString()});
+            if (noOfBacks == "1") {
+              Navigator.of(context).pop();
+            } else {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/mcq-level-testing',
+                  arguments: {"chapter_id": chapter_id.toString()});
+            }
           }
         }
 
@@ -1216,19 +1233,32 @@ class _SettingsState extends State<ViewPerformance2> {
                   } else {
                     print("payment 2 done");
                     if (testType == "sub") {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.pushNamed(context, '/start-subjective-list',
-                          arguments: {"chapter_id": chapter_id.toString()});
+                      if (noOfBacks == "1") {
+                        Navigator.of(context).pop();
+                      } else {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.pushNamed(
+                          context,
+                          '/start-subjective-list',
+                          arguments: <String, String>{
+                            'chapter_id': chapter_id.toString(),
+                          },
+                        );
+                      }
                     } else if (testType == "obj") {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-
-                      Navigator.pushNamed(context, '/mcq-level-testing',
-                          arguments: {"chapter_id": chapter_id.toString()});
+                      if (noOfBacks == "1") {
+                        Navigator.of(context).pop();
+                      } else {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.pushNamed(context, '/mcq-level-testing',
+                            arguments: {"chapter_id": chapter_id.toString()});
+                      }
                     }
                   }
                 },

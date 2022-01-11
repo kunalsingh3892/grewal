@@ -199,7 +199,7 @@ class _StartSubjectiveTestState extends State<StartSubjectiveTest> {
                                           e['name'].toString().toUpperCase(),
                                         ),
                                         Text(
-                                          "No. of Questions : " +
+                                          "No. of Remaining Questions : " +
                                               e['totaldetails'].toString(),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
@@ -408,6 +408,9 @@ class _StartSubjectiveTestState extends State<StartSubjectiveTest> {
                     value['chapter_id'] = chapter_id.toString();
                     Navigator.pushNamed(context, '/create-subjective',
                         arguments: value);
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: value['ErrorMessage'].toString());
                   }
                 });
               }

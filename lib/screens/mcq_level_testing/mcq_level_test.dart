@@ -232,7 +232,9 @@ class _SettingsState extends State<MCQLevelTest> {
                                                                         "reattempt": e['percent'] ==
                                                                                 0
                                                                             ? "0"
-                                                                            : "1"
+                                                                            : "1",
+                                                                        "nob":
+                                                                            "1"
                                                                       },
                                                                     );
                                                                   },

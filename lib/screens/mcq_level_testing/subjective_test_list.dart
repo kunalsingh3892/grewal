@@ -40,29 +40,19 @@ class _SettingsState extends State<SubjectiveTestListGiven> {
   bool isLoading = true;
   String chapter_id = "";
   String user_id = "";
-  List data = [];
+  Future data;
+  String totalSubjects = "0";
   _getUser() async {
     Preference().getPreferences().then((prefs) {
       setState(() {
         user_id = prefs.getString('user_id').toString();
-      });
-      MCQLevelTestAPI()
-          .getSubjectiveTestList(
-              prefs.getString('user_id').toString(), chapter_id)
-          .then((value) {
-        if (value.length > 0) {
-          setState(() {
-            data.clear();
-            data.addAll(value);
-            isLoading = false;
-          });
-        } else {
-          setState(() {
-            isLoading = false;
-          });
-        }
+        data = _getData();
       });
     });
+  }
+
+  Future _getData() async {
+    return MCQLevelTestAPI().getSubjectiveTestList(user_id, chapter_id);
   }
 
   @override
@@ -101,8 +91,7 @@ class _SettingsState extends State<SubjectiveTestListGiven> {
             ]),
           ),
           centerTitle: true,
-          title: Text("Subjective Tests (" + data.length.toString() + ")",
-              style: normalText6),
+          title: Text("Subjective Tests", style: normalText6),
           flexibleSpace: Container(
             height: 100,
             color: Color(0xffffffff),
@@ -141,78 +130,124 @@ class _SettingsState extends State<SubjectiveTestListGiven> {
                 style: TextStyle(color: Colors.white),
               )),
         ),
-        body: isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : data.length == 0
-                ? Center(
-                    child: Text(
-                      "No Subjective Test Given",
-                      style: normalText6,
-                    ),
-                  )
-                : SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListView(
-                        children: data
-                            .map((e) => ListTile(
-                                  title: Text(e['name'].toString()),
-                                  subtitle: Text(e['created_at'].toString()),
-                                  trailing: e['is_taken'] == 1
-                                      ? IconButton(
-                                          onPressed: () {
-                                            ProgressBarLoading()
-                                                .showLoaderDialog(context);
-                                            MCQLevelTestAPI()
-                                                .getTotalQuestionCountofTest(
-                                                    user_id, e['id'].toString())
-                                                .then((value) {
-                                              Navigator.pop(context);
-                                              if (value > 0) {
-                                                Navigator.pushNamed(
-                                                  context,
-                                                  '/view-test-new',
-                                                  arguments: <String, String>{
-                                                    'test_id':
-                                                        e['id'].toString(),
-                                                    'total_question':
-                                                        value.toString()
-                                                  },
-                                                );
-                                              } else {
-                                                Fluttertoast.showToast(
-                                                    msg:
-                                                        "Test have no questions");
-                                              }
+        body: SafeArea(
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FutureBuilder(
+                  future: _getData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.length > 0) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          primary: false,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title:
+                                  Text(snapshot.data[index]['name'].toString()),
+                              subtitle: Text(snapshot.data[index]['created_at']
+                                  .toString()),
+                              trailing: snapshot.data[index]['is_taken'] == 1
+                                  ? IconButton(
+                                      onPressed: () {
+                                        ProgressBarLoading()
+                                            .showLoaderDialog(context);
+                                        MCQLevelTestAPI()
+                                            .getTotalQuestionCountofTest(
+                                                user_id,
+                                                snapshot.data[index]['id']
+                                                    .toString())
+                                            .then((value) {
+                                          Navigator.pop(context);
+                                          if (value > 0) {
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/view-performance-new',
+                                              arguments: <String, String>{
+                                                'test_id': snapshot.data[index]
+                                                        ['id']
+                                                    .toString(),
+                                                'type': "",
+                                                'total_ques': "".toString(),
+                                                "chapter_id":
+                                                    chapter_id.toString(),
+                                                "testType": "sub",
+                                                "nob": "1"
+                                              },
+                                            );
+
+                                            // Navigator.pushNamed(
+                                            //   context,
+                                            //   '/view-test-new',
+                                            //   arguments: <String, String>{
+                                            //     'test_id': snapshot.data[index]
+                                            //             ['id']
+                                            //         .toString(),
+                                            //     'total_question':
+                                            //         value.toString()
+                                            //   },
+                                            // );
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                msg: "Test have no questions");
+                                          }
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.visibility,
+                                        color: Colors.green,
+                                      ))
+                                  : TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, '/start-subjective-test',
+                                            arguments: {
+                                              "ErrorCode": 0,
+                                              "ErrorMessage": "Success",
+                                              "Response": {
+                                                "testId": snapshot.data[index]
+                                                    ['id'],
+                                                "TestQuestionId":
+                                                    snapshot.data[index]
+                                                        ['test_question_id']
+                                              },
+                                              "chapter_id": snapshot.data[index]
+                                                      ['chapter']
+                                                  .toString()
                                             });
-                                          },
-                                          icon: Icon(
-                                            Icons.visibility,
-                                            color: Colors.green,
-                                          ))
-                                      : TextButton(
-                                          onPressed: () {
-                                            Navigator.pushNamed(context,
-                                                '/start-subjective-test',
-                                                arguments: {
-                                                  "ErrorCode": 0,
-                                                  "ErrorMessage": "Success",
-                                                  "Response": {
-                                                    "testId": e['id'],
-                                                    "TestQuestionId":
-                                                        e['test_question_id']
-                                                  },
-                                                  "chapter_id":
-                                                      e['chapter'].toString()
-                                                });
-                                          },
-                                          child: Text("Re-Attempt")),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                  ));
+                                      },
+                                      child: Text("Re-Attempt")),
+                            );
+                          },
+                        );
+                      } else {
+                        return Padding(
+                            padding: const EdgeInsets.all(14.0),
+                            child: ListTile(
+                              title: Text("Note : "),
+                              subtitle: Text(
+                                "Subjective questions on this platform are a combination of technology embedded assesment (in form of MCQ) and then self-assessment (complete detailed solution).Students attempting a subjective question will be required to solve the complete question and then enter their answer to the MCQs carved out of the subjective question for assessment to take place. Thereafter, on submitting the answer on the platform, they will be able to view the complete solution for self-assessment in terms of whether they have adhered to the format and figures correctly.",
+                                textAlign: TextAlign.justify,
+                              ),
+                            ));
+                      }
+                    } else {
+                      return Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Loading"),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            CircularProgressIndicator(),
+                          ],
+                        ),
+                      );
+                    }
+                  })),
+        ));
   }
 }

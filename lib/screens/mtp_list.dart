@@ -14,8 +14,6 @@ import 'package:http/http.dart' as http;
 import '../constants.dart';
 
 class MTPList extends StatefulWidget {
-
-
   @override
   _SettingsState createState() => _SettingsState();
 }
@@ -83,8 +81,6 @@ class _SettingsState extends State<MTPList> {
     );
   }
 
-
-
   Future _getChapterData() async {
     Map<String, String> headers = {
       // 'Content-Type': 'application/json',
@@ -93,32 +89,23 @@ class _SettingsState extends State<MTPList> {
     };
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/mtp-ans-list"),
-      body: {
-        "user_id": user_id,
-
-      },
+      // body: {
+      //   "user_id": user_id,
+      // },
       headers: headers,
     );
 
-    print(jsonEncode({
-      "user_id": user_id,
-
-    }));
-    if (response.statusCode == 200) {
+    // print(jsonEncode({
+    //   "user_id": user_id,
+    // }));
+    if (response.statusCode == 500) {
       var data = json.decode(response.body);
-
 
       return data;
     } else {
       throw Exception('Something went wrong');
     }
   }
-
-
-
-
-
-
 
   Widget chapterList(Size deviceSize) {
     return FutureBuilder(
@@ -137,17 +124,18 @@ class _SettingsState extends State<MTPList> {
                       actionExtentRatio: 0.25,
                       child: InkWell(
                         onTap: () {
-
                           Navigator.pushNamed(
                             context,
                             '/mts',
                             arguments: <String, String>{
-                              'url': snapshot.data['Response']['mtpList'][index]['mtpFile'].toString(),
-                              'name': snapshot.data['Response']['mtpList'][index]['name'].toString(),
+                              'url': snapshot.data['Response']['mtpList'][index]
+                                      ['mtpFile']
+                                  .toString(),
+                              'name': snapshot.data['Response']['mtpList']
+                                      [index]['name']
+                                  .toString(),
                             },
                           );
-
-
                         },
                         child: Column(children: <Widget>[
                           Stack(children: <Widget>[
@@ -163,29 +151,28 @@ class _SettingsState extends State<MTPList> {
                                   children: <Widget>[
                                     Center(
                                       child: Container(
-                                          padding: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
                                         height: 30,
                                         width: 30,
                                         decoration: new BoxDecoration(
-                                          // color: Color(0xffF6F6F6),
+                                            // color: Color(0xffF6F6F6),
                                             borderRadius: new BorderRadius.only(
                                                 topLeft:
-                                                const Radius.circular(5.0),
+                                                    const Radius.circular(5.0),
                                                 bottomLeft:
-                                                const Radius.circular(5.0),
+                                                    const Radius.circular(5.0),
                                                 bottomRight:
-                                                const Radius.circular(5.0),
+                                                    const Radius.circular(5.0),
                                                 topRight: const Radius.circular(
                                                     5.0))),
-                                        child:  Image(
-                                            image: AssetImage(
-                                              'assets/images/lightbulb.png',
-                                            ),
+                                        child: Image(
+                                          image: AssetImage(
+                                            'assets/images/lightbulb.png',
+                                          ),
                                           height: 16.0,
                                           width: 16.0,
-                                          ),
-
-
+                                        ),
                                       ),
                                     ),
                                     SizedBox(
@@ -194,28 +181,28 @@ class _SettingsState extends State<MTPList> {
                                     Expanded(
                                       child: Column(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Expanded(
                                                 child: Text(
-                                                    snapshot.data['Response']['mtpList']
-                                                    [index]['name'],
+                                                    snapshot.data['Response']
+                                                            ['mtpList'][index]
+                                                        ['name'],
                                                     maxLines: 2,
                                                     softWrap: true,
                                                     overflow:
-                                                    TextOverflow.ellipsis,
+                                                        TextOverflow.ellipsis,
                                                     style: normalText5),
                                               ),
                                             ],
                                           ),
-
                                         ],
                                       ),
                                     ),
@@ -229,13 +216,9 @@ class _SettingsState extends State<MTPList> {
                                     )
                                   ]),
                             ),
-
                           ]),
-
-
                         ]),
                       ),
-
                     );
                   }),
             );
@@ -245,20 +228,22 @@ class _SettingsState extends State<MTPList> {
         } else {
           return Center(
               child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: SpinKitFadingCube(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
-                        ),
-                      );
-                    },
-                    size: 30.0,
-                  ),
-                ),
-              ));
+            alignment: Alignment.center,
+            child: Container(
+              child: Text("To be released Near Exams"),
+              // child: SpinKitFadingCube(
+              //   itemBuilder: (_, int index) {
+              //     return DecoratedBox(
+              //       decoration: BoxDecoration(
+              //         color:
+              //             index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+              //       ),
+              //     );
+              //   },
+              //   size: 30.0,
+              // ),
+            ),
+          ));
         }
       },
     );
@@ -268,10 +253,10 @@ class _SettingsState extends State<MTPList> {
     return Center(
       child: Container(
           child: Text(
-            'NO RECORD FOUND!',
-            style:
+        'NO RECORD FOUND!',
+        style:
             TextStyle(fontSize: 20, letterSpacing: 1, color: Color(0xff2E2A4A)),
-          )),
+      )),
     );
   }
 
@@ -322,8 +307,6 @@ class _SettingsState extends State<MTPList> {
           ),
           backgroundColor: Colors.transparent,
         ),
-
-
         body: ModalProgressHUD(
           inAsyncCall: isLoading,
           child: Container(
@@ -337,7 +320,6 @@ class _SettingsState extends State<MTPList> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-
                     Expanded(
                       child: Container(
                         padding: EdgeInsets.only(bottom: 5),

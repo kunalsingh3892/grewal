@@ -43,6 +43,8 @@ class DataListOfSubjects {
   }
 
   Future<List> getSubjectsList() async {
+    print(BASE_URL + API_PATH);
+    print(URL);
     await getToken();
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/subject"),
@@ -53,6 +55,22 @@ class DataListOfSubjects {
       body: {"student_id": user_id},
     );
     print(response.body.toString() + " get");
+    if (jsonDecode(response.body)['ErrorCode'] == 0) {
+      return jsonDecode(response.body)['Response'];
+    }
+    return [];
+  }
+
+  Future<List> getAppVersion() async {
+    await getToken();
+    var response = await http.post(
+      new Uri.https(BASE_URL, API_PATH + "/version"),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + api_token.toString(),
+      },
+    );
+    print(response.body.toString());
     if (jsonDecode(response.body)['ErrorCode'] == 0) {
       return jsonDecode(response.body)['Response'];
     }

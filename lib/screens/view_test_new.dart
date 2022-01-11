@@ -148,112 +148,121 @@ class _LoginWithLogoState extends State<ViewMCQ2> {
           var errorCode = snapshot.data['ErrorCode'];
           var response = snapshot.data['Response'];
           if (errorCode == 0) {
-            return Column(
-              children: [
-                response.length != 0
-                    ? Container(
-                        child: CarouselSlider.builder(
-                            carouselController: buttonCarouselController,
-                            options: CarouselOptions(
-                              height: getScreenHeight,
-                              initialPage: 0,
-                              viewportFraction: 1.0,
-                              enableInfiniteScroll: false,
-                              //  aspectRatio: 1,
-                              scrollPhysics: NeverScrollableScrollPhysics(),
-                              reverse: false,
-                              // autoPlay: false,
-                              enlargeCenterPage: false,
-                              scrollDirection: Axis.horizontal,
-                            ),
-                            itemCount: response.length,
-                            itemBuilder: (BuildContext context, int itemIndex) {
-                              return ListView(primary: false, children: <
-                                  Widget>[
-                                Container(
-                                    child: Column(children: <Widget>[
-                                  Container(
-                                    child: Stack(children: <Widget>[
-                                      Image(
-                                        image: AssetImage(
-                                            'assets/images/Vector6.png'),
-                                        // fit: BoxFit.fill,
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          if (payment2 == "0") {
-                                            print("pay0if");
-                                            Navigator.pop(context);
-                                            Navigator.pushNamed(
-                                                context, '/dashboard');
-                                          } else {
-                                            print("payed2");
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 30, left: 22),
-                                          child: Container(
-                                            width: 10,
-                                            height: 17,
-                                            child: Image(
-                                                image: AssetImage(
-                                                    'assets/images/Icon.png'),
-                                                height: 20,
-                                                width: 10,
-                                                fit: BoxFit.fill),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        right: 0.0,
-                                        left: 0.0,
-                                        top: 30.0,
-                                        bottom: 0.0,
-                                        child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Container(
-                                                child: Image.asset(
-                                                  'assets/images/question.png',
-                                                  width: 50,
-                                                  height: 50,
+            return response.length == 0
+                ? Center(child: Text("No data available"))
+                : Column(
+                    children: [
+                      response.length != 0
+                          ? Container(
+                              child: CarouselSlider.builder(
+                                  carouselController: buttonCarouselController,
+                                  options: CarouselOptions(
+                                    height: getScreenHeight,
+                                    initialPage: 0,
+                                    viewportFraction: 1.0,
+                                    enableInfiniteScroll: false,
+                                    //  aspectRatio: 1,
+                                    scrollPhysics:
+                                        NeverScrollableScrollPhysics(),
+                                    reverse: false,
+                                    // autoPlay: false,
+                                    enlargeCenterPage: false,
+                                    scrollDirection: Axis.horizontal,
+                                  ),
+                                  itemCount: response.length,
+                                  itemBuilder:
+                                      (BuildContext context, int itemIndex) {
+                                    return ListView(primary: false, children: <
+                                        Widget>[
+                                      Container(
+                                          child: Column(children: <Widget>[
+                                        Container(
+                                          child: Stack(children: <Widget>[
+                                            Image(
+                                              image: AssetImage(
+                                                  'assets/images/Vector6.png'),
+                                              // fit: BoxFit.fill,
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                if (payment2 == "0") {
+                                                  print("pay0if");
+                                                  Navigator.pop(context);
+                                                  Navigator.pushNamed(
+                                                      context, '/dashboard');
+                                                } else {
+                                                  print("payed2");
+                                                  Navigator.pop(context);
+                                                }
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 30, left: 22),
+                                                child: Container(
+                                                  width: 10,
+                                                  height: 17,
+                                                  child: Image(
+                                                      image: AssetImage(
+                                                          'assets/images/Icon.png'),
+                                                      height: 20,
+                                                      width: 10,
+                                                      fit: BoxFit.fill),
                                                 ),
                                               ),
-                                              response[itemIndex]
-                                                          ['final_result'] ==
-                                                      "R"
-                                                  ? Expanded(
-                                                      child: CircleAvatar(
-                                                        backgroundColor:
-                                                            Color(0xff51DEA0),
-                                                        radius: 40,
-                                                        child: Icon(
-                                                          Icons.done,
-                                                          color: Colors.white,
-                                                          size: 50,
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : Expanded(
-                                                      child: CircleAvatar(
-                                                        backgroundColor:
-                                                            Color(0xffF45656),
-                                                        radius: 40,
-                                                        child: Icon(
-                                                          Icons.clear,
-                                                          color: Colors.white,
-                                                          size: 50,
-                                                        ),
+                                            ),
+                                            Positioned(
+                                              right: 0.0,
+                                              left: 0.0,
+                                              top: 30.0,
+                                              bottom: 0.0,
+                                              child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Image.asset(
+                                                        'assets/images/question.png',
+                                                        width: 50,
+                                                        height: 50,
                                                       ),
                                                     ),
-                                            ]),
-                                      ),
-                                    ]),
-                                  ),
-                                  /*   response[itemIndex]['question_type']=="Case Study"? Align(
+                                                    response[itemIndex][
+                                                                'final_result'] ==
+                                                            "R"
+                                                        ? Expanded(
+                                                            child: CircleAvatar(
+                                                              backgroundColor:
+                                                                  Color(
+                                                                      0xff51DEA0),
+                                                              radius: 40,
+                                                              child: Icon(
+                                                                Icons.done,
+                                                                color: Colors
+                                                                    .white,
+                                                                size: 50,
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Expanded(
+                                                            child: CircleAvatar(
+                                                              backgroundColor:
+                                                                  Color(
+                                                                      0xffF45656),
+                                                              radius: 40,
+                                                              child: Icon(
+                                                                Icons.clear,
+                                                                color: Colors
+                                                                    .white,
+                                                                size: 50,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                  ]),
+                                            ),
+                                          ]),
+                                        ),
+                                        /*   response[itemIndex]['question_type']=="Case Study"? Align(
                                         alignment: Alignment.topLeft,
                                         child: Container(
                                           padding: EdgeInsets.only(left: 15, right: 15),
@@ -279,221 +288,210 @@ class _LoginWithLogoState extends State<ViewMCQ2> {
                                       SizedBox(
                                         height: 12,
                                       ),*/
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        full_show = !full_show;
-                                      });
-                                    },
-                                    child: Align(
-                                      alignment: Alignment.topLeft,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Container(
-                                          color: Color(0xffF9F9FB),
-                                          padding: EdgeInsets.only(
-                                              left: 5,
-                                              right: 5,
-                                              top: 10,
-                                              bottom: 10),
-                                          margin: EdgeInsets.only(
-                                              left: 5, right: 5),
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                full_show
-                                                    ? response[itemIndex][
-                                                                'comprahensive_paragraph ']
-                                                            .contains("<")
-                                                        ? Container(
-                                                            child: Html(
-                                                              data: response[
-                                                                      itemIndex]
-                                                                  [
-                                                                  'comprahensive_paragraph '],
-                                                              style: {
-                                                                "table": Style(
-                                                                  backgroundColor:
-                                                                      Color.fromARGB(
-                                                                          0x50,
-                                                                          0xee,
-                                                                          0xee,
-                                                                          0xee),
-                                                                ),
-                                                                "tr": Style(
-                                                                  border:
-                                                                      Border(
-                                                                    bottom: BorderSide(
-                                                                        color: Colors
-                                                                            .black),
-                                                                    top: BorderSide(
-                                                                        color: Colors
-                                                                            .black),
-                                                                    right: BorderSide(
-                                                                        color: Colors
-                                                                            .black),
-                                                                    left: BorderSide(
-                                                                        color: Colors
-                                                                            .black),
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              full_show = !full_show;
+                                            });
+                                          },
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              child: Container(
+                                                color: Color(0xffF9F9FB),
+                                                padding: EdgeInsets.only(
+                                                    left: 5,
+                                                    right: 5,
+                                                    top: 10,
+                                                    bottom: 10),
+                                                margin: EdgeInsets.only(
+                                                    left: 5, right: 5),
+                                                child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      full_show
+                                                          ? response[itemIndex][
+                                                                      'comprahensive_paragraph ']
+                                                                  .contains("<")
+                                                              ? Container(
+                                                                  child: Html(
+                                                                    data: response[
+                                                                            itemIndex]
+                                                                        [
+                                                                        'comprahensive_paragraph '],
+                                                                    style: {
+                                                                      "table":
+                                                                          Style(
+                                                                        backgroundColor: Color.fromARGB(
+                                                                            0x50,
+                                                                            0xee,
+                                                                            0xee,
+                                                                            0xee),
+                                                                      ),
+                                                                      "tr":
+                                                                          Style(
+                                                                        border:
+                                                                            Border(
+                                                                          bottom:
+                                                                              BorderSide(color: Colors.black),
+                                                                          top: BorderSide(
+                                                                              color: Colors.black),
+                                                                          right:
+                                                                              BorderSide(color: Colors.black),
+                                                                          left:
+                                                                              BorderSide(color: Colors.black),
+                                                                        ),
+                                                                      ),
+                                                                      "th":
+                                                                          Style(
+                                                                        padding:
+                                                                            EdgeInsets.all(6),
+                                                                        backgroundColor:
+                                                                            Colors.grey,
+                                                                      ),
+                                                                      "td":
+                                                                          Style(
+                                                                        padding:
+                                                                            EdgeInsets.all(6),
+                                                                        alignment:
+                                                                            Alignment.topLeft,
+                                                                      ),
+                                                                      'h5': Style(
+                                                                          maxLines:
+                                                                              2,
+                                                                          textOverflow:
+                                                                              TextOverflow.ellipsis),
+                                                                    },
                                                                   ),
-                                                                ),
-                                                                "th": Style(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              6),
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .grey,
-                                                                ),
-                                                                "td": Style(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              6),
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .topLeft,
-                                                                ),
-                                                                'h5': Style(
-                                                                    maxLines: 2,
-                                                                    textOverflow:
-                                                                        TextOverflow
-                                                                            .ellipsis),
-                                                              },
-                                                            ),
-                                                          )
-                                                        : Container(
-                                                            child: Text(
-                                                                response[
-                                                                        itemIndex]
-                                                                    [
-                                                                    'comprahensive_paragraph '],
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .visible,
-                                                                style:
-                                                                    normalText4),
-                                                          )
-                                                    : response[itemIndex][
-                                                                'comprahensive_paragraph ']
-                                                            .contains("<")
-                                                        ? Container(
-                                                            child: Html(
-                                                              data: response[
-                                                                      itemIndex]
-                                                                  [
-                                                                  'comprahensive_paragraph '],
-                                                              style: {
-                                                                "table": Style(
-                                                                  backgroundColor:
-                                                                      Color.fromARGB(
-                                                                          0x50,
-                                                                          0xee,
-                                                                          0xee,
-                                                                          0xee),
-                                                                ),
-                                                                "tr": Style(
-                                                                  border:
-                                                                      Border(
-                                                                    bottom: BorderSide(
-                                                                        color: Colors
-                                                                            .black),
-                                                                    top: BorderSide(
-                                                                        color: Colors
-                                                                            .black),
-                                                                    right: BorderSide(
-                                                                        color: Colors
-                                                                            .black),
-                                                                    left: BorderSide(
-                                                                        color: Colors
-                                                                            .black),
+                                                                )
+                                                              : Container(
+                                                                  child: Text(
+                                                                      response[
+                                                                              itemIndex]
+                                                                          [
+                                                                          'comprahensive_paragraph '],
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .visible,
+                                                                      style:
+                                                                          normalText4),
+                                                                )
+                                                          : response[itemIndex][
+                                                                      'comprahensive_paragraph ']
+                                                                  .contains("<")
+                                                              ? Container(
+                                                                  child: Html(
+                                                                    data: response[
+                                                                            itemIndex]
+                                                                        [
+                                                                        'comprahensive_paragraph '],
+                                                                    style: {
+                                                                      "table":
+                                                                          Style(
+                                                                        backgroundColor: Color.fromARGB(
+                                                                            0x50,
+                                                                            0xee,
+                                                                            0xee,
+                                                                            0xee),
+                                                                      ),
+                                                                      "tr":
+                                                                          Style(
+                                                                        border:
+                                                                            Border(
+                                                                          bottom:
+                                                                              BorderSide(color: Colors.black),
+                                                                          top: BorderSide(
+                                                                              color: Colors.black),
+                                                                          right:
+                                                                              BorderSide(color: Colors.black),
+                                                                          left:
+                                                                              BorderSide(color: Colors.black),
+                                                                        ),
+                                                                      ),
+                                                                      "th":
+                                                                          Style(
+                                                                        padding:
+                                                                            EdgeInsets.all(6),
+                                                                        backgroundColor:
+                                                                            Colors.grey,
+                                                                      ),
+                                                                      "td":
+                                                                          Style(
+                                                                        padding:
+                                                                            EdgeInsets.all(6),
+                                                                        alignment:
+                                                                            Alignment.topLeft,
+                                                                      ),
+                                                                      'h5': Style(
+                                                                          maxLines:
+                                                                              2,
+                                                                          textOverflow:
+                                                                              TextOverflow.ellipsis),
+                                                                    },
                                                                   ),
+                                                                )
+                                                              : Container(
+                                                                  child: Text(
+                                                                      response[
+                                                                              itemIndex]
+                                                                          [
+                                                                          'comprahensive_paragraph '],
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left,
+                                                                      maxLines:
+                                                                          1,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .visible,
+                                                                      style:
+                                                                          normalText4),
                                                                 ),
-                                                                "th": Style(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              6),
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .grey,
-                                                                ),
-                                                                "td": Style(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              6),
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .topLeft,
-                                                                ),
-                                                                'h5': Style(
-                                                                    maxLines: 2,
-                                                                    textOverflow:
-                                                                        TextOverflow
-                                                                            .ellipsis),
-                                                              },
-                                                            ),
-                                                          )
-                                                        : Container(
-                                                            child: Text(
-                                                                response[
-                                                                        itemIndex]
-                                                                    [
-                                                                    'comprahensive_paragraph '],
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left,
-                                                                maxLines: 1,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .visible,
-                                                                style:
-                                                                    normalText4),
-                                                          ),
-                                                full_show
-                                                    ? Icon(
-                                                        Icons
-                                                            .arrow_drop_up_outlined,
-                                                        color:
-                                                            Color(0xff017EFF),
-                                                        size: 24,
-                                                      )
-                                                    : Icon(
-                                                        Icons.arrow_drop_down,
-                                                        color:
-                                                            Color(0xff017EFF),
-                                                        size: 24,
-                                                      )
-                                              ]),
+                                                      full_show
+                                                          ? Icon(
+                                                              Icons
+                                                                  .arrow_drop_up_outlined,
+                                                              color: Color(
+                                                                  0xff017EFF),
+                                                              size: 24,
+                                                            )
+                                                          : Icon(
+                                                              Icons
+                                                                  .arrow_drop_down,
+                                                              color: Color(
+                                                                  0xff017EFF),
+                                                              size: 24,
+                                                            )
+                                                    ]),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Container(
-                                        padding: EdgeInsets.only(
-                                            left: 15, right: 15),
-                                        child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              /*  Align(
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Container(
+                                              padding: EdgeInsets.only(
+                                                  left: 15, right: 15),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    /*  Align(
                                                 alignment: Alignment.topLeft,
                                                 child: Text(
                                                     "Q" +
@@ -505,21 +503,1302 @@ class _LoginWithLogoState extends State<ViewMCQ2> {
                                               ),
                                         */ /*  response[itemIndex][
                                               'question'].contains("&")?*/
-                                              Container(
-                                                child: Html(
-                                                  data: "Q" +
-                                                      (itemIndex + 1)
-                                                          .toString() +
-                                                      '. ' +
-                                                      response[itemIndex]
-                                                          ['question'],
-                                                  style: {
-                                                    "body": Style(
-                                                      fontSize: FontSize(15.0),
-                                                      color: Color(0xff2E2A4A),
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                    Container(
+                                                      child: Html(
+                                                        data: "Q" +
+                                                            (itemIndex + 1)
+                                                                .toString() +
+                                                            '. ' +
+                                                            response[itemIndex]
+                                                                ['question'],
+                                                        style: {
+                                                          "body": Style(
+                                                            fontSize:
+                                                                FontSize(15.0),
+                                                            color: Color(
+                                                                0xff2E2A4A),
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                          "table": Style(
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    0x50,
+                                                                    0xee,
+                                                                    0xee,
+                                                                    0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                              bottom: BorderSide(
+                                                                  color: Colors
+                                                                      .black),
+                                                              top: BorderSide(
+                                                                  color: Colors
+                                                                      .black),
+                                                              right: BorderSide(
+                                                                  color: Colors
+                                                                      .black),
+                                                              left: BorderSide(
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                          ),
+                                                          "th": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            backgroundColor:
+                                                                Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                          ),
+                                                          'h5': Style(
+                                                              maxLines: 2,
+                                                              textOverflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        },
+                                                      ),
+                                                    ) /*: Flexible(
+                                                child: Text(
+                                                    response[itemIndex]
+                                                        ['question'],
+                                                    textAlign: TextAlign.left,
+                                                    maxLines: 100,
+                                                    overflow:
+                                                        TextOverflow.visible,
+                                                    style: normalText7),
+                                              )*/
+                                                    ,
+                                                  ]),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 12,
+                                        ),
+                                        response[itemIndex]['question_type'] ==
+                                                "True False"
+                                            ? response[itemIndex]
+                                                        ['final_result'] ==
+                                                    "R"
+                                                ? Column(children: <Widget>[
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 10),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.80,
+                                                      decoration: BoxDecoration(
+                                                          color: response[itemIndex]
+                                                                      [
+                                                                      'option_first_color'] !=
+                                                                  ""
+                                                              ? Color(
+                                                                  0xff51DEA0)
+                                                              : Color(
+                                                                  0xffF9F9FB),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      margin: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 5,
+                                                          vertical: 5),
+                                                      child: Html(
+                                                        data: response[
+                                                                itemIndex]
+                                                            ['option_first'],
+                                                        style: {
+                                                          "table": Style(
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    0x50,
+                                                                    0xee,
+                                                                    0xee,
+                                                                    0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                                bottom: BorderSide(
+                                                                    color: Colors
+                                                                        .grey)),
+                                                          ),
+                                                          "th": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            backgroundColor:
+                                                                Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                          ),
+                                                          'h5': Style(
+                                                              maxLines: 2,
+                                                              textOverflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        },
+                                                      ) /*Text(
+                                          response[itemIndex]
+                                          ['option_first'],
+                                          maxLines: 100,
+                                          softWrap: true,
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                          style: normalText5)*/
+                                                      ,
                                                     ),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 10),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.80,
+                                                      decoration: BoxDecoration(
+                                                          color: response[itemIndex]
+                                                                      [
+                                                                      'option_second_color'] !=
+                                                                  ""
+                                                              ? Color(
+                                                                  0xff51DEA0)
+                                                              : Color(
+                                                                  0xffF9F9FB),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      margin: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 5,
+                                                          vertical: 5),
+                                                      child: Html(
+                                                        data: response[
+                                                                itemIndex]
+                                                            ['option_second'],
+                                                        style: {
+                                                          "table": Style(
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    0x50,
+                                                                    0xee,
+                                                                    0xee,
+                                                                    0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                                bottom: BorderSide(
+                                                                    color: Colors
+                                                                        .grey)),
+                                                          ),
+                                                          "th": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            backgroundColor:
+                                                                Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                          ),
+                                                          'h5': Style(
+                                                              maxLines: 2,
+                                                              textOverflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        },
+                                                      ) /* Text(
+                                          response[itemIndex]
+                                          ['option_second'],
+                                          maxLines: 3,
+                                          softWrap: true,
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                          style: normalText5)*/
+                                                      ,
+                                                    ),
+                                                  ])
+                                                : Column(children: <Widget>[
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 10),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.80,
+                                                      decoration: BoxDecoration(
+                                                          color: response[itemIndex]
+                                                                      [
+                                                                      'option_first_color'] ==
+                                                                  ""
+                                                              ? Color(
+                                                                  0xffF9F9FB)
+                                                              : response[itemIndex]
+                                                                          [
+                                                                          'option_first_color'] !=
+                                                                      "green"
+                                                                  ? Color(
+                                                                      0xffF45656)
+                                                                  : Color(
+                                                                      0xff51DEA0),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      margin: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 5,
+                                                          vertical: 5),
+                                                      child: Html(
+                                                        data: response[
+                                                                itemIndex]
+                                                            ['option_first'],
+                                                        style: {
+                                                          "table": Style(
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    0x50,
+                                                                    0xee,
+                                                                    0xee,
+                                                                    0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                                bottom: BorderSide(
+                                                                    color: Colors
+                                                                        .grey)),
+                                                          ),
+                                                          "th": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            backgroundColor:
+                                                                Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                          ),
+                                                          'h5': Style(
+                                                              maxLines: 2,
+                                                              textOverflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        },
+                                                      ) /*Text(
+                                          response[itemIndex]
+                                          ['option_first'],
+                                          maxLines: 3,
+                                          softWrap: true,
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                          style: normalText5)*/
+                                                      ,
+                                                    ),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 10),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.80,
+                                                      decoration: BoxDecoration(
+                                                          color: response[itemIndex]
+                                                                      [
+                                                                      'option_second_color'] ==
+                                                                  ""
+                                                              ? Color(
+                                                                  0xffF9F9FB)
+                                                              : response[itemIndex]
+                                                                          [
+                                                                          'option_second_color'] !=
+                                                                      "green"
+                                                                  ? Color(
+                                                                      0xffF45656)
+                                                                  : Color(
+                                                                      0xff51DEA0),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      margin: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 5,
+                                                          vertical: 5),
+                                                      child: Html(
+                                                        data: response[
+                                                                itemIndex]
+                                                            ['option_second'],
+                                                        style: {
+                                                          "table": Style(
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    0x50,
+                                                                    0xee,
+                                                                    0xee,
+                                                                    0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                                bottom: BorderSide(
+                                                                    color: Colors
+                                                                        .grey)),
+                                                          ),
+                                                          "th": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            backgroundColor:
+                                                                Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                          ),
+                                                          'h5': Style(
+                                                              maxLines: 2,
+                                                              textOverflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        },
+                                                      ) /*Text(
+                                          response[itemIndex]
+                                          ['option_second'],
+                                          maxLines: 3,
+                                          softWrap: true,
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                          style: normalText5)*/
+                                                      ,
+                                                    ),
+                                                  ])
+                                            : response[itemIndex]
+                                                        ['final_result'] ==
+                                                    "R"
+                                                ? SingleChildScrollView(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    child: Column(children: <
+                                                        Widget>[
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 12,
+                                                                horizontal: 12),
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.80,
+                                                        decoration: BoxDecoration(
+                                                            color: response[itemIndex]
+                                                                        [
+                                                                        'option_first_color'] !=
+                                                                    ""
+                                                                ? Color(
+                                                                    0xff51DEA0)
+                                                                : Color(
+                                                                    0xffF9F9FB),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10))),
+                                                        margin: const EdgeInsets
+                                                                .symmetric(
+                                                            horizontal: 5,
+                                                            vertical: 5),
+                                                        child: Html(
+                                                          data: response[
+                                                                  itemIndex]
+                                                              ['option_first'],
+                                                          style: {
+                                                            "table": Style(
+                                                              backgroundColor:
+                                                                  Color
+                                                                      .fromARGB(
+                                                                          0x50,
+                                                                          0xee,
+                                                                          0xee,
+                                                                          0xee),
+                                                            ),
+                                                            "tr": Style(
+                                                              border: Border(
+                                                                  bottom: BorderSide(
+                                                                      color: Colors
+                                                                          .grey)),
+                                                            ),
+                                                            "th": Style(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(6),
+                                                              backgroundColor:
+                                                                  Colors.grey,
+                                                            ),
+                                                            "td": Style(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(6),
+                                                              alignment:
+                                                                  Alignment
+                                                                      .topLeft,
+                                                            ),
+                                                            'h5': Style(
+                                                                maxLines: 2,
+                                                                textOverflow:
+                                                                    TextOverflow
+                                                                        .ellipsis),
+                                                          },
+                                                        ) /*Text(
+                                            response[itemIndex]
+                                            ['option_first'],
+                                            maxLines: 3,
+                                            softWrap: true,
+                                            overflow:
+                                            TextOverflow.ellipsis,
+                                            style: normalText5)*/
+                                                        ,
+                                                      ),
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 12,
+                                                                horizontal: 12),
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.80,
+                                                        decoration: BoxDecoration(
+                                                            color: response[itemIndex]
+                                                                        [
+                                                                        'option_second_color'] !=
+                                                                    ""
+                                                                ? Color(
+                                                                    0xff51DEA0)
+                                                                : Color(
+                                                                    0xffF9F9FB),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10))),
+                                                        margin: const EdgeInsets
+                                                                .symmetric(
+                                                            horizontal: 5,
+                                                            vertical: 5),
+                                                        child: Html(
+                                                          data: response[
+                                                                  itemIndex]
+                                                              ['option_second'],
+                                                          style: {
+                                                            "table": Style(
+                                                              backgroundColor:
+                                                                  Color
+                                                                      .fromARGB(
+                                                                          0x50,
+                                                                          0xee,
+                                                                          0xee,
+                                                                          0xee),
+                                                            ),
+                                                            "tr": Style(
+                                                              border: Border(
+                                                                  bottom: BorderSide(
+                                                                      color: Colors
+                                                                          .grey)),
+                                                            ),
+                                                            "th": Style(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(6),
+                                                              backgroundColor:
+                                                                  Colors.grey,
+                                                            ),
+                                                            "td": Style(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(6),
+                                                              alignment:
+                                                                  Alignment
+                                                                      .topLeft,
+                                                            ),
+                                                            'h5': Style(
+                                                                maxLines: 2,
+                                                                textOverflow:
+                                                                    TextOverflow
+                                                                        .ellipsis),
+                                                          },
+                                                        ) /*Text(
+                                            response[itemIndex]
+                                            ['option_second'],
+                                            maxLines: 3,
+                                            softWrap: true,
+                                            overflow:
+                                            TextOverflow.ellipsis,
+                                            style: normalText5)*/
+                                                        ,
+                                                      ),
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 12,
+                                                                horizontal: 12),
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.80,
+                                                        decoration: BoxDecoration(
+                                                            color: response[itemIndex]
+                                                                        [
+                                                                        'option_third_color'] !=
+                                                                    ""
+                                                                ? Color(
+                                                                    0xff51DEA0)
+                                                                : Color(
+                                                                    0xffF9F9FB),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10))),
+                                                        margin: const EdgeInsets
+                                                                .symmetric(
+                                                            horizontal: 5,
+                                                            vertical: 5),
+                                                        child: Html(
+                                                          data: response[
+                                                                  itemIndex]
+                                                              ['option_third'],
+                                                          style: {
+                                                            "table": Style(
+                                                              backgroundColor:
+                                                                  Color
+                                                                      .fromARGB(
+                                                                          0x50,
+                                                                          0xee,
+                                                                          0xee,
+                                                                          0xee),
+                                                            ),
+                                                            "tr": Style(
+                                                              border: Border(
+                                                                  bottom: BorderSide(
+                                                                      color: Colors
+                                                                          .grey)),
+                                                            ),
+                                                            "th": Style(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(6),
+                                                              backgroundColor:
+                                                                  Colors.grey,
+                                                            ),
+                                                            "td": Style(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(6),
+                                                              alignment:
+                                                                  Alignment
+                                                                      .topLeft,
+                                                            ),
+                                                            'h5': Style(
+                                                                maxLines: 2,
+                                                                textOverflow:
+                                                                    TextOverflow
+                                                                        .ellipsis),
+                                                          },
+                                                        ) /*Text(
+                                            response[itemIndex]
+                                            ['option_third'],
+                                            maxLines: 3,
+                                            softWrap: true,
+                                            overflow:
+                                            TextOverflow.ellipsis,
+                                            style: normalText5)*/
+                                                        ,
+                                                      ),
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 12,
+                                                                horizontal: 12),
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.80,
+                                                        decoration: BoxDecoration(
+                                                            color: response[itemIndex]
+                                                                        [
+                                                                        'option_fourth_color'] !=
+                                                                    ""
+                                                                ? Color(
+                                                                    0xff51DEA0)
+                                                                : Color(
+                                                                    0xffF9F9FB),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10))),
+                                                        margin: const EdgeInsets
+                                                                .symmetric(
+                                                            horizontal: 5,
+                                                            vertical: 5),
+                                                        child: Html(
+                                                          data: response[
+                                                                  itemIndex]
+                                                              ['option_fourth'],
+                                                          style: {
+                                                            "table": Style(
+                                                              backgroundColor:
+                                                                  Color
+                                                                      .fromARGB(
+                                                                          0x50,
+                                                                          0xee,
+                                                                          0xee,
+                                                                          0xee),
+                                                            ),
+                                                            "tr": Style(
+                                                              border: Border(
+                                                                  bottom: BorderSide(
+                                                                      color: Colors
+                                                                          .grey)),
+                                                            ),
+                                                            "th": Style(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(6),
+                                                              backgroundColor:
+                                                                  Colors.grey,
+                                                            ),
+                                                            "td": Style(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(6),
+                                                              alignment:
+                                                                  Alignment
+                                                                      .topLeft,
+                                                            ),
+                                                            'h5': Style(
+                                                                maxLines: 2,
+                                                                textOverflow:
+                                                                    TextOverflow
+                                                                        .ellipsis),
+                                                          },
+                                                        ) /*Text(
+                                            response[itemIndex]
+                                            ['option_fourth'],
+                                            maxLines: 3,
+                                            softWrap: true,
+                                            overflow:
+                                            TextOverflow.ellipsis,
+                                            style: normalText5)*/
+                                                        ,
+                                                      ),
+                                                    ]),
+                                                  )
+                                                : Column(children: <Widget>[
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 12),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.80,
+                                                      decoration: BoxDecoration(
+                                                          color: response[itemIndex]
+                                                                      [
+                                                                      'option_first_color'] ==
+                                                                  ""
+                                                              ? Color(
+                                                                  0xffF9F9FB)
+                                                              : response[itemIndex]
+                                                                          [
+                                                                          'option_first_color'] !=
+                                                                      "green"
+                                                                  ? Color(
+                                                                      0xffF45656)
+                                                                  : Color(
+                                                                      0xff51DEA0),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      margin: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 5,
+                                                          vertical: 5),
+                                                      child: Html(
+                                                        data: response[
+                                                                itemIndex]
+                                                            ['option_first'],
+                                                        style: {
+                                                          "table": Style(
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    0x50,
+                                                                    0xee,
+                                                                    0xee,
+                                                                    0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                                bottom: BorderSide(
+                                                                    color: Colors
+                                                                        .grey)),
+                                                          ),
+                                                          "th": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            backgroundColor:
+                                                                Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                          ),
+                                                          'h5': Style(
+                                                              maxLines: 2,
+                                                              textOverflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        },
+                                                      ) /*Text(
+                                          response[itemIndex]
+                                          ['option_first'],
+                                          maxLines: 3,
+                                          softWrap: true,
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                          style: normalText5)*/
+                                                      ,
+                                                    ),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 12),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.80,
+                                                      decoration: BoxDecoration(
+                                                          color: response[itemIndex]
+                                                                      [
+                                                                      'option_second_color'] ==
+                                                                  ""
+                                                              ? Color(
+                                                                  0xffF9F9FB)
+                                                              : response[itemIndex]
+                                                                          [
+                                                                          'option_second_color'] !=
+                                                                      "green"
+                                                                  ? Color(
+                                                                      0xffF45656)
+                                                                  : Color(
+                                                                      0xff51DEA0),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      margin: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 5,
+                                                          vertical: 5),
+                                                      child: Html(
+                                                        data: response[
+                                                                itemIndex]
+                                                            ['option_second'],
+                                                        style: {
+                                                          "table": Style(
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    0x50,
+                                                                    0xee,
+                                                                    0xee,
+                                                                    0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                                bottom: BorderSide(
+                                                                    color: Colors
+                                                                        .grey)),
+                                                          ),
+                                                          "th": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            backgroundColor:
+                                                                Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                          ),
+                                                          'h5': Style(
+                                                              maxLines: 2,
+                                                              textOverflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        },
+                                                      ) /*Text(
+                                          response[itemIndex]
+                                          ['option_second'],
+                                          maxLines: 3,
+                                          softWrap: true,
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                          style: normalText5)*/
+                                                      ,
+                                                    ),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 12),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.80,
+                                                      decoration: BoxDecoration(
+                                                          color: response[itemIndex]
+                                                                      [
+                                                                      'option_third_color'] ==
+                                                                  ""
+                                                              ? Color(
+                                                                  0xffF9F9FB)
+                                                              : response[itemIndex]
+                                                                          [
+                                                                          'option_third_color'] !=
+                                                                      "green"
+                                                                  ? Color(
+                                                                      0xffF45656)
+                                                                  : Color(
+                                                                      0xff51DEA0),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      margin: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 5,
+                                                          vertical: 5),
+                                                      child: Html(
+                                                        data: response[
+                                                                itemIndex]
+                                                            ['option_third'],
+                                                        style: {
+                                                          "table": Style(
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    0x50,
+                                                                    0xee,
+                                                                    0xee,
+                                                                    0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                                bottom: BorderSide(
+                                                                    color: Colors
+                                                                        .grey)),
+                                                          ),
+                                                          "th": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            backgroundColor:
+                                                                Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                          ),
+                                                          'h5': Style(
+                                                              maxLines: 2,
+                                                              textOverflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        },
+                                                      ) /*Text(
+                                          response[itemIndex]
+                                          ['option_third'],
+                                          maxLines: 3,
+                                          softWrap: true,
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                          style: normalText5)*/
+                                                      ,
+                                                    ),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 12),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.80,
+                                                      decoration: BoxDecoration(
+                                                          color: response[itemIndex]
+                                                                      [
+                                                                      'option_fourth_color'] ==
+                                                                  ""
+                                                              ? Color(
+                                                                  0xffF9F9FB)
+                                                              : response[itemIndex]
+                                                                          [
+                                                                          'option_fourth_color'] !=
+                                                                      "green"
+                                                                  ? Color(
+                                                                      0xffF45656)
+                                                                  : Color(
+                                                                      0xff51DEA0),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      margin: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 5),
+                                                      child: Html(
+                                                        data: response[
+                                                                itemIndex]
+                                                            ['option_fourth'],
+                                                        style: {
+                                                          "table": Style(
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    0x50,
+                                                                    0xee,
+                                                                    0xee,
+                                                                    0xee),
+                                                          ),
+                                                          "tr": Style(
+                                                            border: Border(
+                                                                bottom: BorderSide(
+                                                                    color: Colors
+                                                                        .grey)),
+                                                          ),
+                                                          "th": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            backgroundColor:
+                                                                Colors.grey,
+                                                          ),
+                                                          "td": Style(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    6),
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                          ),
+                                                          'h5': Style(
+                                                              maxLines: 2,
+                                                              textOverflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        },
+                                                      ) /*Text(
+                                          response[itemIndex]
+                                          ['option_fourth'],
+                                          maxLines: 3,
+                                          softWrap: true,
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                          style: normalText5)*/
+                                                      ,
+                                                    ),
+                                                  ]),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        lastAns != true
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: <Widget>[
+                                                    Align(
+                                                      alignment:
+                                                          FractionalOffset
+                                                              .bottomRight,
+                                                      child: ButtonTheme(
+                                                        minWidth: 50.0,
+                                                        height: 34.0,
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .topRight,
+                                                          child: Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    left: 20),
+                                                            child: RaisedButton(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      top: 2,
+                                                                      bottom: 2,
+                                                                      left: 25,
+                                                                      right:
+                                                                          25),
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              25.0)),
+                                                              textColor:
+                                                                  Colors.white,
+                                                              color: Color(
+                                                                  0xff017EFF),
+                                                              onPressed:
+                                                                  () async {
+                                                                onPreviousClick();
+                                                              },
+                                                              child: Text(
+                                                                "Previous",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    letterSpacing:
+                                                                        1,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Align(
+                                                      alignment:
+                                                          FractionalOffset
+                                                              .bottomRight,
+                                                      child: ButtonTheme(
+                                                        minWidth: 50.0,
+                                                        height: 34.0,
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .topRight,
+                                                          child: Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    right: 20),
+                                                            child: RaisedButton(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      top: 2,
+                                                                      bottom: 2,
+                                                                      left: 25,
+                                                                      right:
+                                                                          25),
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              25.0)),
+                                                              textColor:
+                                                                  Colors.white,
+                                                              color: Color(
+                                                                  0xff017EFF),
+                                                              onPressed:
+                                                                  () async {
+                                                                XMLJSON
+                                                                    xmljson =
+                                                                    new XMLJSON();
+
+                                                                if (itemIndex ==
+                                                                    (response
+                                                                            .length -
+                                                                        1)) {
+                                                                  setState(() {
+                                                                    lastAns =
+                                                                        true;
+                                                                  });
+                                                                }
+                                                                onNextClick();
+                                                              },
+                                                              child: Text(
+                                                                "Next",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    letterSpacing:
+                                                                        1,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ])
+                                            : Align(
+                                                alignment: FractionalOffset
+                                                    .bottomRight,
+                                                child: ButtonTheme(
+                                                  minWidth: 50.0,
+                                                  height: 34.0,
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(
+                                                          right: 20),
+                                                      child: RaisedButton(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                top: 2,
+                                                                bottom: 2,
+                                                                left: 25,
+                                                                right: 25),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        25.0)),
+                                                        textColor: Colors.white,
+                                                        color:
+                                                            Color(0xff017EFF),
+                                                        onPressed: () async {
+                                                          Navigator.pop(
+                                                              context);
+                                                          Navigator.pushNamed(
+                                                              context,
+                                                              '/dashboard');
+                                                        },
+                                                        child: Text(
+                                                          "Go To Dashboard",
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              letterSpacing: 1,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          width: deviceSize.width,
+                                          decoration: new BoxDecoration(
+                                              color: Color(0xffF9F9FB),
+                                              borderRadius:
+                                                  new BorderRadius.only(
+                                                      topLeft:
+                                                          const Radius.circular(
+                                                              10.0),
+                                                      bottomLeft:
+                                                          const Radius.circular(
+                                                              10.0),
+                                                      bottomRight:
+                                                          const Radius.circular(
+                                                              10.0),
+                                                      topRight:
+                                                          const Radius.circular(
+                                                              10.0))),
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 5.0, vertical: 5),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5.0, vertical: 5),
+                                          child: Column(children: [
+                                            Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Container(
+                                                child: Text("Reason:",
+                                                    style: normalText6),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            /* response[itemIndex]
+                                              ['reason'].contains("<")?*/
+                                            SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              child: Container(
+                                                width: 500,
+                                                child: Html(
+                                                  data: response[itemIndex]
+                                                          ['reason']
+                                                      .toString(),
+                                                  style: {
                                                     "table": Style(
                                                       backgroundColor:
                                                           Color.fromARGB(0x50,
@@ -560,1127 +1839,39 @@ class _LoginWithLogoState extends State<ViewMCQ2> {
                                                                 .ellipsis),
                                                   },
                                                 ),
-                                              ) /*: Flexible(
-                                                child: Text(
-                                                    response[itemIndex]
-                                                        ['question'],
-                                                    textAlign: TextAlign.left,
-                                                    maxLines: 100,
-                                                    overflow:
-                                                        TextOverflow.visible,
-                                                    style: normalText7),
-                                              )*/
-                                              ,
-                                            ]),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 12,
-                                  ),
-                                  response[itemIndex]['question_type'] ==
-                                          "True False"
-                                      ? response[itemIndex]['final_result'] ==
-                                              "R"
-                                          ? Column(children: <Widget>[
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 10),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.80,
-                                                decoration: BoxDecoration(
-                                                    color: response[itemIndex][
-                                                                'option_first_color'] !=
-                                                            ""
-                                                        ? Color(0xff51DEA0)
-                                                        : Color(0xffF9F9FB),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10))),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5,
-                                                        vertical: 5),
-                                                child: Html(
-                                                  data: response[itemIndex]
-                                                      ['option_first'],
-                                                  style: {
-                                                    "table": Style(
-                                                      backgroundColor:
-                                                          Color.fromARGB(0x50,
-                                                              0xee, 0xee, 0xee),
-                                                    ),
-                                                    "tr": Style(
-                                                      border: Border(
-                                                          bottom: BorderSide(
-                                                              color:
-                                                                  Colors.grey)),
-                                                    ),
-                                                    "th": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      backgroundColor:
-                                                          Colors.grey,
-                                                    ),
-                                                    "td": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                    ),
-                                                    'h5': Style(
-                                                        maxLines: 2,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis),
-                                                  },
-                                                ) /*Text(
-                                          response[itemIndex]
-                                          ['option_first'],
-                                          maxLines: 100,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/
-                                                ,
                                               ),
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 10),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.80,
-                                                decoration: BoxDecoration(
-                                                    color: response[itemIndex][
-                                                                'option_second_color'] !=
-                                                            ""
-                                                        ? Color(0xff51DEA0)
-                                                        : Color(0xffF9F9FB),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10))),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5,
-                                                        vertical: 5),
-                                                child: Html(
-                                                  data: response[itemIndex]
-                                                      ['option_second'],
-                                                  style: {
-                                                    "table": Style(
-                                                      backgroundColor:
-                                                          Color.fromARGB(0x50,
-                                                              0xee, 0xee, 0xee),
-                                                    ),
-                                                    "tr": Style(
-                                                      border: Border(
-                                                          bottom: BorderSide(
-                                                              color:
-                                                                  Colors.grey)),
-                                                    ),
-                                                    "th": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      backgroundColor:
-                                                          Colors.grey,
-                                                    ),
-                                                    "td": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                    ),
-                                                    'h5': Style(
-                                                        maxLines: 2,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis),
-                                                  },
-                                                ) /* Text(
-                                          response[itemIndex]
-                                          ['option_second'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/
-                                                ,
-                                              ),
-                                            ])
-                                          : Column(children: <Widget>[
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 10),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.80,
-                                                decoration: BoxDecoration(
-                                                    color: response[itemIndex][
-                                                                'option_first_color'] ==
-                                                            ""
-                                                        ? Color(0xffF9F9FB)
-                                                        : response[itemIndex][
-                                                                    'option_first_color'] !=
-                                                                "green"
-                                                            ? Color(0xffF45656)
-                                                            : Color(0xff51DEA0),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10))),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5,
-                                                        vertical: 5),
-                                                child: Html(
-                                                  data: response[itemIndex]
-                                                      ['option_first'],
-                                                  style: {
-                                                    "table": Style(
-                                                      backgroundColor:
-                                                          Color.fromARGB(0x50,
-                                                              0xee, 0xee, 0xee),
-                                                    ),
-                                                    "tr": Style(
-                                                      border: Border(
-                                                          bottom: BorderSide(
-                                                              color:
-                                                                  Colors.grey)),
-                                                    ),
-                                                    "th": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      backgroundColor:
-                                                          Colors.grey,
-                                                    ),
-                                                    "td": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                    ),
-                                                    'h5': Style(
-                                                        maxLines: 2,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis),
-                                                  },
-                                                ) /*Text(
-                                          response[itemIndex]
-                                          ['option_first'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/
-                                                ,
-                                              ),
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 10),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.80,
-                                                decoration: BoxDecoration(
-                                                    color: response[itemIndex][
-                                                                'option_second_color'] ==
-                                                            ""
-                                                        ? Color(0xffF9F9FB)
-                                                        : response[itemIndex][
-                                                                    'option_second_color'] !=
-                                                                "green"
-                                                            ? Color(0xffF45656)
-                                                            : Color(0xff51DEA0),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10))),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5,
-                                                        vertical: 5),
-                                                child: Html(
-                                                  data: response[itemIndex]
-                                                      ['option_second'],
-                                                  style: {
-                                                    "table": Style(
-                                                      backgroundColor:
-                                                          Color.fromARGB(0x50,
-                                                              0xee, 0xee, 0xee),
-                                                    ),
-                                                    "tr": Style(
-                                                      border: Border(
-                                                          bottom: BorderSide(
-                                                              color:
-                                                                  Colors.grey)),
-                                                    ),
-                                                    "th": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      backgroundColor:
-                                                          Colors.grey,
-                                                    ),
-                                                    "td": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                    ),
-                                                    'h5': Style(
-                                                        maxLines: 2,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis),
-                                                  },
-                                                ) /*Text(
-                                          response[itemIndex]
-                                          ['option_second'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/
-                                                ,
-                                              ),
-                                            ])
-                                      : response[itemIndex]['final_result'] ==
-                                              "R"
-                                          ? SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Column(children: <Widget>[
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 12,
-                                                      horizontal: 12),
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.80,
-                                                  decoration: BoxDecoration(
-                                                      color: response[itemIndex]
-                                                                  [
-                                                                  'option_first_color'] !=
-                                                              ""
-                                                          ? Color(0xff51DEA0)
-                                                          : Color(0xffF9F9FB),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10))),
-                                                  margin: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 5),
-                                                  child: Html(
-                                                    data: response[itemIndex]
-                                                        ['option_first'],
-                                                    style: {
-                                                      "table": Style(
-                                                        backgroundColor:
-                                                            Color.fromARGB(
-                                                                0x50,
-                                                                0xee,
-                                                                0xee,
-                                                                0xee),
-                                                      ),
-                                                      "tr": Style(
-                                                        border: Border(
-                                                            bottom: BorderSide(
-                                                                color: Colors
-                                                                    .grey)),
-                                                      ),
-                                                      "th": Style(
-                                                        padding:
-                                                            EdgeInsets.all(6),
-                                                        backgroundColor:
-                                                            Colors.grey,
-                                                      ),
-                                                      "td": Style(
-                                                        padding:
-                                                            EdgeInsets.all(6),
-                                                        alignment:
-                                                            Alignment.topLeft,
-                                                      ),
-                                                      'h5': Style(
-                                                          maxLines: 2,
-                                                          textOverflow:
-                                                              TextOverflow
-                                                                  .ellipsis),
-                                                    },
-                                                  ) /*Text(
-                                            response[itemIndex]
-                                            ['option_first'],
-                                            maxLines: 3,
-                                            softWrap: true,
-                                            overflow:
-                                            TextOverflow.ellipsis,
-                                            style: normalText5)*/
-                                                  ,
-                                                ),
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 12,
-                                                      horizontal: 12),
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.80,
-                                                  decoration: BoxDecoration(
-                                                      color: response[itemIndex]
-                                                                  [
-                                                                  'option_second_color'] !=
-                                                              ""
-                                                          ? Color(0xff51DEA0)
-                                                          : Color(0xffF9F9FB),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10))),
-                                                  margin: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 5),
-                                                  child: Html(
-                                                    data: response[itemIndex]
-                                                        ['option_second'],
-                                                    style: {
-                                                      "table": Style(
-                                                        backgroundColor:
-                                                            Color.fromARGB(
-                                                                0x50,
-                                                                0xee,
-                                                                0xee,
-                                                                0xee),
-                                                      ),
-                                                      "tr": Style(
-                                                        border: Border(
-                                                            bottom: BorderSide(
-                                                                color: Colors
-                                                                    .grey)),
-                                                      ),
-                                                      "th": Style(
-                                                        padding:
-                                                            EdgeInsets.all(6),
-                                                        backgroundColor:
-                                                            Colors.grey,
-                                                      ),
-                                                      "td": Style(
-                                                        padding:
-                                                            EdgeInsets.all(6),
-                                                        alignment:
-                                                            Alignment.topLeft,
-                                                      ),
-                                                      'h5': Style(
-                                                          maxLines: 2,
-                                                          textOverflow:
-                                                              TextOverflow
-                                                                  .ellipsis),
-                                                    },
-                                                  ) /*Text(
-                                            response[itemIndex]
-                                            ['option_second'],
-                                            maxLines: 3,
-                                            softWrap: true,
-                                            overflow:
-                                            TextOverflow.ellipsis,
-                                            style: normalText5)*/
-                                                  ,
-                                                ),
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 12,
-                                                      horizontal: 12),
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.80,
-                                                  decoration: BoxDecoration(
-                                                      color: response[itemIndex]
-                                                                  [
-                                                                  'option_third_color'] !=
-                                                              ""
-                                                          ? Color(0xff51DEA0)
-                                                          : Color(0xffF9F9FB),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10))),
-                                                  margin: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 5),
-                                                  child: Html(
-                                                    data: response[itemIndex]
-                                                        ['option_third'],
-                                                    style: {
-                                                      "table": Style(
-                                                        backgroundColor:
-                                                            Color.fromARGB(
-                                                                0x50,
-                                                                0xee,
-                                                                0xee,
-                                                                0xee),
-                                                      ),
-                                                      "tr": Style(
-                                                        border: Border(
-                                                            bottom: BorderSide(
-                                                                color: Colors
-                                                                    .grey)),
-                                                      ),
-                                                      "th": Style(
-                                                        padding:
-                                                            EdgeInsets.all(6),
-                                                        backgroundColor:
-                                                            Colors.grey,
-                                                      ),
-                                                      "td": Style(
-                                                        padding:
-                                                            EdgeInsets.all(6),
-                                                        alignment:
-                                                            Alignment.topLeft,
-                                                      ),
-                                                      'h5': Style(
-                                                          maxLines: 2,
-                                                          textOverflow:
-                                                              TextOverflow
-                                                                  .ellipsis),
-                                                    },
-                                                  ) /*Text(
-                                            response[itemIndex]
-                                            ['option_third'],
-                                            maxLines: 3,
-                                            softWrap: true,
-                                            overflow:
-                                            TextOverflow.ellipsis,
-                                            style: normalText5)*/
-                                                  ,
-                                                ),
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 12,
-                                                      horizontal: 12),
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.80,
-                                                  decoration: BoxDecoration(
-                                                      color: response[itemIndex]
-                                                                  [
-                                                                  'option_fourth_color'] !=
-                                                              ""
-                                                          ? Color(0xff51DEA0)
-                                                          : Color(0xffF9F9FB),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10))),
-                                                  margin: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 5),
-                                                  child: Html(
-                                                    data: response[itemIndex]
-                                                        ['option_fourth'],
-                                                    style: {
-                                                      "table": Style(
-                                                        backgroundColor:
-                                                            Color.fromARGB(
-                                                                0x50,
-                                                                0xee,
-                                                                0xee,
-                                                                0xee),
-                                                      ),
-                                                      "tr": Style(
-                                                        border: Border(
-                                                            bottom: BorderSide(
-                                                                color: Colors
-                                                                    .grey)),
-                                                      ),
-                                                      "th": Style(
-                                                        padding:
-                                                            EdgeInsets.all(6),
-                                                        backgroundColor:
-                                                            Colors.grey,
-                                                      ),
-                                                      "td": Style(
-                                                        padding:
-                                                            EdgeInsets.all(6),
-                                                        alignment:
-                                                            Alignment.topLeft,
-                                                      ),
-                                                      'h5': Style(
-                                                          maxLines: 2,
-                                                          textOverflow:
-                                                              TextOverflow
-                                                                  .ellipsis),
-                                                    },
-                                                  ) /*Text(
-                                            response[itemIndex]
-                                            ['option_fourth'],
-                                            maxLines: 3,
-                                            softWrap: true,
-                                            overflow:
-                                            TextOverflow.ellipsis,
-                                            style: normalText5)*/
-                                                  ,
-                                                ),
-                                              ]),
-                                            )
-                                          : Column(children: <Widget>[
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 12),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.80,
-                                                decoration: BoxDecoration(
-                                                    color: response[itemIndex][
-                                                                'option_first_color'] ==
-                                                            ""
-                                                        ? Color(0xffF9F9FB)
-                                                        : response[itemIndex][
-                                                                    'option_first_color'] !=
-                                                                "green"
-                                                            ? Color(0xffF45656)
-                                                            : Color(0xff51DEA0),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10))),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5,
-                                                        vertical: 5),
-                                                child: Html(
-                                                  data: response[itemIndex]
-                                                      ['option_first'],
-                                                  style: {
-                                                    "table": Style(
-                                                      backgroundColor:
-                                                          Color.fromARGB(0x50,
-                                                              0xee, 0xee, 0xee),
-                                                    ),
-                                                    "tr": Style(
-                                                      border: Border(
-                                                          bottom: BorderSide(
-                                                              color:
-                                                                  Colors.grey)),
-                                                    ),
-                                                    "th": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      backgroundColor:
-                                                          Colors.grey,
-                                                    ),
-                                                    "td": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                    ),
-                                                    'h5': Style(
-                                                        maxLines: 2,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis),
-                                                  },
-                                                ) /*Text(
-                                          response[itemIndex]
-                                          ['option_first'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/
-                                                ,
-                                              ),
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 12),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.80,
-                                                decoration: BoxDecoration(
-                                                    color: response[itemIndex][
-                                                                'option_second_color'] ==
-                                                            ""
-                                                        ? Color(0xffF9F9FB)
-                                                        : response[itemIndex][
-                                                                    'option_second_color'] !=
-                                                                "green"
-                                                            ? Color(0xffF45656)
-                                                            : Color(0xff51DEA0),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10))),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5,
-                                                        vertical: 5),
-                                                child: Html(
-                                                  data: response[itemIndex]
-                                                      ['option_second'],
-                                                  style: {
-                                                    "table": Style(
-                                                      backgroundColor:
-                                                          Color.fromARGB(0x50,
-                                                              0xee, 0xee, 0xee),
-                                                    ),
-                                                    "tr": Style(
-                                                      border: Border(
-                                                          bottom: BorderSide(
-                                                              color:
-                                                                  Colors.grey)),
-                                                    ),
-                                                    "th": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      backgroundColor:
-                                                          Colors.grey,
-                                                    ),
-                                                    "td": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                    ),
-                                                    'h5': Style(
-                                                        maxLines: 2,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis),
-                                                  },
-                                                ) /*Text(
-                                          response[itemIndex]
-                                          ['option_second'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/
-                                                ,
-                                              ),
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 12),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.80,
-                                                decoration: BoxDecoration(
-                                                    color: response[itemIndex][
-                                                                'option_third_color'] ==
-                                                            ""
-                                                        ? Color(0xffF9F9FB)
-                                                        : response[itemIndex][
-                                                                    'option_third_color'] !=
-                                                                "green"
-                                                            ? Color(0xffF45656)
-                                                            : Color(0xff51DEA0),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10))),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5,
-                                                        vertical: 5),
-                                                child: Html(
-                                                  data: response[itemIndex]
-                                                      ['option_third'],
-                                                  style: {
-                                                    "table": Style(
-                                                      backgroundColor:
-                                                          Color.fromARGB(0x50,
-                                                              0xee, 0xee, 0xee),
-                                                    ),
-                                                    "tr": Style(
-                                                      border: Border(
-                                                          bottom: BorderSide(
-                                                              color:
-                                                                  Colors.grey)),
-                                                    ),
-                                                    "th": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      backgroundColor:
-                                                          Colors.grey,
-                                                    ),
-                                                    "td": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                    ),
-                                                    'h5': Style(
-                                                        maxLines: 2,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis),
-                                                  },
-                                                ) /*Text(
-                                          response[itemIndex]
-                                          ['option_third'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/
-                                                ,
-                                              ),
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 12),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.80,
-                                                decoration: BoxDecoration(
-                                                    color: response[itemIndex][
-                                                                'option_fourth_color'] ==
-                                                            ""
-                                                        ? Color(0xffF9F9FB)
-                                                        : response[itemIndex][
-                                                                    'option_fourth_color'] !=
-                                                                "green"
-                                                            ? Color(0xffF45656)
-                                                            : Color(0xff51DEA0),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10))),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 5),
-                                                child: Html(
-                                                  data: response[itemIndex]
-                                                      ['option_fourth'],
-                                                  style: {
-                                                    "table": Style(
-                                                      backgroundColor:
-                                                          Color.fromARGB(0x50,
-                                                              0xee, 0xee, 0xee),
-                                                    ),
-                                                    "tr": Style(
-                                                      border: Border(
-                                                          bottom: BorderSide(
-                                                              color:
-                                                                  Colors.grey)),
-                                                    ),
-                                                    "th": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      backgroundColor:
-                                                          Colors.grey,
-                                                    ),
-                                                    "td": Style(
-                                                      padding:
-                                                          EdgeInsets.all(6),
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                    ),
-                                                    'h5': Style(
-                                                        maxLines: 2,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis),
-                                                  },
-                                                ) /*Text(
-                                          response[itemIndex]
-                                          ['option_fourth'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/
-                                                ,
-                                              ),
-                                            ]),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  lastAns != true
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                              Align(
-                                                alignment: FractionalOffset
-                                                    .bottomRight,
-                                                child: ButtonTheme(
-                                                  minWidth: 50.0,
-                                                  height: 34.0,
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    child: Container(
-                                                      margin: EdgeInsets.only(
-                                                          left: 20),
-                                                      child: RaisedButton(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                top: 2,
-                                                                bottom: 2,
-                                                                left: 25,
-                                                                right: 25),
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25.0)),
-                                                        textColor: Colors.white,
-                                                        color:
-                                                            Color(0xff017EFF),
-                                                        onPressed: () async {
-                                                          onPreviousClick();
-                                                        },
-                                                        child: Text(
-                                                          "Previous",
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              letterSpacing: 1,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Align(
-                                                alignment: FractionalOffset
-                                                    .bottomRight,
-                                                child: ButtonTheme(
-                                                  minWidth: 50.0,
-                                                  height: 34.0,
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    child: Container(
-                                                      margin: EdgeInsets.only(
-                                                          right: 20),
-                                                      child: RaisedButton(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                top: 2,
-                                                                bottom: 2,
-                                                                left: 25,
-                                                                right: 25),
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25.0)),
-                                                        textColor: Colors.white,
-                                                        color:
-                                                            Color(0xff017EFF),
-                                                        onPressed: () async {
-                                                          XMLJSON xmljson =
-                                                              new XMLJSON();
-
-                                                          if (itemIndex ==
-                                                              (response.length -
-                                                                  1)) {
-                                                            setState(() {
-                                                              lastAns = true;
-                                                            });
-                                                          }
-                                                          onNextClick();
-                                                        },
-                                                        child: Text(
-                                                          "Next",
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              letterSpacing: 1,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ])
-                                      : Align(
-                                          alignment:
-                                              FractionalOffset.bottomRight,
-                                          child: ButtonTheme(
-                                            minWidth: 50.0,
-                                            height: 34.0,
-                                            child: Align(
-                                              alignment: Alignment.topRight,
-                                              child: Container(
-                                                margin:
-                                                    EdgeInsets.only(right: 20),
-                                                child: RaisedButton(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 2,
-                                                          bottom: 2,
-                                                          left: 25,
-                                                          right: 25),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              25.0)),
-                                                  textColor: Colors.white,
-                                                  color: Color(0xff017EFF),
-                                                  onPressed: () async {
-                                                    Navigator.pop(context);
-                                                    Navigator.pushNamed(
-                                                        context, '/dashboard');
-                                                  },
-                                                  child: Text(
-                                                    "Go To Dashboard",
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        letterSpacing: 1,
-                                                        fontWeight:
-                                                            FontWeight.w400),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    width: deviceSize.width,
-                                    decoration: new BoxDecoration(
-                                        color: Color(0xffF9F9FB),
-                                        borderRadius: new BorderRadius.only(
-                                            topLeft:
-                                                const Radius.circular(10.0),
-                                            bottomLeft:
-                                                const Radius.circular(10.0),
-                                            bottomRight:
-                                                const Radius.circular(10.0),
-                                            topRight:
-                                                const Radius.circular(10.0))),
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 5.0, vertical: 5),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 5.0, vertical: 5),
-                                    child: Column(children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Container(
-                                          child: Text("Reason:",
-                                              style: normalText6),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      /* response[itemIndex]
-                                              ['reason'].contains("<")?*/
-                                      SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Container(
-                                          width: 500,
-                                          child: Html(
-                                            data: response[itemIndex]['reason'],
-                                            style: {
-                                              "table": Style(
-                                                backgroundColor: Color.fromARGB(
-                                                    0x50, 0xee, 0xee, 0xee),
-                                              ),
-                                              "tr": Style(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                      color: Colors.black),
-                                                  top: BorderSide(
-                                                      color: Colors.black),
-                                                  right: BorderSide(
-                                                      color: Colors.black),
-                                                  left: BorderSide(
-                                                      color: Colors.black),
-                                                ),
-                                              ),
-                                              "th": Style(
-                                                padding: EdgeInsets.all(6),
-                                                backgroundColor: Colors.grey,
-                                              ),
-                                              "td": Style(
-                                                padding: EdgeInsets.all(6),
-                                                alignment: Alignment.topLeft,
-                                              ),
-                                              'h5': Style(
-                                                  maxLines: 2,
-                                                  textOverflow:
-                                                      TextOverflow.ellipsis),
-                                            },
-                                          ),
-                                        ),
-                                      ) /*:  Container(
+                                            ) /*:  Container(
                                                 child: Text(
                                                     response[itemIndex]
                                                     ['reason'],
                                                     textAlign: TextAlign.justify,
                                                     style: normalText5),
                                               )*/
-                                    ]),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Container(
-                                      width: double.infinity,
-                                      child: Center(
-                                        child: Text(
-                                          '${itemIndex + 1}/' +
-                                              total_question.toString(),
-                                          style: normalText6,
+                                          ]),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                ])),
-                              ]);
-                            }),
-                      )
-                    : Container()
-              ],
-            );
+                                        Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Container(
+                                            width: double.infinity,
+                                            child: Center(
+                                              child: Text(
+                                                '${itemIndex + 1}/' +
+                                                    total_question.toString(),
+                                                style: normalText6,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ])),
+                                    ]);
+                                  }),
+                            )
+                          : Container()
+                    ],
+                  );
           } else {
             return Container();
           }
