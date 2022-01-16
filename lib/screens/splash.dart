@@ -206,58 +206,60 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
-      body: Stack(children: [
-        Container(
-          // color: Color(0xfff7f7f7),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Stack(children: [
-                Image.asset(
-                  'assets/images/Vector6.png',
-                  // fit: BoxFit.fill,
-                ),
-                Positioned(
-                  bottom: 20.0,
-                  right: 0.0,
-                  left: 0.0,
-                  top: 0.0,
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Image.asset(
-                      'assets/images/grewal_academy.png',
-                      width: 150,
-                      height: 180,
+      body: SingleChildScrollView(
+        child: Stack(children: [
+          Container(
+            // color: Color(0xfff7f7f7),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Stack(children: [
+                  Image.asset(
+                    'assets/images/Vector6.png',
+                    // fit: BoxFit.fill,
+                  ),
+                  Positioned(
+                    bottom: 20.0,
+                    right: 0.0,
+                    left: 0.0,
+                    top: 0.0,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Image.asset(
+                        'assets/images/grewal_academy.png',
+                        width: 150,
+                        height: 180,
+                      ),
                     ),
                   ),
-                ),
-              ]),
-              Align(
-                alignment: FractionalOffset.bottomCenter,
-                child: Image.asset(
-                  'assets/images/splash_back.png',
+                ]),
+                Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: Image.asset(
+                    'assets/images/splash_back.png',
 
-                  // fit: BoxFit.fill,
+                    // fit: BoxFit.fill,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Container(
-          child: Center(
-            child: Container(
-              width: 300,
-              height: 300,
-              alignment: Alignment.center,
-              child: Image.asset(
-                'assets/images/blue_splash.png',
+          Container(
+            child: Center(
+              child: Container(
+                width: 300,
+                height: 300,
+                alignment: Alignment.center,
+                child: Image.asset(
+                  'assets/images/blue_splash.png',
+                ),
               ),
             ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }

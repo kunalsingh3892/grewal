@@ -183,52 +183,62 @@ class _SettingsState extends State<ViewPerformance2> {
 
       if (data['question_type'].length != 0) {
         setState(() {
-          if (data['question_type'].length == 3) {
-            chartData = [
+          for (var i = 0; i < data['question_type'].length; i++) {
+            chartData.add(
               ChartData(
-                  data['question_type'][0]['questiontype_name'],
-                  double.parse(data['question_type'][0]['total_percentage']),
-                  data['question_type'][0]['total_question'].toString(),
-                  data['question_type'][0]['question_type_id'].toString(),
+                  "Subjective Questions",
+                  double.parse(data['question_type'][i]['total_percentage']),
+                  data['question_type'][i]['total_question'].toString(),
+                  data['question_type'][i]['question_type_id'].toString(),
                   Color(0xff017EFF)),
-              ChartData(
-                  data['question_type'][1]['questiontype_name'],
-                  double.parse(data['question_type'][1]['total_percentage']),
-                  data['question_type'][1]['total_question'].toString(),
-                  data['question_type'][1]['question_type_id'].toString(),
-                  Color(0xffFFC700)),
-              ChartData(
-                  data['question_type'][2]['questiontype_name'],
-                  double.parse(data['question_type'][2]['total_percentage']),
-                  data['question_type'][2]['total_question'].toString(),
-                  data['question_type'][2]['question_type_id'].toString(),
-                  Color(0xff4CE364)),
-            ];
-          } else if (data['question_type'].length == 2) {
-            chartData = [
-              ChartData(
-                  data['question_type'][0]['questiontype_name'],
-                  double.parse(data['question_type'][0]['total_percentage']),
-                  data['question_type'][0]['total_question'].toString(),
-                  data['question_type'][0]['question_type_id'].toString(),
-                  Color(0xff017EFF)),
-              ChartData(
-                  data['question_type'][1]['questiontype_name'],
-                  double.parse(data['question_type'][1]['total_percentage']),
-                  data['question_type'][1]['total_question'].toString(),
-                  data['question_type'][1]['question_type_id'].toString(),
-                  Color(0xffFFC700)),
-            ];
-          } else {
-            chartData = [
-              ChartData(
-                  data['question_type'][0]['questiontype_name'],
-                  double.parse(data['question_type'][0]['total_percentage']),
-                  data['question_type'][0]['total_question'].toString(),
-                  data['question_type'][0]['question_type_id'].toString(),
-                  Color(0xff017EFF)),
-            ];
+            );
           }
+          // if (data['question_type'].length == 3) {
+          //   chartData = [
+          //     ChartData(
+          //         data['question_type'][0]['questiontype_name'],
+          //         double.parse(data['question_type'][0]['total_percentage']),
+          //         data['question_type'][0]['total_question'].toString(),
+          //         data['question_type'][0]['question_type_id'].toString(),
+          //         Color(0xff017EFF)),
+          //     ChartData(
+          //         data['question_type'][1]['questiontype_name'],
+          //         double.parse(data['question_type'][1]['total_percentage']),
+          //         data['question_type'][1]['total_question'].toString(),
+          //         data['question_type'][1]['question_type_id'].toString(),
+          //         Color(0xffFFC700)),
+          //     ChartData(
+          //         data['question_type'][2]['questiontype_name'],
+          //         double.parse(data['question_type'][2]['total_percentage']),
+          //         data['question_type'][2]['total_question'].toString(),
+          //         data['question_type'][2]['question_type_id'].toString(),
+          //         Color(0xff4CE364)),
+          //   ];
+          // } else if (data['question_type'].length == 2) {
+          //   chartData = [
+          //     ChartData(
+          //         data['question_type'][0]['questiontype_name'],
+          //         double.parse(data['question_type'][0]['total_percentage']),
+          //         data['question_type'][0]['total_question'].toString(),
+          //         data['question_type'][0]['question_type_id'].toString(),
+          //         Color(0xff017EFF)),
+          //     ChartData(
+          //         data['question_type'][1]['questiontype_name'],
+          //         double.parse(data['question_type'][1]['total_percentage']),
+          //         data['question_type'][1]['total_question'].toString(),
+          //         data['question_type'][1]['question_type_id'].toString(),
+          //         Color(0xffFFC700)),
+          //   ];
+          // } else {
+          //   chartData = [
+          //     ChartData(
+          //         data['question_type'][0]['questiontype_name'],
+          //         double.parse(data['question_type'][0]['total_percentage']),
+          //         data['question_type'][0]['total_question'].toString(),
+          //         data['question_type'][0]['question_type_id'].toString(),
+          //         Color(0xff017EFF)),
+          //   ];
+          // }
         });
       } else {
         setState(() {
