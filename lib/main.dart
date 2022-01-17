@@ -84,6 +84,7 @@ import 'screens/plan.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'screens/test_correct_new.dart';
 import 'screens/view_test_new.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 Future<void> main() async {
   runZonedGuarded(() async {
@@ -178,6 +179,17 @@ class _MyAppState extends State<MyApp> {
             primarySwatch: colorCustom,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
+          builder: (context, widget) => ResponsiveWrapper.builder(
+              BouncingScrollWrapper.builder(context, widget),
+              maxWidth: 800,
+              minWidth: 450,
+              defaultScale: true,
+              breakpoints: [
+                ResponsiveBreakpoint.resize(450, name: MOBILE),
+                // ResponsiveBreakpoint.autoScale(450, name: TABLET),
+                // ResponsiveBreakpoint.resize(450, name: DESKTOP),
+              ],
+              background: Container(color: Color(0xFFF5F5F5))),
           debugShowCheckedModeBanner: false,
           onGenerateRoute: (settings) {
             print("new " + settings.toString());

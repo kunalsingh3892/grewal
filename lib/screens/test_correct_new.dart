@@ -348,7 +348,7 @@ class _LoginWithLogoState extends State<StartMCQ2>
                                 child: Column(children: <Widget>[
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(top: 250, right: 10),
+                                    const EdgeInsets.only(top: 450, right: 10),
                                 child: Align(
                                   alignment: Alignment.bottomRight,
                                   child: Container(
