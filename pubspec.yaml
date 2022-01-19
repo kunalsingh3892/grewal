@@ -77,8 +77,6 @@ dependencies:
   in_app_update: ^2.0.0
   flutter_custom_clippers: ^2.0.0
   provider: ^6.0.0
-  flutter_timeline: ^0.3.0
-  flutter_countdown_timer: ^4.1.0
   rflutter_alert: ^2.0.4
 
   # The following adds the Cupertino Icons font to your application.
@@ -90,7 +88,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_launcher_icons: ^0.9.0
-  responsive_framework: ^0.1.4
+  # responsive_framework: ^0.1.4
 
 flutter_icons:
   android: true
