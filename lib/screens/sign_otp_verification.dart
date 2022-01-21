@@ -43,7 +43,7 @@ class _LoginWithLogoState extends State<SignOTPVerification> {
   String send_type = "";
   String mobile = "";
   String email = "";
-
+  String country = "";
   @override
   void initState() {
     super.initState();
@@ -53,6 +53,7 @@ class _LoginWithLogoState extends State<SignOTPVerification> {
     signupid = data['signupid'];
     mobile = data['mobile'];
     email = data['email'];
+    country = data['country'];
   }
 
   Widget _loginContent1() {
@@ -380,13 +381,21 @@ class _LoginWithLogoState extends State<SignOTPVerification> {
                               alignment: Alignment.topLeft,
                               child: /*send_type == "mobile"
                                   ?*/
-                                  Text(
-                                "sent to $mobile and your registered email.",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 21.0,
-                                ),
-                              )
+                                  country == "6"
+                                      ? Text(
+                                          "sent to $mobile and your registered email.",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 21.0,
+                                          ),
+                                        )
+                                      : Text(
+                                          "sent to your registered email.",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 21.0,
+                                          ),
+                                        )
                               /*: Text(
                                       "sent to $email",
                                       style: TextStyle(

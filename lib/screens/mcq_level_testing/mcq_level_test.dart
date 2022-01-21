@@ -229,7 +229,7 @@ class _SettingsState extends State<MCQLevelTest> {
                                                                             chapter_id.toString(),
                                                                         "testType":
                                                                             "obj",
-                                                                        "reattempt": e['percent'] ==
+                                                                        "reattempt": e['reattempt'] ==
                                                                                 0
                                                                             ? "0"
                                                                             : "1",

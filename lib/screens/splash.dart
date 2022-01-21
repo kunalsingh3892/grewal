@@ -207,7 +207,7 @@ class _SplashScreenState extends State<SplashScreen> {
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       body: SingleChildScrollView(
-        child: Stack(children: [
+        child: Stack(alignment: Alignment.center, children: [
           Container(
             // color: Color(0xfff7f7f7),
             child: Column(
@@ -246,15 +246,13 @@ class _SplashScreenState extends State<SplashScreen> {
               ],
             ),
           ),
-          Container(
-            child: Center(
-              child: Container(
-                width: 300,
-                height: 300,
-                alignment: Alignment.center,
-                child: Image.asset(
-                  'assets/images/blue_splash.png',
-                ),
+          Center(
+            child: Container(
+              width: 300,
+              height: 300,
+              alignment: Alignment.center,
+              child: Image.asset(
+                'assets/images/blue_splash.png',
               ),
             ),
           ),

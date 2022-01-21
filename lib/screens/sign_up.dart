@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +11,7 @@ import 'package:grewal/components/general.dart';
 
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:http/http.dart' as http;
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants.dart';
 
@@ -30,7 +32,6 @@ class _LoginWithLogoState extends State<SignIn> {
   bool _isHidden = true;
   bool _isHidden2 = true;
   bool isEnabled1 = true;
-
   bool isEnabled2 = false;
 
   Future _boardData;
@@ -51,10 +52,12 @@ class _LoginWithLogoState extends State<SignIn> {
   String catData3 = "";
   String catData4 = "";
   bool _autoValidate = false;
+  int othersIndex = 0;
 
   String fcmToken = "";
   Stream<String> _tokenStream;
   StreamSubscription iosSubscription;
+  TextEditingController otherCountryCode = new TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -179,6 +182,11 @@ class _LoginWithLogoState extends State<SignIn> {
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       var result = data['Response'];
+
+      List da = data['Response'];
+      setState(() {
+        othersIndex = da.indexWhere((element) => element['id'] == 10);
+      });
       if (mounted) {
         setState(() {
           catData = jsonEncode(result);
@@ -409,17 +417,94 @@ class _LoginWithLogoState extends State<SignIn> {
                   value: selectedRegion5,
                   isDense: true,
                   onChanged: (newValue) {
+                    print(newValue);
                     setState(() {
-                      selectedRegion5 = newValue;
-                      List<String> item = _region4.map((Region4 map) {
-                        for (int i = 0; i < _region4.length; i++) {
-                          if (selectedRegion5 == map.THIRD_LEVEL_NAME) {
-                            _type4 = map.THIRD_LEVEL_ID;
-                            return map.THIRD_LEVEL_ID;
-                          }
-                        }
-                      }).toList();
+                      mobileController.text = "";
                     });
+                    if (newValue == "Other") {
+                      setState(() {
+                        selectedRegion5 = newValue;
+                        List<String> item = _region4.map((Region4 map) {
+                          for (int i = 0; i < _region4.length; i++) {
+                            if (selectedRegion5 == map.THIRD_LEVEL_NAME) {
+                              _type4 = map.THIRD_LEVEL_ID;
+                              return map.THIRD_LEVEL_ID;
+                            }
+                          }
+                        }).toList();
+                      });
+                      otherCountryCode.text = "";
+                      Alert(
+                          context: context,
+                          title: 'Enter Country Code',
+                          content: TextFormField(
+                            autofocus: true,
+                            decoration:
+                                InputDecoration(label: Text("Country Code")),
+                            controller: otherCountryCode,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            keyboardType: TextInputType.number,
+                          ),
+                          buttons: [
+                            DialogButton(
+                                child: Text("Cancel",
+                                    style: TextStyle(color: Colors.white)),
+                                color: Colors.blue,
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                }),
+                            DialogButton(
+                                child: Text("OK",
+                                    style: TextStyle(color: Colors.white)),
+                                color: Colors.blue,
+                                onPressed: () {
+                                  if (otherCountryCode.text.isNotEmpty) {
+                                    Navigator.of(context).pop();
+                                    setState(() {
+                                      _region4[othersIndex].THIRD_LEVEL_CODE =
+                                          "+" + otherCountryCode.text;
+                                      selectedRegion4 =
+                                          "+" + otherCountryCode.text;
+                                    });
+                                    Alert(
+                                        context: context,
+                                        title: "One Time Password",
+                                        desc:
+                                            "A OTP will be send to your Email Id.",
+                                        type: AlertType.info,
+                                        buttons: [
+                                          DialogButton(
+                                              child: Text(
+                                                "OK",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              color: Colors.blue,
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              })
+                                        ]).show();
+                                  } else {
+                                    Fluttertoast.showToast(
+                                        msg: "Country Code Required");
+                                  }
+                                })
+                          ]).show();
+                    } else {
+                      setState(() {
+                        selectedRegion5 = newValue;
+                        List<String> item = _region4.map((Region4 map) {
+                          for (int i = 0; i < _region4.length; i++) {
+                            if (selectedRegion5 == map.THIRD_LEVEL_NAME) {
+                              _type4 = map.THIRD_LEVEL_ID;
+                              return map.THIRD_LEVEL_ID;
+                            }
+                          }
+                        }).toList();
+                      });
+                    }
                   },
                   items: _region4.map((Region4 map) {
                     return new DropdownMenuItem<String>(
@@ -467,6 +552,7 @@ class _LoginWithLogoState extends State<SignIn> {
                     value: selectedRegion4,
                     isDense: true,
                     onChanged: (newValue) {
+                      print(newValue);
                       setState(() {
                         selectedRegion4 = newValue;
                         List<String> item = _region4.map((Region4 map) {
@@ -818,13 +904,16 @@ class _LoginWithLogoState extends State<SignIn> {
                       setState(() {
                         _loading = true;
                       });
+
                       final msg = jsonEncode({
                         "name": nameController.text,
                         "email": emailController.text,
                         "country": _type4,
                         "class_id": _type3,
                         "board_id": _type,
-                        "mobile": mobileController.text,
+                        "mobile": _type4 == "10"
+                            ? selectedRegion4 + mobileController.text
+                            : mobileController.text,
                         "password": passController.text,
                         "referral_code": codeController.text,
                         "device_token": fcmToken
@@ -840,7 +929,9 @@ class _LoginWithLogoState extends State<SignIn> {
                           "country": _type4,
                           "class_id": _type3,
                           "board_id": _type,
-                          "mobile": mobileController.text,
+                          "mobile": _type4 == "10"
+                              ? selectedRegion4 + mobileController.text
+                              : mobileController.text,
                           "password": passController.text,
                           "referral_code": codeController.text,
                           "device_token": fcmToken
@@ -848,7 +939,7 @@ class _LoginWithLogoState extends State<SignIn> {
                         headers: headers,
                       );
                       print(msg);
-
+                      print(response.body);
                       if (response.statusCode == 200) {
                         setState(() {
                           _loading = false;
@@ -881,7 +972,8 @@ class _LoginWithLogoState extends State<SignIn> {
                               'send_type': send_type,
                               'signupid': signupid.toString(),
                               'mobile': mobileController.text,
-                              'email': emailController.text
+                              'email': emailController.text,
+                              'country': _type4.toString()
                             },
                           );
                         } else {
@@ -1051,7 +1143,7 @@ class Region3 {
 class Region4 {
   final String THIRD_LEVEL_ID;
   final String THIRD_LEVEL_NAME;
-  final String THIRD_LEVEL_CODE;
+  String THIRD_LEVEL_CODE;
 
   Region4({this.THIRD_LEVEL_ID, this.THIRD_LEVEL_NAME, this.THIRD_LEVEL_CODE});
 
