@@ -19,6 +19,7 @@ import 'package:grewal/screens/create_mcq_new.dart';
 import 'package:grewal/screens/create_mcq_subjective.dart';
 
 import 'package:grewal/screens/create_ticket.dart';
+import 'package:grewal/screens/crosswordgame.dart';
 import 'package:grewal/screens/dashboard.dart';
 
 import 'package:grewal/screens/home_page.dart';
@@ -56,6 +57,7 @@ import 'package:grewal/screens/support_detail.dart';
 import 'package:grewal/screens/support_list.dart';
 import 'package:grewal/screens/test_correct.dart';
 import 'package:grewal/screens/test_list.dart';
+import 'package:grewal/screens/test_series.dart';
 import 'package:grewal/screens/ticket_details.dart';
 import 'package:grewal/screens/ticket_list.dart';
 import 'package:grewal/screens/update_profile.dart';
@@ -712,6 +714,23 @@ class _MyAppState extends State<MyApp> {
               case '/subject-list':
                 return PageTransition(
                   child: SubjectList(),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/cross-word-game':
+                return PageTransition(
+                  child: CrossWordGame(),
+                  type: PageTransitionType.leftToRight,
+                  settings: settings,
+                );
+                break;
+              case '/test-series':
+                var obj = settings.arguments;
+                return PageTransition(
+                  child: TestSeries(
+                    argument: obj,
+                  ),
                   type: PageTransitionType.leftToRight,
                   settings: settings,
                 );

@@ -10,6 +10,7 @@ import 'package:grewal/components/general.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants.dart';
@@ -45,10 +46,15 @@ class _LoginWithLogoState extends State<LoginWithLogo> {
   String fcmToken = "";
   Stream<String> _tokenStream;
   StreamSubscription iosSubscription;
+  String appVersion = "";
   @override
   void initState() {
     super.initState();
-
+    getVersion().then((value) {
+      setState(() {
+        appVersion = value;
+      });
+    });
     FirebaseMessaging.instance.getToken().then(setToken);
     _tokenStream = FirebaseMessaging.instance.onTokenRefresh;
     _tokenStream.listen(setToken);
@@ -59,6 +65,11 @@ class _LoginWithLogoState extends State<LoginWithLogo> {
     setState(() {
       fcmToken = token;
     });
+  }
+
+  Future<String> getVersion() async {
+    PackageInfo info = await PackageInfo.fromPlatform();
+    return info.version;
   }
 
   Widget _loginContent1() {
@@ -524,6 +535,16 @@ class _LoginWithLogoState extends State<LoginWithLogo> {
                     child: _loginContent1(),
                   ),
                 ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Ver : " + appVersion.toString(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.blue),
+                )
               ],
             ),
           ),

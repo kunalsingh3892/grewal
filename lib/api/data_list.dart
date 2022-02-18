@@ -76,4 +76,47 @@ class DataListOfSubjects {
     }
     return [];
   }
+
+  Future<Map> crossWordGameData() async {
+    await getToken();
+    var response = await http.post(
+      new Uri.https(BASE_URL, API_PATH + "/crossword-test"),
+      body: {"student_id": user_id.toString()},
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + api_token.toString(),
+      },
+    );
+    if (jsonDecode(response.body)['ErrorCode'] == 0) {
+      Map temp = {};
+      temp['data'] = jsonDecode(response.body)['Response'];
+      temp['row'] = jsonDecode(response.body)['row'].toString();
+      temp['col'] = jsonDecode(response.body)['col'].toString();
+      return temp;
+    }
+    return {};
+  }
+
+  Future<List> getTestSeriesPDF(String id) async {
+    print("correct");
+    await getToken();
+    var response = await http.post(
+        new Uri.https(BASE_URL, API_PATH + "/paper-series-list"),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + api_token.toString(),
+        },
+        body: {
+          "user_id": user_id.toString(),
+          "chapter_id": id.toString(),
+        });
+    print(jsonEncode({
+      "user_id": user_id.toString(),
+      "chapter_id": id.toString(),
+    }));
+    if (jsonDecode(response.body)['ErrorCode'] == 0) {
+      return jsonDecode(response.body)['Response'];
+    }
+    return [];
+  }
 }

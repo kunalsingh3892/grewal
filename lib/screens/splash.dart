@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> secureScreen() async {
-    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
   /*Future<void> checkForUpdate() async {

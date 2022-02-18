@@ -88,6 +88,7 @@ class _ChangePageState extends State<HomePage> {
   String total_subjects = "0";
   List subjects_list = [];
   List onlyTermsId = [];
+  String term2 = "";
   String platForm = "";
   @override
   void initState() {
@@ -99,8 +100,12 @@ class _ChangePageState extends State<HomePage> {
         setState(() {
           subjects_list.clear();
           subjects_list.addAll(value);
+
           value.forEach((element) {
             onlyTermsId.add(element['id'].toString());
+            if (element['id'] == 9) {
+              term2 = element['id'].toString();
+            }
           });
         });
 
@@ -557,7 +562,7 @@ class _ChangePageState extends State<HomePage> {
         ),
       );
     } else {
-      return Container();
+      return SizedBox();
     }
   }
 
@@ -586,7 +591,25 @@ class _ChangePageState extends State<HomePage> {
             Color(0xfffff8dd)),
       );
     } else {
-      return Container();
+      return InkWell(
+        onTap: () {
+          ProgressBarLoading().showLoaderDialog(context);
+          // String subjects = onlyTermsId.join(",").toString();
+
+          DataListOfSubjects().getChapterList(term2).then((value) {
+            Navigator.of(context).pop();
+
+            Navigator.pushNamed(context, '/test-series',
+                arguments: {"data": value});
+          });
+        },
+        child: _buildWikiCategory(
+            "assets/images/tp.png",
+            "Chapter Wise Test Series",
+            "",
+            Color(0xff0488FD),
+            Color(0xffE0F1FF)),
+      );
     }
   }
 
@@ -911,7 +934,26 @@ class _ChangePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(width: 16.0),
-                  Expanded(child: SizedBox())
+                  Expanded(
+                      child: InkWell(
+                    onTap: () {
+                      ProgressBarLoading().showLoaderDialog(context);
+                      // String subjects = onlyTermsId.join(",").toString();
+
+                      DataListOfSubjects().getChapterList(term2).then((value) {
+                        Navigator.of(context).pop();
+
+                        Navigator.pushNamed(context, '/test-series',
+                            arguments: {"data": value});
+                      });
+                    },
+                    child: _buildWikiCategory(
+                        "assets/images/tp.png",
+                        "Chapter Wise Test Series",
+                        "",
+                        Color(0xff0488FD),
+                        Color(0xffE0F1FF)),
+                  ))
                 ],
               ),
             ),
@@ -1012,50 +1054,12 @@ class _ChangePageState extends State<HomePage> {
                   ),
                 ),
                 const SizedBox(width: 16.0),
-                // Expanded(
-                //   child: SizedBox(),
-                //   // child: InkWell(
-                //   //   onTap: () {
-                //   //     // Navigator.pop(context);
-                //   //     Navigator.pushNamed(
-                //   //       context,
-                //   //       '/project',
-                //   //     );
-                //   //   },
-                //   //   child: _buildWikiCategory(
-                //   //       "assets/images/project.png",
-                //   //       "Project",
-                //   //       "Project",
-                //   //       Color(0xffFFB110),
-                //   //       Color(0xffFFFBEC)),
-                //   // ),
-                // ),
                 Expanded(
                   child: upgradeDash(),
                 ),
               ],
             ),
           ),
-          // const SizedBox(height: 16.0),
-          // Container(
-          //   padding: EdgeInsets.only(
-          //     left: 20,
-          //     right: 20,
-          //     bottom: 5,
-          //   ),
-          //   child: Row(
-          //     children: <Widget>[
-          //       Expanded(
-          //         child: upgradeDash(),
-          //       ),
-          //       const SizedBox(width: 16.0),
-          //       Expanded(
-          //         child: Container(),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          // const SizedBox(height: 10.0),
         ],
       );
     }
@@ -1959,6 +1963,35 @@ class _ChangePageState extends State<HomePage> {
                         ),
                       ),
                       const SizedBox(height: 16.0),
+                      Container(
+                        padding: EdgeInsets.only(
+                          left: 20,
+                          right: 20,
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, '/cross-word-game');
+                                  },
+                                  child: _buildWikiCategory(
+                                    "assets/images/cross_word_game.png",
+                                    "Cross-Word",
+                                    "Challenge Yourself",
+                                    Colors.teal,
+                                    Colors.teal[50],
+                                  )),
+                            ),
+                            const SizedBox(width: 16.0),
+                            Expanded(child: SizedBox()),
+                          ],
+                        ),
+                      ),
+// /cross-word-game
+                      const SizedBox(height: 20.0),
                       show_btm(),
                       /* const SizedBox(height: 16.0),
                  Container(

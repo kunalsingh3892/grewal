@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grewal/services/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-
 
 class Viewer extends StatefulWidget {
   final Object argument;
@@ -16,7 +14,7 @@ class Viewer extends StatefulWidget {
 }
 
 class _ViewerState extends State<Viewer> {
-  String _document ="";
+  String _document = "";
   bool _showViewer = true;
   String user_id = "";
 
@@ -28,8 +26,9 @@ class _ViewerState extends State<Viewer> {
     var data = json.decode(encodedJson);
     _document = data['dataSet'];
 
-   // _getUser();
+    // _getUser();
   }
+
   /*_getUser() async {
     Preference().getPreferences().then((prefs) {
       setState(() {
@@ -38,7 +37,7 @@ class _ViewerState extends State<Viewer> {
       });
     });
   }*/
- /* Widget _networkImage1(url) {
+  /* Widget _networkImage1(url) {
     return Container(
       margin: EdgeInsets.only(
         right: 8,
@@ -81,14 +80,14 @@ class _ViewerState extends State<Viewer> {
         ),
         centerTitle: true,
         title: Container(
-          child: Text("OverView", style: normalText6),
+          child: Text("Overview", style: normalText6),
         ),
         flexibleSpace: Container(
           height: 100,
           color: Color(0xffffffff),
         ),
         actions: <Widget>[
-         /* Align(
+          /* Align(
             alignment: Alignment.center,
             child: CircleAvatar(
               backgroundColor: Colors.white,
@@ -105,13 +104,10 @@ class _ViewerState extends State<Viewer> {
         backgroundColor: Colors.transparent,
       ),
       body: Container(
-
         child: SfPdfViewer.network(
           _document,
         ),
       ),
     );
   }
-
-
 }

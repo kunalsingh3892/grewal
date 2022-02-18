@@ -104,11 +104,11 @@ class _MyPlanState extends State<MyPlan> {
 
           if (out == "out") {
             value.forEach((element) {
-              if (value.indexOf(element) == 0) {
+              if (element["subject_id"] == 0) {
                 element['selected'] = false;
                 element['cutPlanInd'] = "500";
                 subPlansList.add(element);
-              } else if (value.indexOf(element) == 1) {
+              } else if (element["subject_id"] == 9) {
                 element['selected'] = false;
                 element['cutPlanInd'] = "800";
                 subPlansList.add(element);
@@ -116,11 +116,11 @@ class _MyPlanState extends State<MyPlan> {
             });
           } else {
             value.forEach((element) {
-              if (value.indexOf(element) == 0 && !payment_status) {
+              if (element["subject_id"] == 0 && !payment_status) {
                 element['selected'] = false;
                 element['cutPlanInd'] = "500";
                 subPlansList.add(element);
-              } else if (value.indexOf(element) == 1 && !payment_status2) {
+              } else if (element["subject_id"] == 9 && !payment_status2) {
                 element['selected'] = false;
                 element['cutPlanInd'] = "800";
                 subPlansList.add(element);
